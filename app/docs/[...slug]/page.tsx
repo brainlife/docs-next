@@ -1,7 +1,6 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Pencil } from 'lucide-react';
@@ -97,15 +96,8 @@ export default async function DocPage({ params }: PageProps) {
     return (
         <DocLayout headings={headings}>
             <article className="min-w-0">
-                {/* Top Action Bar with Breadcrumbs & GitHub Edit button */}
-                <div className="flex items-center justify-between pb-3 mb-6 border-b border-gray-100 dark:border-gray-800">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium">
-                        <Link href="/" className="hover:text-[#2693D8] transition-colors">Documentation</Link>
-                        <span>/</span>
-                        <span className="text-gray-800 dark:text-gray-200 capitalize">
-                            {slug[slug.length - 1].replace(/_/g, ' ')}
-                        </span>
-                    </div>
+                {/* Top Action Bar with GitHub Edit button */}
+                <div className="flex items-center justify-end pb-2 mb-4">
                     <a
                         href={githubEditUrl}
                         target="_blank"
@@ -113,7 +105,7 @@ export default async function DocPage({ params }: PageProps) {
                         className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-[#2693D8] transition-colors py-1 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
                         title="Edit this page on GitHub"
                     >
-                        <Pencil size={13} />
+                        <Pencil size={14} />
                         <span>Edit on GitHub</span>
                     </a>
                 </div>

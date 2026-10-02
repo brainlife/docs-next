@@ -117,7 +117,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
             {/* Sidebar container */}
             <aside
-                className={`fixed top-16 bottom-0 left-0 z-40 w-64 bg-[#f8fafc] dark:bg-[#1a202c] border-r border-[#e2e8f0] dark:border-[#2d3748] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+                className={`fixed lg:sticky top-16 bottom-0 lg:bottom-auto lg:h-[calc(100vh-4rem)] left-0 z-40 w-64 lg:shrink-0 bg-[#f8fafc] dark:bg-[#1a202c] border-r border-[#e2e8f0] dark:border-[#2d3748] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >

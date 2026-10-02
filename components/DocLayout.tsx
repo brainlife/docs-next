@@ -30,9 +30,9 @@ export default function DocLayout({ children, headings = [] }: DocLayoutProps) {
                     onClose={() => setIsSidebarOpen(false)}
                 />
 
-                {/* Main Content Area */}
-                <main className="flex-1 lg:pl-64 min-w-0 flex justify-between py-10">
-                    <div className="flex-1 max-w-4xl min-w-0 px-8 sm:px-12 lg:px-16">
+                {/* Main Content Area with generous padding from the sidebar */}
+                <main className="flex-1 min-w-0 flex justify-between px-6 sm:px-10 lg:px-14 xl:px-16 py-10">
+                    <div className="flex-1 max-w-4xl min-w-0">
                         {children}
 
                         {/* Page Footer */}
