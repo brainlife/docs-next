@@ -114,6 +114,9 @@ export const DOCS_NAV: NavItem[] = [
     },
 ];
 
-export const GITHUB_REPO_URL = 'https://github.com/brainlife/docs';
+export const GITHUB_REPO_URL = 'https://github.com/brainlife/docs-next';
 export const SLACK_URL = 'https://brainlife.slack.com';
 export const MAIN_SITE_URL = 'https://brainlife.io';
+
+export const getGithubEditUrl = (relativePath: string) =>
+    `${GITHUB_REPO_URL}/edit/main/content/${relativePath}`;

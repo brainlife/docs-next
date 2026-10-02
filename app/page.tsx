@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import DocLayout from '@/components/DocLayout';
 import { TocHeading } from '@/components/TableOfContents';
+import { getGithubEditUrl } from '@/lib/docsNavigation';
 
 const HOME_HEADINGS: TocHeading[] = [
     { id: 'what-is-brainlife', text: 'What is Brainlife?', level: 1 },
@@ -39,7 +40,7 @@ export default function HomePage() {
                         What is Brainlife?
                     </h1>
                     <a
-                        href="https://github.com/brainlife/docs/edit/master/docs/index.md"
+                        href={getGithubEditUrl('index.md')}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 text-gray-400 hover:text-[#2693D8] transition-colors rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"

@@ -42,6 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${workSans.variable} ${roboto.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
       <head>

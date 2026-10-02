@@ -87,7 +87,7 @@ export function processMarkdown(rawMarkdown: string): ProcessedMarkdown {
         }
 
         const headingClasses: Record<number, string> = {
-            1: 'text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-10 mb-6 font-[\'Work_Sans\',sans-serif]',
+            1: 'text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-0 mb-6 font-[\'Work_Sans\',sans-serif] pr-28 sm:pr-32',
             2: 'text-2xl font-bold text-gray-900 dark:text-white tracking-tight mt-12 mb-4 pb-2 border-b border-gray-100 dark:border-gray-800 font-[\'Work_Sans\',sans-serif]',
             3: 'text-xl font-bold text-gray-900 dark:text-white mt-8 mb-3 font-[\'Work_Sans\',sans-serif]',
             4: 'text-lg font-semibold text-gray-900 dark:text-white mt-6 mb-2 font-[\'Work_Sans\',sans-serif]',

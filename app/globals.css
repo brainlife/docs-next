@@ -174,6 +174,12 @@ body {
   line-height: 1.75;
 }
 
+.prose-docs > :first-child,
+.prose-docs > h1:first-of-type,
+.prose-docs > h2:first-of-type {
+  margin-top: 0 !important;
+}
+
 .prose-docs p {
   margin-top: 1rem;
   margin-bottom: 1rem;

@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import { Pencil } from 'lucide-react';
 import DocLayout from '@/components/DocLayout';
 import { processMarkdown } from '@/lib/markdown';
+import { getGithubEditUrl } from '@/lib/docsNavigation';
 
 interface PageProps {
     params: Promise<{
@@ -91,13 +92,13 @@ export default async function DocPage({ params }: PageProps) {
     const raw = fs.readFileSync(/*turbopackIgnore: true*/ doc.filePath, 'utf8');
     const { html, headings } = processMarkdown(raw);
 
-    const githubEditUrl = `https://github.com/brainlife/docs/edit/master/docs/${doc.relativePath}`;
+    const githubEditUrl = getGithubEditUrl(doc.relativePath);
 
     return (
         <DocLayout headings={headings}>
-            <article className="min-w-0">
+            <article className="min-w-0 relative">
                 {/* Top Action Bar with GitHub Edit button */}
-                <div className="flex items-center justify-end pb-2 mb-4">
+                <div className="absolute top-1 right-0 z-10">
                     <a
                         href={githubEditUrl}
                         target="_blank"
@@ -106,7 +107,7 @@ export default async function DocPage({ params }: PageProps) {
                         title="Edit this page on GitHub"
                     >
                         <Pencil size={14} />
-                        <span>Edit on GitHub</span>
+                        <span className="hidden sm:inline">Edit on GitHub</span>
                     </a>
                 </div>
 

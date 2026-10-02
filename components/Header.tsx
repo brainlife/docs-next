@@ -31,6 +31,7 @@ function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
 
 import { GITHUB_REPO_URL, MAIN_SITE_URL } from '@/lib/docsNavigation';
 import { getAssetPath } from '@/lib/basePath';
+import SearchBar from './SearchBar';
 
 interface HeaderProps {
     onToggleSidebar?: () => void;
@@ -38,7 +39,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
     return (
         <header className="sticky top-0 z-50 w-full bg-[#2d3748] text-white shadow-md border-b border-[#3a4352]">
@@ -61,6 +62,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                                 alt="brainlife logo"
                                 width={24}
                                 height={24}
+                                style={{ width: 'auto', height: 'auto' }}
                                 className="w-6 h-6 object-contain"
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = getAssetPath('/logo.png');
@@ -73,29 +75,23 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                     </Link>
                 </div>
 
-                {/* Center: Search Bar */}
+                {/* Center: Search Bar (Desktop) */}
                 <div className="flex-1 max-w-lg mx-4 hidden sm:block">
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                            <Search size={16} />
-                        </div>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search docs..."
-                            className="w-full pl-9 pr-12 py-1.5 bg-[#1f2633] text-sm text-gray-100 placeholder-gray-400 rounded-md border border-[#4a5568] focus:outline-none focus:border-[#2693D8] focus:ring-1 focus:ring-[#2693D8] transition-colors"
-                        />
-                        <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
-                            <kbd className="text-[10px] font-mono font-medium text-gray-400 bg-[#2d3748] px-1.5 py-0.5 rounded border border-[#4a5568]">
-                                ⌘K
-                            </kbd>
-                        </div>
-                    </div>
+                    <SearchBar />
                 </div>
 
-                {/* Right: GitHub badge & Portal Link - aligned to the far right */}
-                <div className="flex items-center gap-3 ml-auto flex-shrink-0">
+                {/* Right: Search button (Mobile), GitHub badge & Portal Link */}
+                <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0">
+                    {/* Mobile Search Toggle */}
+                    <button
+                        type="button"
+                        onClick={() => setIsMobileSearchOpen(true)}
+                        className="sm:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-[#3a4352] transition-colors"
+                        aria-label="Search documentation"
+                    >
+                        <Search size={18} />
+                    </button>
+
                     <a
                         href={GITHUB_REPO_URL}
                         target="_blank"
@@ -104,7 +100,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                         title="View repository on GitHub"
                     >
                         <GithubIcon className="w-4 h-4 text-white" />
-                        <span className="hidden md:inline font-medium">brainlife/docs</span>
+                        <span className="hidden md:inline font-medium">brainlife/docs-next</span>
                         <div className="flex items-center gap-2 pl-1 border-l border-gray-600 text-gray-300">
                             <span className="flex items-center gap-0.5" title="Stars">
                                 <Star size={12} className="text-yellow-400 fill-yellow-400" />
@@ -128,6 +124,26 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                     </a>
                 </div>
             </div>
+
+            {/* Mobile Search Overlay Modal */}
+            {isMobileSearchOpen && (
+                <div className="sm:hidden fixed inset-0 z-50 bg-[#1f2633]/95 backdrop-blur-md p-4 flex flex-col">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#3a4352] mb-3">
+                        <span className="text-sm font-semibold text-white">Search Documentation</span>
+                        <button
+                            type="button"
+                            onClick={() => setIsMobileSearchOpen(false)}
+                            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-[#3a4352]"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+                    <SearchBar
+                        isMobileOpen={isMobileSearchOpen}
+                        onCloseMobile={() => setIsMobileSearchOpen(false)}
+                    />
+                </div>
+            )}
         </header>
     );
 }
