@@ -19,16 +19,18 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+import { getAssetPath } from "@/lib/basePath";
+
 export const metadata: Metadata = {
   title: "brainlife Documentation",
   description: "brainlife.io promotes engagement and education in reproducible neuroscience by providing an online, community-based platform where users can publish code (Apps) and Data while integrating HPC and cloud-computing resources.",
   icons: {
     icon: [
-      { url: '/logo.svg', type: 'image/svg+xml' },
-      { url: '/logo.png', sizes: '512x512', type: 'image/png' },
-      { url: '/favicon.ico' },
+      { url: getAssetPath('/logo.svg'), type: 'image/svg+xml' },
+      { url: getAssetPath('/logo.png'), sizes: '512x512', type: 'image/png' },
+      { url: getAssetPath('/favicon.ico') },
     ],
-    shortcut: ['/logo.svg'],
+    shortcut: [getAssetPath('/logo.svg')],
   },
 };
 
@@ -43,8 +45,8 @@ export default function RootLayout({
       className={`${workSans.variable} ${roboto.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
       <head>
-        <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-        <link rel="icon" type="image/png" href="/logo.png" />
+        <link rel="icon" type="image/svg+xml" href={getAssetPath('/logo.svg')} />
+        <link rel="icon" type="image/png" href={getAssetPath('/logo.png')} />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-white dark:bg-[#1a202c] text-[#2d3748] dark:text-[#eceef6]">
         {children}

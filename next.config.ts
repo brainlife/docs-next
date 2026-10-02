@@ -1,18 +1,20 @@
 import type { NextConfig } from "next";
 
+const basePath =
+  process.env.NEXT_PUBLIC_BASE_PATH !== undefined
+    ? process.env.NEXT_PUBLIC_BASE_PATH
+    : process.env.NODE_ENV === "production"
+    ? "/docs-next"
+    : "";
+
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/using_ezBIDS',
-        destination: '/docs/using_ezBIDS',
-      },
-      {
-        source: '/using_ezBIDS/',
-        destination: '/docs/using_ezBIDS',
-      },
-    ];
+  output: "export",
+  images: {
+    unoptimized: true,
   },
+  trailingSlash: true,
+  basePath: basePath || undefined,
+  assetPrefix: basePath || undefined,
 };
 
 export default nextConfig;

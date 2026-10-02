@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import { TocHeading } from '@/components/TableOfContents';
+import { getAssetPath } from '@/lib/basePath';
 
 export interface ProcessedMarkdown {
     html: string;
@@ -105,10 +106,11 @@ export function processMarkdown(rawMarkdown: string): ProcessedMarkdown {
     // Custom image renderer with captions
     renderer.image = ({ href, title, text }: { href: string; title?: string | null; text: string }) => {
         const caption = text || title || '';
+        const imageSrc = getAssetPath(href);
         return `
         <figure class="my-8">
             <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm bg-gray-50 dark:bg-gray-900/50">
-                <img src="${href}" alt="${caption}" class="w-full h-auto object-contain mx-auto block max-h-[600px]" loading="lazy" />
+                <img src="${imageSrc}" alt="${caption}" class="w-full h-auto object-contain mx-auto block max-h-[600px]" loading="lazy" />
             </div>
             ${caption ? `<figcaption class="mt-2 text-center text-xs text-gray-500 dark:text-gray-400 italic">${caption}</figcaption>` : ''}
         </figure>
@@ -126,6 +128,7 @@ export function processMarkdown(rawMarkdown: string): ProcessedMarkdown {
             if (!finalHref.startsWith('/')) {
                 finalHref = '/' + finalHref;
             }
+            finalHref = getAssetPath(finalHref);
         }
 
         return `<a href="${finalHref}" class="text-[#2693D8] hover:text-[#1d74ae] underline font-medium transition-colors"${targetAttr}${titleAttr}>${text}</a>`;
