@@ -30,6 +30,7 @@ function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 import { GITHUB_REPO_URL, MAIN_SITE_URL } from '@/lib/docsNavigation';
+import { getAssetPath } from '@/lib/basePath';
 
 interface HeaderProps {
     onToggleSidebar?: () => void;
@@ -56,13 +57,13 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                     <Link href="/" className="flex items-center gap-2.5 group">
                         <div className="w-8 h-8 relative flex-shrink-0 flex items-center justify-center bg-[#2693D8]/20 border border-[#2693D8]/40 rounded-lg p-1 group-hover:scale-105 transition-transform">
                             <Image
-                                src="/logo.svg"
+                                src={getAssetPath('/logo.svg')}
                                 alt="brainlife logo"
                                 width={24}
                                 height={24}
                                 className="w-6 h-6 object-contain"
                                 onError={(e) => {
-                                    (e.target as HTMLImageElement).src = '/logo.png';
+                                    (e.target as HTMLImageElement).src = getAssetPath('/logo.png');
                                 }}
                             />
                         </div>

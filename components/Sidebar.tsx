@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { DOCS_NAV, NavItem } from '@/lib/docsNavigation';
+import { getAssetPath } from '@/lib/basePath';
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -130,13 +131,13 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                     >
                         <div className="w-7 h-7 relative flex-shrink-0 flex items-center justify-center bg-[#2693D8]/15 border border-[#2693D8]/30 rounded-md p-1 group-hover:scale-105 transition-transform">
                             <Image
-                                src="/logo.svg"
+                                src={getAssetPath('/logo.svg')}
                                 alt="brainlife logo"
                                 width={20}
                                 height={20}
                                 className="w-5 h-5 object-contain"
                                 onError={(e) => {
-                                    (e.target as HTMLImageElement).src = '/logo.png';
+                                    (e.target as HTMLImageElement).src = getAssetPath('/logo.png');
                                 }}
                             />
                         </div>
