@@ -43,45 +43,45 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
 
     return (
         <header className="sticky top-0 z-50 w-full bg-[#2d3748] text-white shadow-md border-b border-[#3a4352]">
-            <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <div className="w-full px-3 sm:px-4 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-3 lg:gap-4">
                 {/* Left: Mobile hamburger & Logo & Title - aligned to the left */}
-                <div className="flex items-center gap-3 w-64 flex-shrink-0">
+                <div className="flex items-center gap-2 sm:gap-2.5 lg:w-64 min-w-0 flex-shrink-0">
                     <button
                         type="button"
                         onClick={onToggleSidebar}
-                        className="lg:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-[#3a4352] transition-colors"
+                        className="lg:hidden p-1.5 sm:p-2 rounded-md text-gray-300 hover:text-white hover:bg-[#3a4352] transition-colors"
                         aria-label="Toggle Navigation Sidebar"
                     >
                         {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
                     </button>
 
-                    <Link href="/" className="flex items-center gap-2.5 group">
-                        <div className="w-8 h-8 relative flex-shrink-0 flex items-center justify-center bg-[#2693D8]/20 border border-[#2693D8]/40 rounded-lg p-1 group-hover:scale-105 transition-transform">
+                    <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group min-w-0">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 relative flex-shrink-0 flex items-center justify-center bg-[#2693D8]/20 border border-[#2693D8]/40 rounded-lg p-1 group-hover:scale-105 transition-transform">
                             <Image
                                 src={getAssetPath('/logo.svg')}
                                 alt="brainlife logo"
                                 width={24}
                                 height={24}
                                 style={{ width: 'auto', height: 'auto' }}
-                                className="w-6 h-6 object-contain"
+                                className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = getAssetPath('/logo.png');
                                 }}
                             />
                         </div>
-                        <span className="font-semibold text-lg tracking-tight text-white group-hover:text-[#50bfff] transition-colors font-['Work_Sans',sans-serif]">
-                            brainlife <span className="font-normal text-gray-300">Documentation</span>
+                        <span className="font-semibold text-base sm:text-lg tracking-tight text-white group-hover:text-[#50bfff] transition-colors font-['Work_Sans',sans-serif] whitespace-nowrap">
+                            brainlife <span className="hidden min-[420px]:inline font-normal text-gray-300">Documentation</span>
                         </span>
                     </Link>
                 </div>
 
                 {/* Center: Search Bar (Desktop) */}
-                <div className="flex-1 max-w-lg mx-4 hidden sm:block">
+                <div className="flex-1 min-w-0 max-w-lg mx-2 sm:mx-3 lg:mx-4 hidden sm:block">
                     <SearchBar />
                 </div>
 
                 {/* Right: Search button (Mobile), GitHub badge & Portal Link */}
-                <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto flex-shrink-0">
                     {/* Mobile Search Toggle */}
                     <button
                         type="button"
@@ -96,12 +96,12 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                         href={GITHUB_REPO_URL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#1f2633] hover:bg-[#3a4352] text-xs text-gray-200 border border-[#4a5568] transition-all hover:border-gray-500 shadow-sm"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 p-2 sm:px-2.5 lg:px-3 sm:py-1.5 rounded-md bg-[#1f2633] hover:bg-[#3a4352] text-xs text-gray-200 border border-[#4a5568] transition-all hover:border-gray-500 shadow-sm"
                         title="View repository on GitHub"
                     >
                         <GithubIcon className="w-4 h-4 text-white" />
-                        <span className="hidden md:inline font-medium">brainlife/docs-next</span>
-                        <div className="flex items-center gap-2 pl-1 border-l border-gray-600 text-gray-300">
+                        <span className="hidden lg:inline font-medium">brainlife/docs-next</span>
+                        <div className="hidden sm:flex items-center gap-1.5 lg:gap-2 pl-1 border-l border-gray-600 text-gray-300">
                             <span className="flex items-center gap-0.5" title="Stars">
                                 <Star size={12} className="text-yellow-400 fill-yellow-400" />
                                 <span>19</span>
@@ -117,7 +117,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                         href={MAIN_SITE_URL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#2693D8] hover:bg-[#1d74ae] text-xs font-semibold text-white tracking-wide uppercase shadow-sm transition-all hover:shadow-[#2693D8]/30"
+                        className="hidden sm:inline-flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-md bg-[#2693D8] hover:bg-[#1d74ae] text-xs font-semibold text-white tracking-wide uppercase shadow-sm transition-all hover:shadow-[#2693D8]/30"
                     >
                         <span>Portal</span>
                         <ExternalLink size={12} />
