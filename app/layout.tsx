@@ -26,11 +26,11 @@ export const metadata: Metadata = {
   description: "brainlife.io promotes engagement and education in reproducible neuroscience by providing an online, community-based platform where users can publish code (Apps) and Data while integrating HPC and cloud-computing resources.",
   icons: {
     icon: [
-      { url: getAssetPath('/logo.svg'), type: 'image/svg+xml' },
-      { url: getAssetPath('/logo.png'), sizes: '512x512', type: 'image/png' },
+      { url: getAssetPath('/logo.png'), type: 'image/png' },
       { url: getAssetPath('/favicon.ico') },
     ],
-    shortcut: [getAssetPath('/logo.svg')],
+    shortcut: [getAssetPath('/logo.png')],
+    apple: [getAssetPath('/logo.png')],
   },
 };
 
@@ -46,8 +46,9 @@ export default function RootLayout({
       className={`${workSans.variable} ${roboto.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
       <head>
-        <link rel="icon" type="image/svg+xml" href={getAssetPath('/logo.svg')} />
         <link rel="icon" type="image/png" href={getAssetPath('/logo.png')} />
+        <link rel="shortcut icon" href={getAssetPath('/logo.png')} />
+        <link rel="apple-touch-icon" href={getAssetPath('/logo.png')} />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-white dark:bg-[#1a202c] text-[#2d3748] dark:text-[#eceef6]">
         {children}
