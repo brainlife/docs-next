@@ -56,14 +56,14 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                     </button>
 
                     <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group min-w-0">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 relative flex-shrink-0 flex items-center justify-center bg-[#2693D8]/20 border border-[#2693D8]/40 rounded-lg p-1 group-hover:scale-105 transition-transform">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 relative flex-shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform">
                             <Image
                                 src={getAssetPath('/logo.svg')}
                                 alt="brainlife logo"
-                                width={24}
-                                height={24}
+                                width={28}
+                                height={28}
                                 style={{ width: 'auto', height: 'auto' }}
-                                className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                                className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = getAssetPath('/logo.png');
                                 }}
