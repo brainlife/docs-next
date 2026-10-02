@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const raw = fs.readFileSync(/*turbopackIgnore: true*/ doc.filePath, 'utf8');
-    const processed = processMarkdown(raw);
+    const processed = processMarkdown(raw, doc.relativePath);
 
     return {
         title: `${processed.title} - brainlife Documentation`,
@@ -90,7 +90,7 @@ export default async function DocPage({ params }: PageProps) {
     }
 
     const raw = fs.readFileSync(/*turbopackIgnore: true*/ doc.filePath, 'utf8');
-    const { html, headings } = processMarkdown(raw);
+    const { html, headings } = processMarkdown(raw, doc.relativePath);
 
     const githubEditUrl = getGithubEditUrl(doc.relativePath);
 

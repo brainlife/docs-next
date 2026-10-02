@@ -14,7 +14,7 @@ export const metadata = {
 export default function EzBidsAliasPage() {
     const filePath = path.join(process.cwd(), 'content', 'using_ezBIDS.md');
     const raw = fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf8');
-    const { html, headings } = processMarkdown(raw);
+    const { html, headings } = processMarkdown(raw, 'using_ezBIDS.md');
 
     const githubEditUrl = getGithubEditUrl('using_ezBIDS.md');
 
