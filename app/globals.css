@@ -180,9 +180,14 @@ body {
   margin-top: 0 !important;
 }
 
-.prose-docs p {
+.prose-docs p,
+.prose p,
+article p {
   margin-top: 1rem;
   margin-bottom: 1rem;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
 }
 
 .prose-docs ul {
