@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Pencil } from 'lucide-react';
 import DocLayout from '@/components/DocLayout';
+import EzBidsGuide from '@/components/EzBidsGuide';
 import { processMarkdown } from '@/lib/markdown';
 import { getGithubEditUrl } from '@/lib/docsNavigation';
 
@@ -91,8 +92,22 @@ export default async function DocPage({ params }: PageProps) {
 
     const raw = fs.readFileSync(/*turbopackIgnore: true*/ doc.filePath, 'utf8');
     const { html, headings } = processMarkdown(raw, doc.relativePath);
-
     const githubEditUrl = getGithubEditUrl(doc.relativePath);
+
+    if (doc.relativePath === 'using_ezBIDS.md') {
+        const step1Marker = '### 1. Upload Imaging Data';
+        const step1Index = raw.indexOf(step1Marker);
+        const bodyMarkdown = step1Index !== -1 ? raw.slice(step1Index) : raw;
+        const { html: markdownHtml } = processMarkdown(bodyMarkdown, 'using_ezBIDS.md');
+
+        return (
+            <EzBidsGuide
+                markdownHtml={markdownHtml}
+                headings={headings}
+                githubEditUrl={githubEditUrl}
+            />
+        );
+    }
 
     return (
         <DocLayout headings={headings} githubEditUrl={githubEditUrl}>

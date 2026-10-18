@@ -1,10 +1,9 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import { Pencil } from 'lucide-react';
-import DocLayout from '@/components/DocLayout';
 import { processMarkdown } from '@/lib/markdown';
 import { getGithubEditUrl } from '@/lib/docsNavigation';
+import EzBidsGuide from '@/components/EzBidsGuide';
 
 export const metadata = {
     title: 'ezBIDS User Documentation - brainlife Documentation',
@@ -14,40 +13,24 @@ export const metadata = {
 export default function EzBidsAliasPage() {
     const filePath = path.join(process.cwd(), 'content', 'using_ezBIDS.md');
     const raw = fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf8');
-    const { html, headings } = processMarkdown(raw, 'using_ezBIDS.md');
+
+    // Extract all headings for the Table of Contents from the complete markdown
+    const { headings } = processMarkdown(raw, 'using_ezBIDS.md');
+
+    // Slicing markdown to start from step 1, so the Primer and Key Features card
+    // appear directly above Step 1 without duplicating the title or lead text.
+    const step1Marker = '### 1. Upload Imaging Data';
+    const step1Index = raw.indexOf(step1Marker);
+    const bodyMarkdown = step1Index !== -1 ? raw.slice(step1Index) : raw;
+    const { html: markdownHtml } = processMarkdown(bodyMarkdown, 'using_ezBIDS.md');
 
     const githubEditUrl = getGithubEditUrl('using_ezBIDS.md');
 
     return (
-        <DocLayout headings={headings} githubEditUrl={githubEditUrl}>
-            <article className="min-w-0 relative">
-                {/* Top Action Bar with GitHub Edit button */}
-                <div className="absolute top-1 right-0 z-10">
-                    <a
-                        href={githubEditUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-[#2693D8] transition-colors py-1 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                        title="Edit this page on GitHub"
-                    >
-                        <Pencil size={14} />
-                        <span className="hidden sm:inline">Edit on GitHub</span>
-                    </a>
-                </div>
-
-                <div className="mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
-                    <img
-                        src="/ezbids-logo.svg"
-                        alt="ezBIDS Logo"
-                        className="h-11 w-auto object-contain"
-                    />
-                </div>
-
-                <div
-                    className="prose-docs"
-                    dangerouslySetInnerHTML={{ __html: html }}
-                />
-            </article>
-        </DocLayout>
+        <EzBidsGuide
+            markdownHtml={markdownHtml}
+            headings={headings}
+            githubEditUrl={githubEditUrl}
+        />
     );
 }
