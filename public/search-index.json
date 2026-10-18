@@ -3328,84 +3328,132 @@
     "content": "1. On the 'Process' tab of your project, click 'Submit App' to submit a new application. In the search bar, type 'pRFLife mrTools' Click the app card. 1. On the 'Submit App' page, select the following: For func/task, select the staged func/task pRF data by clicking the drop-down menu and finding the appropriate dataset. For stimulus, select the staged stimulus pRF data by clicking the drop-down menu and finding the appropriate dataset. For freesurfer, select the Freesurfer output generated above by clicking the drop-down menu and finding the appropriate dataset. Leave all other options as defaults. Select the box for 'Archive all output datasets' when finished For 'Dataset Tags,' type and enter 'fmri_based' Hit 'Submit' 1. Once the app is finished running, view the results by clicking the 'eye' icon next to the 'prf' tagged output. Choose the 'PRF' viewer --> If you're happy with the results, then you have successfully finished mapping visual function data (pRF) using an atlas-based mapping method! You're now ready to move onto the next tutorial!"
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#anatomical-t1w-preprocessing",
-    "url": "/docs/tutorial/t1w-preprocessing/#anatomical-t1w-preprocessing",
+    "id": "/docs/tutorial/t1w-preprocessing/#anatomical-t1w-preprocessing-on-brainlife-connects",
+    "url": "/docs/tutorial/t1w-preprocessing/#anatomical-t1w-preprocessing-on-brainlife-connects",
     "pageTitle": "Documentation",
-    "section": "Anatomical (T1w) preprocessing.",
+    "section": "Anatomical (T1w) Preprocessing on Brainlife Connects",
     "category": "Tutorials",
-    "content": "This page demonstrate common steps used to preprocess anatomical magnetic resonance imaging data (T1-weighted or T1w) on brainlife.io. The goal of this tutorial is to show how to process anatomical data for successive analyses – volumetric analyses from T1w measures, and/or a combination of T1w and diffusion-weighted MRI (dMRI) or functional neuroimaging data (fMRI) pipelines. This tutorial will use a combination of skills developed in the introduction-to-brainlife tutorial. If you have not read this, or you are not comfortable staging, processing, archiving and viewing data on brainlife.io, please go back and follow that tutorial before beginning this one."
+    "content": "This tutorial demonstrates the standard steps used to preprocess anatomical magnetic resonance imaging data (T1-weighted or T1w) on Brainlife Connects (connects.brainlife.io ). The goal of this tutorial is to process raw anatomical MRI scans into standardized, analysis-ready outputs for: - Volumetric and morphometric analyses (cortical thickness, surface area, and subcortical volumes). - Multi-modal coregistration needed for downstream diffusion MRI (dMRI / tractography) or functional MRI (fMRI) pipelines. This tutorial builds on the foundations covered in the Getting Started guide. ---"
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#1-preprocessing-and-alignment-of-t1w-images",
-    "url": "/docs/tutorial/t1w-preprocessing/#1-preprocessing-and-alignment-of-t1w-images",
+    "id": "/docs/tutorial/t1w-preprocessing/#anatomical-preprocessing-overview",
+    "url": "/docs/tutorial/t1w-preprocessing/#anatomical-preprocessing-overview",
     "pageTitle": "Documentation",
-    "section": "1. Preprocessing and alignment of T1w images",
+    "section": "Anatomical Preprocessing Overview",
     "category": "Tutorials",
-    "content": "In many cases, raw anatomical (T1w) images can vary in terms of orientation, alignment, the extent of the head contained in the image, and the amount of artifacts present depending on the scanner and the acquisition parameters of the sequence. To address this, the first step of anatomical (T1w) processing involves standardizing the orientation and alignment of the image, and removal of non-brain material and common image artifacts from the image. The first step of this process is to make sure the anatomy of the brain 'looks right.' This means that the coordinate system for the T1w image is stored rotated such that the brain appears up-right and centered when opened in the major visualization toolboxes that the scientific community uses (i.e., generally we look at images where the nose faces towards right-hand side in the sagittal plane, and forward in the axial and coronal planes). This rotation involves changing information in the T1w data files and headers. Beside agreeing to the standard conventions, this orientation is important because it assures that the data inside the T1w images will be \"indexed,\" or read, appropriately allowing different software libraries for neuroimaging data analysis to read the data, interpret the position and dimensions of individual three-dimensional pixels (i.e., voxels). During this process oftentimes the neck is removed from the original MRI data, so to fit the image within an adequate volume. Useful information about MRI image orientation c"
+    "content": "Processing a T1-weighted image involves four standard stages:"
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#2-freesurfer-surface-generation-and-parcellation",
-    "url": "/docs/tutorial/t1w-preprocessing/#2-freesurfer-surface-generation-and-parcellation",
+    "id": "/docs/tutorial/t1w-preprocessing/#1-orientation-standardization-and-acpc-alignment",
+    "url": "/docs/tutorial/t1w-preprocessing/#1-orientation-standardization-and-acpc-alignment",
     "pageTitle": "Documentation",
-    "section": "2. Freesurfer Surface Generation and Parcellation.",
+    "section": "1. Orientation Standardization and ACPC Alignment",
     "category": "Tutorials",
-    "content": "The next step is to perform anatomical preprocessing and divide (i.e. parcellate) the brain into different regions and tissue types (i.e. white matter, gray matter) using Freesurfer. These regions represent different gray matter (i.e. cortical) landmarks such as the motor and somatosensory cortices, and are typically derived from histological properties of these regions. Sometimes, they are even derived from functional activation (i.e. fMRI) patterns. Freesurfer will divide the anatomical image into different tissue types (i.e. white matter, gray matter), parcellate the gray matter into known anatomical landmarks, and output statistics regarding the volume and thickness of the different tissue types and anatomical landmarks. These regions are then used for a large number of downstream steps, including white matter tract segmentation. Information regarding the volume and thickness of each region can also be used for group analyses. This can be done on brainlife.io using the Freesurfer app."
+    "content": "Raw anatomical images can vary considerably in head orientation, field of view, and acquisition artifacts across different MRI scanners. Standardizing orientation ensures that voxels are indexed correctly across neuroimaging toolboxes (with the brain upright, nose pointing right in sagittal views, and facing forward in axial/coronal views). Next, the brain is aligned to the Anterior Commissure - Posterior Commissure (ACPC) plane. Linearly aligning the T1w image to a standard reference template (e.g., MNI152) centers the coordinates and aligns the interhemispheric fissure. This alignment is required by downstream tools such as FreeSurfer. On Brainlife, this entire process is handled by the FSL Anat (T1) App."
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#3-mapping-of-additional-parcellations",
-    "url": "/docs/tutorial/t1w-preprocessing/#3-mapping-of-additional-parcellations",
+    "id": "/docs/tutorial/t1w-preprocessing/#2-freesurfer-surface-reconstruction-and-parcellation",
+    "url": "/docs/tutorial/t1w-preprocessing/#2-freesurfer-surface-reconstruction-and-parcellation",
     "pageTitle": "Documentation",
-    "section": "3. Mapping of additional parcellations",
+    "section": "2. FreeSurfer Surface Reconstruction and Parcellation",
     "category": "Tutorials",
-    "content": "The previous step (Freesurfer) will automatically map three different cortical parcellations: aparc, aparc.a2009s (Desikan-Killany), and aparc.DKTatlas (DKT atlas). However, these are not the only three brain parcellations that exist! In fact, there's more than one way to divide up the cortical brain! Some of these additional parcellations include the HCP multi-modal parcellation (hcp-mmp-b; Glasser 2018) and the Yeo 17 Resting-State parcellation (yeo17dil; Yeo 2011). The next step is to map some of these additional parcellations.The final step is to take the parcellation generated from Freesurfer and collate the important statistics into a .csv file for easy viewing and implementation of group analyses. This can be done on brainlife.io using the Multi-Atlas Transfer Tool app."
+    "content": "Once ACPC-aligned, FreeSurfer 7.3.2 segments the brain into tissue classes (cerebral white matter, cortical gray matter, and subcortical structures) and reconstructs smooth 2D mesh models of the pial surface and white matter boundary. FreeSurfer also segments hippocampal subfields and thalamic nuclei, yielding parcellations used in structural connectivity and morphometry."
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#4-freesurfer-brain-parcellation---statistics",
-    "url": "/docs/tutorial/t1w-preprocessing/#4-freesurfer-brain-parcellation---statistics",
+    "id": "/docs/tutorial/t1w-preprocessing/#3-mapping-additional-multimodal-parcellations",
+    "url": "/docs/tutorial/t1w-preprocessing/#3-mapping-additional-multimodal-parcellations",
     "pageTitle": "Documentation",
-    "section": "4. Freesurfer Brain Parcellation - Statistics.",
+    "section": "3. Mapping Additional Multimodal Parcellations",
     "category": "Tutorials",
-    "content": "The final step is to take the parcellation generated from Freesurfer and the other parcellations we mapped and collate the important statistics into a .csv file for easy viewing and implementation of group analyses. Within each region of the parcellation (i.e. ROI), Freesurfer computes simple statistics regarding the number of vertices, surface area, volume, cortical thickness, mean and gaussian curvatures, and the fold and curvature indices. These statistics can be used to perform group-level analyses, including group differences within ROIs and correlation analyses with behavioral data. This can be done on brainlife.io using the Compute Anatomical Statistics app. Now, let's get to work! The following steps of this tutorial will show you how to: 1. Preprocess and align the anatomical (T1w) image, 1. generate cortical and white matter surfaces and parcellations using Freesurfer, 1. map an additional parcellation to the Freesurfer data 1. obtain common statistics from the each parcellation."
+    "content": "While FreeSurfer generates standard segmentations (such as Desikan-Killiany and DKT), modern connectomics often requires fine-grained multi-modal parcellations. The Multi-Atlas Transfer Tool (maTT) maps specialized atlases—such as the Glasser Human Connectome Project Multi-Modal Parcellation (hcp-mmp-b) or the Yeo 17 resting-state networks—directly onto the subject's reconstructed cortical surface."
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#copy-appropriate-data-over-from-a-single-subject-in-the-tutorial-project",
-    "url": "/docs/tutorial/t1w-preprocessing/#copy-appropriate-data-over-from-a-single-subject-in-the-tutorial-project",
+    "id": "/docs/tutorial/t1w-preprocessing/#4-computing-anatomical-statistics",
+    "url": "/docs/tutorial/t1w-preprocessing/#4-computing-anatomical-statistics",
     "pageTitle": "Documentation",
-    "section": "Copy appropriate data over from a single subject in the Tutorial project",
+    "section": "4. Computing Anatomical Statistics",
     "category": "Tutorials",
-    "content": "1. Click the following link to go to the project's page for the Tutorial 1. Click the 'Archive' tab at the top of the screen to go to the archive's page. 1. Select the following datatypes from one subject by clicking the boxes next to the data for subject '10217': anat/t1w 1. Click the 'Stage to process' button on the right side of the screen For 'Project', select your project from the drop-down menu. For 'Process', select 'Create New Process' and title it \"Anatomical (T1w) Prep Tutorial\". Hit 'Submit'. This will take you to the process on your Project's page 1. Archive the data in your project by clicking the 'Archive' button next to each dataset. Your data should now be staged for processing and archived in your projects page! You're now ready to move onto the first step: crop and reorient the T1w image!"
+    "content": "Finally, morphological metrics (surface vertex count, surface area, cortical thickness, volume, and curvature) are collated across each region of interest (ROI) into standardized .csv spreadsheets using Compute Anatomical Statistics (or FreeSurfer Statistics). These tables feed directly into group-level statistical models. ---"
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#preprocess-the-anatomical-image",
-    "url": "/docs/tutorial/t1w-preprocessing/#preprocess-the-anatomical-image",
+    "id": "/docs/tutorial/t1w-preprocessing/#step-1-create-an-anatomy-project",
+    "url": "/docs/tutorial/t1w-preprocessing/#step-1-create-an-anatomy-project",
     "pageTitle": "Documentation",
-    "section": "Preprocess the anatomical image.",
+    "section": "Step 1: Create an Anatomy Project",
     "category": "Tutorials",
-    "content": "1. On the 'Process' tab, click 'Submit App' to submit a new application. In the search bar, type 'FSL Anat (T1)' Click the app card. 1. On the 'Submit App' page, select the following: For input, select the staged raw anatomical (T1w) image by clicking the drop-down menu and finding the appropriate dataset. Select the boxes for 'crop', 'reorient' and 'bias' For template, choose the 'MNI152_1mm' option from the drop-down menu. Select the box for 'Archive all output datasets when finished' For 'Dataset Tags,' type and enter 'fsl_anat' Hit 'Submit' 1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset * Choose 'fsleyes' as your viewer 1. You can also generate a QA image of the results by running the 'Generate images of T1' using the cropped and reoriented anatomical image generated above! Archive the results and save with the tag 'qa' and \"fsl_anat\". Once you're happy with the alignment, you can move onto Freesurfer!"
+    "content": "To begin on Brainlife Connects: 1. Open Brainlife Connects (connects.brainlife.io ) and sign in. 2. From the sidebar navigation, select My Projects (under the Me section). 3. Click the New Project button. 4. In the creation dialog: - Title: Enter a project name, such as Tutorial Project. - Description: Provide a brief description (e.g. Anatomy preprocessing tutorial project). 5. Click Create project. Your new project workspace will open, featuring the five Connects workspace tabs: - 1. Overview: ReadMe documentation, access control, and citations for all Apps used. - 2. Data: Interactive table of all project data-objects, metadata, and staging tools. - 3. Processing: Execution center featuring Summary, Pipeline automation, and Processes views. - 4. Analysis: Cloud Jupyter Notebooks for in-browser statistical modeling. - 5. Publications: Permanent DOI publishing for open data and reproducibility. ---"
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#freesurfer-surface-generation-and-parcellation",
-    "url": "/docs/tutorial/t1w-preprocessing/#freesurfer-surface-generation-and-parcellation",
+    "id": "/docs/tutorial/t1w-preprocessing/#step-2-add-t1w-data-to-your-project",
+    "url": "/docs/tutorial/t1w-preprocessing/#step-2-add-t1w-data-to-your-project",
     "pageTitle": "Documentation",
-    "section": "Freesurfer Surface Generation and Parcellation.",
+    "section": "Step 2: Add T1w Data to Your Project",
     "category": "Tutorials",
-    "content": "1. On the 'Process' tab, click 'Submit App' to submit a new application. In the search bar, type 'Freesurfer 7.3.2' Click the app card. 1. On the 'Submit App' page, select the following: For input, select the ACPC aligned anatomical image generated above by clicking the drop-down menu and finding the appropriate datasets. Select the boxes for 'hippocampal' and 'thalamicnuclei' Select the box for 'Archive all output datasets when finished' For 'Dataset Tags,' type and enter 'freesurfer' Hit 'Submit' 1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset Choose 'freeview' as your viewer This will load the following volumes and surfaces: aseg, brainmask, white matter mask, T1, left/right hemisphere pial (cortical), and white (white matter) surfaces. To view the aparc.a2009s segmentation on an inflated surface, do the following: Click File --> Load surface Choose the lh.inflated and rh.inflated surfaces Hit 'OK' Select inflated surface of choice (i.e. left or right hemisphere) Click the drop-down menu next to 'Annotation' and choose 'Load from file' Choose the appropriate hemisphere aparc.a2009s.annot file (lh.aparc.a2009s.annot) Hit 'OK' The aparc.a2009s parcellation should be overlaid on your inflated surface! Now, repeat the process on the other hemisphere. Once you're happy with the surfaces, you can move on to computing statistics!"
+    "content": "Now, add raw anatomical data (anat/t1w) to your project: 1. Switch to the 2. Data tab. 2. Click the Add Project Data button at the top right of the data table. 3. Choose your preferred source: - Copy Data from Public Datasets: Browse open repositories such as OpenNeuro (e.g. ds000114 - A test-retest fMRI dataset for motor, language and spatial attention functions), DANDI, or the Brainlife Dataset Library, and import the subject's anat/t1w data with a single click. - Copy Data From another Project: Select an existing public demo project (such as the Brainlife Demo project) and copy a subject's anat/t1w data object. - Upload Data: If using your own scans, convert them using ezBIDS or upload directly. Your imported dataset will now be listed in the Data table with the datatype badge anat/t1w. ---"
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#map-the-hcp-mmp-b-atlas",
-    "url": "/docs/tutorial/t1w-preprocessing/#map-the-hcp-mmp-b-atlas",
+    "id": "/docs/tutorial/t1w-preprocessing/#step-3-preprocess-and-align-the-t1w-image-fsl-anat",
+    "url": "/docs/tutorial/t1w-preprocessing/#step-3-preprocess-and-align-the-t1w-image-fsl-anat",
     "pageTitle": "Documentation",
-    "section": "Map the hcp-mmp-b atlas:",
+    "section": "Step 3: Preprocess and Align the T1w Image (FSL Anat)",
     "category": "Tutorials",
-    "content": "1. On the 'Process' tab, click 'Submit App' to submit a new application. In the search bar, type 'Multi-Atlas Transfer Tool' Click the app card. 1. On the 'Submit App' page, select the following: For input, select the staged Freesurfer output generated above by clicking the drop-down menu and finding the appropriate dataset. For 'atlas,' select 'hcp-mmp-b' from the drop-down menu. Select the box for 'Archive all output datasets' when finished For 'Dataset Tags,' type and enter 'hcp-mmp-b' * Hit 'Submit' Once the app is finished, you're ready to move onto the next step: Computing anatomical statistics!"
+    "content": "1. In the 2. Data tab, select the checkbox next to your anat/t1w dataset and click Stage to process (or click the List icon on the row). 2. Enter a process name (e.g., Anatomical Preprocessing) and confirm. 3. Navigate to the 3. Processing tab and select the Processes view. 4. Click Submit App and search for FSL Anat (T1). 5. Configure the parameters on the App submission page: - t1: Verify that your staged raw anat/t1w image is selected. - crop: Enable (crops non-brain neck tissue). - reorient: Enable (standardizes orientation). - bias: Enable (corrects RF field inhomogeneities). - template: Select MNI152_1mm. 6. Click Submit. Brainlife dispatches the task to the optimal computing resource. While running, the task card displays a blue header. When finished, it turns green."
   },
   {
-    "id": "/docs/tutorial/t1w-preprocessing/#freesurfer-brain-parcellation---statistics",
-    "url": "/docs/tutorial/t1w-preprocessing/#freesurfer-brain-parcellation---statistics",
+    "id": "/docs/tutorial/t1w-preprocessing/#visualizing-acpc-alignment",
+    "url": "/docs/tutorial/t1w-preprocessing/#visualizing-acpc-alignment",
     "pageTitle": "Documentation",
-    "section": "Freesurfer Brain Parcellation - Statistics.",
+    "section": "Visualizing ACPC Alignment",
     "category": "Tutorials",
-    "content": "1. On the 'Process' tab, click 'Submit App' to submit a new application. In the search bar, type 'Compute Anatomical Statistics'. Click the \"Compute Anatomical Statistics\" app card. 1. On the 'Submit App' page, select the following: For 'parc_surface', select the surface/data output generated in Step 4 by clicking the drop-down menu and finding the appropriate dataset (look for the dataset tag 'hcp-mmp-b'). For 'parcsurfvertices', select the surface/vertices output generated in Step 4 by clicking the drop-down menu and finding the appropriate dataset (look for the dataset tag 'hcp-mmp-b'). For 'freesurfer', select the Freesurfer output generated in Step 3 by clicking the drop-down menu and finding the appropriate dataset (look for the dataset tag 'freesurfer'. Select the box for 'Archive all output datasets when finished For 'Dataset Tags', type and enter 'anatomical_stats' Hit 'Submit' To view the results, download the data by clicking the 'download' button next to the dataset. Then open the 'merged' csv file into your favorite spreadsheet of choice (i.e. excel) and you're ready to start your group analyses! You have now finished preprocessing your anatomical (T1w) image! You are now ready to move onto the next tutorial!"
+    "content": "To verify the alignment: 1. Click the eye icon (:fa-eye:) next to the output anat/t1w dataset. 2. Select fsleyes or Volume Viewer. 3. Confirm that the image is centered, the anterior/posterior commissures are aligned horizontally, and non-brain tissue has been appropriately stripped. ---"
+  },
+  {
+    "id": "/docs/tutorial/t1w-preprocessing/#step-4-freesurfer-surface-reconstruction-and-parcellation",
+    "url": "/docs/tutorial/t1w-preprocessing/#step-4-freesurfer-surface-reconstruction-and-parcellation",
+    "pageTitle": "Documentation",
+    "section": "Step 4: FreeSurfer Surface Reconstruction and Parcellation",
+    "category": "Tutorials",
+    "content": "With the ACPC-aligned T1w data ready, run FreeSurfer: 1. In your active process under 3. Processing > Processes, click Submit App. 2. In the search bar, type Freesurfer 7.3.2 and select the app card. 3. Configure the inputs and parameters: - t1: Select the ACPC-aligned anat/t1w dataset generated by FSL Anat in Step 3. - hippocampal: Enable to perform fine-grained hippocampal subfield segmentation. - thalamicnuclei: Enable to segment individual thalamic nuclei. 4. Click Submit. (Note: FreeSurfer surface reconstruction is computationally intensive and typically takes between 4 to 8 hours depending on cluster availability)."
+  },
+  {
+    "id": "/docs/tutorial/t1w-preprocessing/#visualizing-cortical-surfaces",
+    "url": "/docs/tutorial/t1w-preprocessing/#visualizing-cortical-surfaces",
+    "pageTitle": "Documentation",
+    "section": "Visualizing Cortical Surfaces",
+    "category": "Tutorials",
+    "content": "Once completed, click the eye icon (:fa-eye:) on the FreeSurfer output and choose freeview. This loads cortical surfaces (pial and white matter), subcortical segmentations (aseg), and volumetric parcellations directly in your browser. ---"
+  },
+  {
+    "id": "/docs/tutorial/t1w-preprocessing/#step-5-map-the-multimodal-atlas-multi-atlas-transfer-tool",
+    "url": "/docs/tutorial/t1w-preprocessing/#step-5-map-the-multimodal-atlas-multi-atlas-transfer-tool",
+    "pageTitle": "Documentation",
+    "section": "Step 5: Map the Multimodal Atlas (Multi-Atlas Transfer Tool)",
+    "category": "Tutorials",
+    "content": "Next, project the Glasser Human Connectome Project Multi-Modal Parcellation (hcp-mmp-b) onto the FreeSurfer surfaces: 1. In the Processes view, click Submit App. 2. Search for and select Multi-Atlas Transfer Tool (maTT). 3. Configure the App: - freesurfer: Select the FreeSurfer output generated in Step 4. - atlas: Select hcp-mmp-b. 4. Click Submit. This step will project the HCP multimodal parcellation onto the subject's cortical surfaces and output parcellated surface files and annotations. ---"
+  },
+  {
+    "id": "/docs/tutorial/t1w-preprocessing/#step-6-extract-regional-anatomical-statistics",
+    "url": "/docs/tutorial/t1w-preprocessing/#step-6-extract-regional-anatomical-statistics",
+    "pageTitle": "Documentation",
+    "section": "Step 6: Extract Regional Anatomical Statistics",
+    "category": "Tutorials",
+    "content": "The final processing step extracts ROI-by-ROI morphometric statistics into analysis-ready summary tables: 1. In the Processes view, click Submit App. 2. Search for and select Compute Anatomical Statistics (or FreeSurfer Statistics). 3. Configure the inputs: - freesurfer: Select the FreeSurfer output from Step 4. - parcsurface & parcsurf_vertices: Select the outputs from the Multi-Atlas Transfer Tool in Step 5. 4. Click Submit. When finished, the task outputs a set of clean summary .csv files containing cortical thickness, surface area, and volume across all anatomical ROIs. ---"
+  },
+  {
+    "id": "/docs/tutorial/t1w-preprocessing/#step-7-group-level-interactive-analysis",
+    "url": "/docs/tutorial/t1w-preprocessing/#step-7-group-level-interactive-analysis",
+    "pageTitle": "Documentation",
+    "section": "Step 7: Group-Level Interactive Analysis",
+    "category": "Tutorials",
+    "content": "With your anatomical statistics generated, you can jump straight into statistical analysis without leaving Brainlife Connects: 1. Click the 4. Analysis tab in your project. 2. Click New analysis to launch an in-browser cloud Jupyter Notebook. 3. Load the generated .csv files using pandas: 4. Perform ANOVA, linear regressions, or plot regional cortical thickness distributions across subjects and groups directly in the notebook! ---"
+  },
+  {
+    "id": "/docs/tutorial/t1w-preprocessing/#automated-cohort-processing-via-pipelines",
+    "url": "/docs/tutorial/t1w-preprocessing/#automated-cohort-processing-via-pipelines",
+    "pageTitle": "Documentation",
+    "section": "Automated Cohort Processing via Pipelines",
+    "category": "Tutorials",
+    "content": "If you are processing multiple subjects (e.g. 20, 50, or 100+ scans), you do not need to submit each step manually. Navigate to 3. Processing > Pipeline and configure an automation rule for each of the four apps. As soon as raw T1w datasets are added to your project's Data tab, Brainlife Connects will automatically trigger the full pipeline in sequence from FSL Anat through to final anatomical statistics!"
   },
   {
     "id": "/docs/tutorial/using-clairvoy/#clairvoy-tutorial",
@@ -4176,92 +4224,124 @@
     "content": "To create a new publication page, go to a project where you want to publish your data, then open to the Publication tab. Click the Plus button at the bottom right corner of the screen. You should see a list of datatypes and the total file sizes like below. Select datatypes that you'd like to include in your publication. Click Next. The next page allows you to enter the title, description, and various other metadata. You can edit this information after you publish. When you are done, click Submit. The creation of the publication page might take a few minutes depending on the number of data-objects. Brainlife will issue a new DOI from Datacite at this point. Once you've successfully published your new publication, you should see it listed under the Publications tab under your project as well as the global Publication page which lists all currently registered publications from all projects."
   },
   {
-    "id": "/docs/user/started/#getting-started-with-brainlifeio",
-    "url": "/docs/user/started/#getting-started-with-brainlifeio",
-    "pageTitle": "Getting Started with brainlife.io",
-    "section": "Getting Started with brainlife.io",
+    "id": "/docs/user/started/#getting-started-with-brainlife-connects",
+    "url": "/docs/user/started/#getting-started-with-brainlife-connects",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Getting Started with Brainlife Connects",
     "category": "Using brainlife",
-    "content": "Now, let’s learning how to use brainlife.io! This “Getting Started” tutorial will give you a quick overview of how to: Sign up for brainlife.io Create new projects Upload data Launch visualizations Run processes on data Archive results We will cover some of these topics more in-depth in other sections of the documentation."
+    "content": "Welcome to Brainlife Connects (connects.brainlife.io )! Brainlife is an open, cloud-based platform for reproducible neuroimaging data analysis, processing pipelines, and scientific publication. This \"Getting Started\" guide will walk you through the core workflow on Brainlife Connects: 1. Signing up and logging in 2. Key terms to know 3. Navigating the platform 4. Creating a new project 5. Adding data to your project 6. Visualizing data-objects 7. Running processing apps and pipelines 8. Interactive group analysis with notebooks ---"
   },
   {
     "id": "/docs/user/started/#sign-up",
     "url": "/docs/user/started/#sign-up",
-    "pageTitle": "Getting Started with brainlife.io",
+    "pageTitle": "Getting Started with Brainlife Connects",
     "section": "Sign Up",
     "category": "Using brainlife",
-    "content": "To begin using brainlife.io, you need first make sure you are registered on the site (you can do that here ). You can choose to sign up through Google, ORCID, Github, or through your institution. To register a personal brainlife.io account, sign up for brainlife.io here . You will be asked to confirm your email address. You can associate multiple authenticators with your account once you register by going to Settings > Account > Account Settings. Scroll down to Connected Accounts and click Connect next to the authenticator you want to connect through. If you register through a third-party authenticator, please use the same authenticator each time you log in, or you will end up creating multiple brainlife.io accounts."
+    "content": "To begin using Brainlife, you need a registered account: 1. Go to the Brainlife authentication page . 2. Choose your preferred login method: Third-Party Providers: Google, GitHub, ORCID, Apple, or your academic institution. Email & Password: Sign up directly with your email address. 3. You can connect multiple login providers to your profile in Settings > Account > Account Settings > Connected Accounts. If you register using a third-party authenticator (such as Google or GitHub), make sure to sign in with that same account every time so you don't inadvertently create multiple profiles. ---"
   },
   {
     "id": "/docs/user/started/#brainlifeio-terms-to-know",
     "url": "/docs/user/started/#brainlifeio-terms-to-know",
-    "pageTitle": "Getting Started with brainlife.io",
+    "pageTitle": "Getting Started with Brainlife Connects",
     "section": "brainlife.io terms to know",
     "category": "Using brainlife",
-    "content": "Nice, you now have a brainlife.io account! Before we jump into the rest of the tutorial, it will be good to familiarize yourself with a couple of commonly used terms on brainlife.io. Data-Object A data-object. is a set of files for a specific subject and modality -- it is the smallest set of data that you can interact with on brainlife.io. For example, the neuro/dwi data-object consists of files such as dwi.nii.gz (a file containing the actual 4D diffusion brain image data), dwi.bvecs, and dwi.bvals (which describe how the image was acquired by the MRI scanner). Freesurfer output for a subject is considered to be a single \"data-object\" containing many directories and files. brainlife.io processes data at each subject level and for each data-object. You cannot change the content of a data-object once you create it, but you can modify its metadata. Datatypes brainlife.io Apps exchange data through datatypes. The App below gives an example of how to determine the input-output of datatypes. The colored boxes indicate that the App will take a dwi input data-object and generate another dwi data-object with a datatype tag of masked, and output another data-object of a mask datatype. Developers involved with interoperating input and output data should discuss and agree to the set of files and directory structures and their semantics. You can register a new datatype by consulting #datatype channel on brainlife.slack.com. We will cover datatypes more on the datatypes page."
+    "content": "Before diving into project workflows, let's review two fundamental concepts:"
+  },
+  {
+    "id": "/docs/user/started/#data-object",
+    "url": "/docs/user/started/#data-object",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Data-Object",
+    "category": "Using brainlife",
+    "content": "A data-object is a specific set of files representing one subject, session, and neuroimaging modality. It is the core unit of data on Brainlife: For example, a neuro/dwi data-object consists of dwi.nii.gz (the 4D diffusion image), dwi.bvecs, and dwi.bvals. A FreeSurfer parcellation output for a subject is a single data-object containing all generated surface and segmentation directories. * Data-objects have immutable data (the underlying raw image files cannot be modified) and mutable metadata (tags, subject IDs, and descriptions can be updated)."
+  },
+  {
+    "id": "/docs/user/started/#datatypes",
+    "url": "/docs/user/started/#datatypes",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Datatypes",
+    "category": "Using brainlife",
+    "content": "Brainlife Apps exchange information through standardized datatypes. Each datatype defines the expected files, directory structure, and metadata for a modality. Colored badges on an App card indicate which datatype an App requires as input and which datatype it generates as output. Datatype tags (such as acpc_aligned, masked, or preprocessed) provide extra specificity so downstream Apps receive the exact input format they need. Browse registered specifications anytime on the Datatypes page . ---"
+  },
+  {
+    "id": "/docs/user/started/#navigating-brainlife-connects",
+    "url": "/docs/user/started/#navigating-brainlife-connects",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Navigating Brainlife Connects",
+    "category": "Using brainlife",
+    "content": "Brainlife Connects provides a streamlined sidebar navigation divided into two primary zones: Me (Personal Workspace): Dashboard: Your unified hub displaying recent task activity, project shortcuts, and processing notifications. My Projects: Projects you administer, contribute to, or follow. My Resources: Compute clusters, HPC resources, or cloud nodes registered for your use. My Datatypes: Custom datatypes you maintain or develop. Explore (Community & Open Science): SKAI: Brainlife's AI-powered neuroimaging assistant to help design workflows, query analyses, and troubleshoot tasks. Public Datasets: Centralized explorer for open neuroscience data, including the Dataset Library, DANDI, EMBER, and BossDB (with direct S3 browsing). Apps: The catalog of public neuroimaging analysis tools, containerized and ready to run. Datatypes: Community-registered datatype standards. Public Projects: Shared open research projects from labs worldwide. Research: Published datasets and reproducibility packages with DOIs. ---"
   },
   {
     "id": "/docs/user/started/#create-project",
     "url": "/docs/user/started/#create-project",
-    "pageTitle": "Getting Started with brainlife.io",
+    "pageTitle": "Getting Started with Brainlife Connects",
     "section": "Create Project",
     "category": "Using brainlife",
-    "content": "Let's get to work. To begin using brainlife.io, you will first need to create a new project. Projects is where you can organize your datasets, perform data processing, and share work with your team. You will learn more about Projects in the Projects section of the documentation. You should automatically land on the Projects page when you enter brainlife.io. If not, your computer is broken. Okay, just kidding. You can click the Project button from the menu that runs along the left side of your screen. Then press the New Project button in the right-hand corner of the screen. Enter any Name and Description -- be as creative as you want but be sure to leave everything else as the default option. Then click Submit. Congratulations! You just created your first private project on brainlife.io. Wow, that was easy!"
+    "content": "Projects are workspaces where you organize datasets, run compute workflows, launch interactive analyses, and collaborate with your team. 1. In the sidebar menu, click My Projects (/projects?scope=mine). 2. Click the New Project button in the upper right. 3. Fill in the project creation modal: Title: A concise, descriptive name (e.g. Longitudinal Tractography Study). Description: A summary of research questions, cohorts, or methods. 4. Click Create project. Congratulations! Brainlife will create your project and navigate directly to its workspace."
   },
   {
-    "id": "/docs/user/started/#upload-data",
-    "url": "/docs/user/started/#upload-data",
-    "pageTitle": "Getting Started with brainlife.io",
-    "section": "Upload Data",
+    "id": "/docs/user/started/#project-structure",
+    "url": "/docs/user/started/#project-structure",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Project Structure",
     "category": "Using brainlife",
-    "content": "Next up: uploading some test data. Once you save your project, it will appear on the top of the Projects page in the My Projects section. Click on your project and then click the Archive tab. There are two ways to store data on brainlife.io: Archive The Archive tab you are currently on shows all the current content in your data archive. Data-objects under this tab are stored in our archival storage permanently (but not backed-up until you publish them). Processes You cannot directly run Apps on archived data. Instead, brainlife.io will automatically stage data-objects from our archive and transfer them to compute resources where the Apps can be executed. Data generated in the Processes page will be removed within 25 days unless you archive them (see Archiving). Got it? Now, go to the same button you clicked to create your project. When you hover over the button this time, it will say Upload Data. Click it! Once you see this form, select the Datatype you want to upload, attach your file, and provide the subject name. If you do not have any data to upload, you can upload data from other public projects or import data from the datasets page (one of the many benefits of brainlife.io!). If you do decide to download data from brainlife.io to add to your project, you will need to change the file type, so make sure you have 7-Zip or similar software on your computer. Once you download the data you want, right-click on the file and hover over 7-Zip and then click Extract. Click OK. Th"
+    "content": "Inside your project, you will find five dedicated tabs: 1. 1. Overview: ReadMe documentation, access control (Admins, Members, Guests), related journal articles, and automatic citations for the Apps used. 2. 2. Data: Interactive table of all project data-objects, metadata filtering, dataset visualizers, and staging actions. 3. 3. Processing: Execution center with three views: Summary (job health and execution stats), Pipeline (automation rules), and Processes (running and completed compute jobs). 4. 4. Analysis: Built-in Jupyter Notebook instances running in the cloud directly against your project data. 5. 5. Publications: Tools to snapshot and permanently publish datasets and pipelines with citable DOIs. ---"
+  },
+  {
+    "id": "/docs/user/started/#adding-data-to-your-project",
+    "url": "/docs/user/started/#adding-data-to-your-project",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Adding Data to Your Project",
+    "category": "Using brainlife",
+    "content": "Once your project is created, navigate to the 2. Data tab. To add data, click the Add Project Data button at the top right of the data table. You can choose from multiple sources: Copy Data from Public Datasets: Browse thousands of open-access subjects from BossDB, DANDI, OpenNeuro, and the Brainlife Dataset Library, and import them directly into your project with a single click—no local downloading required. Copy Data From another Project: Select any public project or another project you belong to and copy datasets directly into your current workspace. * Upload Data from ezBIDS / Local Files: If you have raw DICOM or NIfTI data on your local machine, convert and organize it using ezBIDS or upload it through the web uploader or Brainlife CLI. Once added, your datasets will appear in the Data table, displaying their subject IDs, session numbers, datatypes, tags, and status. ---"
   },
   {
     "id": "/docs/user/started/#visualize-data-objects",
     "url": "/docs/user/started/#visualize-data-objects",
-    "pageTitle": "Getting Started with brainlife.io",
-    "section": "Visualize Data-objects",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Visualize Data-Objects",
     "category": "Using brainlife",
-    "content": "Now for the fun stuff. To launch a visualization program, click your data-object record (not the checkbox). Then click on the visualizer icon (which is a fancy way of saying the eyeball (:fa-eye:)) in the upper right-hand corner of the box. Any data-objects stored in brainlife.io can be visualized using web-based apps or brainlife.io Apps registered for each datatype. Once you click the visualizer icon, you will see all of the apps your data-object can be visualized with. Web-based apps have a black bar and brainlife.io registered Apps have a green bar (you can also read which is which in the app descriptions). If you are wondering how you can develop and contribute new visualization Apps to run on brainlife.io, email us at brlife@iu.edu. You can also let us know if there is a particular app you would like us to add! To visualize your data -- simply select the App you want to launch!"
-  },
-  {
-    "id": "/docs/user/started/#downloading-bids",
-    "url": "/docs/user/started/#downloading-bids",
-    "pageTitle": "Getting Started with brainlife.io",
-    "section": "Downloading BIDS",
-    "category": "Using brainlife",
-    "content": "You can search, select, and bulk-download data using BIDS. In the Archive tab, select the data-object you'd like to download by checking the box next to it. A panel will appear on the right, where you can select the Download button. There, you can copy and paste the command for the BIDS download into the terminal on your computer (be sure you have Bash Shell downloaded if you use Windows). Then simply type Terminal in your search bar and copy and paste the command in the app. brainlife.io will stage selected data-objects, organize them into a BIDS structure, and let you download the entire structure as a single tarball. Once it's ready, click Download. At the moment, all brainlife.io data-objects will be stored under /derivatives directory, regardless of the datatype."
-  },
-  {
-    "id": "/docs/user/started/#apps",
-    "url": "/docs/user/started/#apps",
-    "pageTitle": "Getting Started with brainlife.io",
-    "section": "Apps",
-    "category": "Using brainlife",
-    "content": "Let's move on to Apps. Apps are small programs that perform a specific type of data processing. Although we have a few Apps that behave more like a typical pipeline or workflow (including pre- and post-processing, data analysis, and reporting work), most brainlife.io Apps only perform one specific task. You can find all of our publicly available brainlife.io Apps on the main brainlife.io menu on the left. Don't worry, it is OK to feel both overwhelmed and excited by the amount of Apps you are currently looking at. Sort through them with the Categories panel on the right."
+    "content": "You can inspect brain images, segmentations, and tractography results directly in your web browser without downloading multi-gigabyte files to your computer: 1. On the 2. Data tab, locate any dataset row in the table. 2. Click the Visualize icon (:fa-eye: eyeball) on the right side of the row. 3. Select an available viewer suited for that datatype: Volume Viewer: Slices through 3D/4D anatomical and functional volumes. Freeview / FSLeyes: GPU-accelerated cloud viewers streamed directly to your browser via WebRTC/VNC. * TractView: Interactive 3D white matter tractography and streamline visualizer. 4. The viewer will launch in a clean modal overlay, letting you adjust contrasts, toggle overlays, and perform quick visual quality control. ---"
   },
   {
     "id": "/docs/user/started/#data-processing",
     "url": "/docs/user/started/#data-processing",
-    "pageTitle": "Getting Started with brainlife.io",
+    "pageTitle": "Getting Started with Brainlife Connects",
     "section": "Data Processing",
     "category": "Using brainlife",
-    "content": "Now that we understand Apps, we can practice some data processing on your project! 1. To start, open the Processes tab in your project -- this is where you will always submit Apps, which can share input-output data-objects. 2. Create a new process by clicking the New Process button. This time, you will find it in the panel on the left-hand side of the Processes tab. Enter a name for your process and hit \"OK.\" 3. Nice! In order to process the data, you first need to stage data from your Archive to your process. Each process can only process data that is either staged or generated by other Apps. You can find the Stage New Data button on the bottom of the screen, click it. 4. Then select a project (we used Brainlife demo and you can too) and choose any anat/t1w data-object. 5. Once you have staged your data-object, you can submit an App. Click the Submit New App button (it is to the left of the Stage Data button). 6. You will see a list of Apps that you can submit using your anat/t1w data-object. brainlife.io only allows you to select the Apps where you have all required input data, so do not worry if you are unsure. A good App to practice with is ACPC alignment via ART, so let's use that one! 7. Find and click ACPC alignment via ART. Your staged data should automatically be selected as the input. All you need to do now is hit Submit. As you see above, brainlife.io automatically searches for and selects the best resource to run your App. brainlife.io will transfer data to the re"
+    "content": "To run computational analysis on your data, Brainlife Connects offers two integrated methods: Processes for on-demand task runs and Pipelines for automated batch execution."
   },
   {
-    "id": "/docs/user/started/#archiving",
-    "url": "/docs/user/started/#archiving",
-    "pageTitle": "Getting Started with brainlife.io",
-    "section": "Archiving",
+    "id": "/docs/user/started/#running-a-process-on-demand-execution",
+    "url": "/docs/user/started/#running-a-process-on-demand-execution",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Running a Process (On-Demand Execution)",
     "category": "Using brainlife",
-    "content": "So far, you have staged data, submitted an App that generated data derivatives, and visualized them. Nice work! We should now talk about how to archive these processes. All processes are meant to be temporary, and brainlife.io will remove processes within 25 days of data generation (some resources have a shorter data purging policy). If you want to permanently keep the output data you generated, you will need to Archive the output by clicking on the :fa-archive: button in the Output section (it is in the same section as the eyeball). You can edit any metadata and the description, and then archive the data. Double-check that your data is now listed under the Archive tab, where you can click on the data-object record to see more details. * Data Provenance As you submit more Apps and generate data from them, it becomes harder to keep track of how the data is generated. brainlife.io keeps a record of how each data-object was generated for you (called data provenance). To see this record, go to the Archive tab and select the data-object you just archived. Click the Provenance tab. The green box represents the original input data-object uploaded to brainlife.io and the white box shows the App run to generate the data derivatives. You can move around and zoom in and out on the diagram or edit the layout of items by dragging and dropping."
+    "content": "1. Go to the 2. Data tab and select the dataset(s) you wish to process using the checkboxes on the left. 2. In the action bar that appears above the table, click Stage to process (or click the List icon on an individual row). 3. Select an existing process or choose to create a new process instance. 4. Open the 3. Processing tab and switch to the Processes sub-view. 5. Click Submit App to search the App catalog for an appropriate analysis tool (for example, FSL Anat (T1) or FreeSurfer for anatomical processing). 6. Configure the App parameters and click Submit. Brainlife's orchestrator (Amaretti ) automatically transfers your data to an optimal computing resource, submits the batch job, and monitors its execution: Requested: The job is queued and waiting for compute resources. Running: The job is actively executing on the designated HPC/cloud cluster. Finished: Execution succeeded! Derivative datasets are automatically added to your project's data catalog. Failed: If an error occurred, expand the task's Raw Output to inspect stdout, stderr, and log files."
   },
   {
-    "id": "/docs/user/started/#whats-next",
-    "url": "/docs/user/started/#whats-next",
-    "pageTitle": "Getting Started with brainlife.io",
-    "section": "What's Next?",
+    "id": "/docs/user/started/#automating-with-pipeline-rules",
+    "url": "/docs/user/started/#automating-with-pipeline-rules",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Automating with Pipeline Rules",
     "category": "Using brainlife",
-    "content": "You have just become familiar with all the basic functionalities of brainlife.io. We are proud of you! So what's next? Learn how to write and register an App on brainlife.io: App Developer Guide Learn how to bulk process multiple subjects: Pipeline documentation * Or just keep moving down the documentation pipeline with the next section: Projects Be sure to let us know how we can improve this tutorial for you, or send us pull requests with your edits!"
+    "content": "If you need to analyze dozens or hundreds of subjects: 1. In the 3. Processing tab, select the Pipeline sub-view. 2. Click Add Rule to select an App and set fixed parameters. 3. Configure your input matching tags and output tags. 4. Once active, the rule continuously evaluates your project: whenever new subjects matching your criteria are added, Brainlife automatically launches the App and catalogs the outputs. ---"
+  },
+  {
+    "id": "/docs/user/started/#interactive-analysis",
+    "url": "/docs/user/started/#interactive-analysis",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Interactive Analysis",
+    "category": "Using brainlife",
+    "content": "Brainlife Connects integrates statistical analysis directly into your project via the 4. Analysis tab: 1. Click the 4. Analysis tab. 2. Click New analysis to launch an interactive cloud Jupyter Notebook. 3. Choose to start from a blank template or import a published analysis notebook. 4. The notebook runs directly inside your project environment, allowing you to load dataset derivatives, compute group averages, plot tract profiles, and generate figures without downloading datasets to your local workstation. ---"
+  },
+  {
+    "id": "/docs/user/started/#next-steps",
+    "url": "/docs/user/started/#next-steps",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Next Steps",
+    "category": "Using brainlife",
+    "content": "Now that you understand the core flow of Brainlife Connects: Explore ezBIDS to standardize raw scanner data into BIDS. Read the Pipeline Guide to automate large cohort workflows. Learn how to wrap your own analysis scripts in the App Developer Guide. Have questions or need assistance? Join the Brainlife Slack Community or ask SKAI directly in Brainlife Connects!"
   },
   {
     "id": "/docs/usersurvey/",

@@ -9,9 +9,10 @@ import { SLACK_URL, GITHUB_REPO_URL } from '@/lib/docsNavigation';
 interface DocLayoutProps {
     children: React.ReactNode;
     headings?: TocHeading[];
+    githubEditUrl?: string;
 }
 
-export default function DocLayout({ children, headings = [] }: DocLayoutProps) {
+export default function DocLayout({ children, headings = [], githubEditUrl }: DocLayoutProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
@@ -30,8 +31,8 @@ export default function DocLayout({ children, headings = [] }: DocLayoutProps) {
                     onClose={() => setIsSidebarOpen(false)}
                 />
 
-                {/* Main Content Area with generous padding from the sidebar */}
-                <main className="flex-1 min-w-0 flex justify-between px-6 sm:px-10 lg:px-14 xl:px-16 py-10">
+                {/* Main Content Area */}
+                <main className="flex-1 min-w-0 flex justify-between px-6 sm:px-10 lg:px-14 xl:px-16 py-8">
                     <div className="flex-1 max-w-4xl min-w-0">
                         {children}
 
@@ -61,7 +62,9 @@ export default function DocLayout({ children, headings = [] }: DocLayoutProps) {
                     </div>
 
                     {/* Right In-page TOC */}
-                    {headings.length > 0 && <TableOfContents headings={headings} />}
+                    {headings.length > 0 && (
+                        <TableOfContents headings={headings} githubEditUrl={githubEditUrl} />
+                    )}
                 </main>
             </div>
         </div>

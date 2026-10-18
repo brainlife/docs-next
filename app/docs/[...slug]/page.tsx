@@ -95,7 +95,7 @@ export default async function DocPage({ params }: PageProps) {
     const githubEditUrl = getGithubEditUrl(doc.relativePath);
 
     return (
-        <DocLayout headings={headings}>
+        <DocLayout headings={headings} githubEditUrl={githubEditUrl}>
             <article className="min-w-0 relative">
                 {/* Top Action Bar with GitHub Edit button */}
                 <div className="absolute top-1 right-0 z-10">
@@ -110,6 +110,17 @@ export default async function DocPage({ params }: PageProps) {
                         <span className="hidden sm:inline">Edit on GitHub</span>
                     </a>
                 </div>
+
+                {/* Optional ezBIDS branding banner */}
+                {doc.relativePath.toLowerCase().includes('ezbids') && (
+                    <div className="mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
+                        <img
+                            src="/ezbids-logo.svg"
+                            alt="ezBIDS Logo"
+                            className="h-11 w-auto object-contain"
+                        />
+                    </div>
+                )}
 
                 {/* Rendered Markdown Body */}
                 <div

@@ -19,7 +19,7 @@ export default function EzBidsAliasPage() {
     const githubEditUrl = getGithubEditUrl('using_ezBIDS.md');
 
     return (
-        <DocLayout headings={headings}>
+        <DocLayout headings={headings} githubEditUrl={githubEditUrl}>
             <article className="min-w-0 relative">
                 {/* Top Action Bar with GitHub Edit button */}
                 <div className="absolute top-1 right-0 z-10">
@@ -33,6 +33,14 @@ export default function EzBidsAliasPage() {
                         <Pencil size={14} />
                         <span className="hidden sm:inline">Edit on GitHub</span>
                     </a>
+                </div>
+
+                <div className="mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <img
+                        src="/ezbids-logo.svg"
+                        alt="ezBIDS Logo"
+                        className="h-11 w-auto object-contain"
+                    />
                 </div>
 
                 <div

@@ -1,193 +1,182 @@
-# Getting Started with brainlife.io
+# Getting Started with Brainlife Connects
 
-Now, let’s learning how to use brainlife.io! This “Getting Started” tutorial will give you a quick overview of how to:
+Welcome to **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank})! Brainlife is an open, cloud-based platform for reproducible neuroimaging data analysis, processing pipelines, and scientific publication.
 
-* Sign up for brainlife.io
-* Create new projects
-* Upload data
-* Launch visualizations
-* Run processes on data
-* Archive results
+This "Getting Started" guide will walk you through the core workflow on Brainlife Connects:
 
-We will cover some of these topics more in-depth in other sections of the documentation.
+1. [Signing up and logging in](#sign-up)
+2. [Key terms to know](#brainlifeio-terms-to-know)
+3. [Navigating the platform](#navigating-brainlife-connects)
+4. [Creating a new project](#create-project)
+5. [Adding data to your project](#upload-data)
+6. [Visualizing data-objects](#visualize-data-objects)
+7. [Running processing apps and pipelines](#data-processing)
+8. [Interactive group analysis with notebooks](#interactive-analysis)
+
+---
 
 ## Sign Up
 
-To begin using brainlife.io, you need first make sure you are registered on the site ([you can do that here](https://brainlife.io/auth/){target=_blank}). You can choose to sign up through Google, ORCID, Github, or through your institution.
+To begin using Brainlife, you need a registered account:
 
-To register a personal brainlife.io account, [sign up for brainlife.io here](https://brainlife.io/auth/#!/signup){target=_blank}. You will be asked to confirm your email address.
-
-You can associate multiple authenticators with your account once you register by going to Settings > Account > Account Settings. Scroll down to Connected Accounts and click `Connect` next to the authenticator you want to connect through.
+1. Go to the [Brainlife authentication page](https://brainlife.io/auth/){target=_blank}.
+2. Choose your preferred login method:
+    * **Third-Party Providers**: Google, GitHub, ORCID, Apple, or your academic institution.
+    * **Email & Password**: [Sign up directly](https://brainlife.io/auth/#!/signup){target=_blank} with your email address.
+3. You can connect multiple login providers to your profile in **Settings > Account > Account Settings > Connected Accounts**.
 
 !!! warning
-    If you register through a third-party authenticator, please use the same authenticator each time you log in, or you will end up creating multiple brainlife.io accounts.
+    If you register using a third-party authenticator (such as Google or GitHub), make sure to sign in with that same account every time so you don't inadvertently create multiple profiles.
+
+---
 
 ## brainlife.io terms to know
-Nice, you now have a brainlife.io account! Before we jump into the rest of the tutorial, it will be good to familiarize yourself with a couple of commonly used terms on brainlife.io.
 
-* **Data-Object**
+Before diving into project workflows, let's review two fundamental concepts:
 
-    A **data-object.** is a set of files for a specific subject and modality -- it is the smallest set of data that you can interact with on brainlife.io. For example, the `neuro/dwi` data-object consists of files such as `dwi.nii.gz` (a file containing the actual 4D diffusion brain image data), `dwi.bvecs`, and `dwi.bvals` (which describe how the image was acquired by the MRI scanner). Freesurfer output for a subject is considered to be a single "data-object" containing many directories and files. brainlife.io processes data at each subject level and for each data-object.
+### Data-Object
+A **data-object** is a specific set of files representing one subject, session, and neuroimaging modality. It is the core unit of data on Brainlife:
 
-    You cannot change the content of a data-object once you create it, but you can modify its metadata.
+* For example, a `neuro/dwi` data-object consists of `dwi.nii.gz` (the 4D diffusion image), `dwi.bvecs`, and `dwi.bvals`.
+* A FreeSurfer parcellation output for a subject is a single data-object containing all generated surface and segmentation directories.
+* Data-objects have **immutable data** (the underlying raw image files cannot be modified) and **mutable metadata** (tags, subject IDs, and descriptions can be updated).
 
-* **Datatypes**
+### Datatypes
+Brainlife Apps exchange information through standardized **datatypes**. 
 
-    brainlife.io Apps exchange data through **datatypes**. The App below gives an example of how to determine the input-output of  datatypes. The colored boxes indicate that the App will take a `dwi` input data-object and generate another `dwi` data-object with a datatype tag of `masked`, and output another data-object of a `mask` datatype.
+![datatype](../img/datatype.png)
 
-    ![datatype](../img/datatype.png)
+* Each datatype defines the expected files, directory structure, and metadata for a modality.
+* Colored badges on an App card indicate which datatype an App requires as input and which datatype it generates as output.
+* **Datatype tags** (such as `acpc_aligned`, `masked`, or `preprocessed`) provide extra specificity so downstream Apps receive the exact input format they need.
+* Browse registered specifications anytime on the [Datatypes page](https://connects.brainlife.io/datatypes){target=_blank}.
 
-    Developers involved with interoperating input and output data should discuss and agree to the set of files and directory structures and their semantics. You can register a new datatype by consulting #datatype channel on brainlife.slack.com. We will cover datatypes more on the [datatypes page](/docs/user/datatypes).
+---
+
+## Navigating Brainlife Connects
+
+Brainlife Connects provides a streamlined sidebar navigation divided into two primary zones:
+
+* **Me (Personal Workspace):**
+  * **Dashboard**: Your unified hub displaying recent task activity, project shortcuts, and processing notifications.
+  * **My Projects**: Projects you administer, contribute to, or follow.
+  * **My Resources**: Compute clusters, HPC resources, or cloud nodes registered for your use.
+  * **My Datatypes**: Custom datatypes you maintain or develop.
+
+* **Explore (Community & Open Science):**
+  * **SKAI**: Brainlife's AI-powered neuroimaging assistant to help design workflows, query analyses, and troubleshoot tasks.
+  * **Public Datasets**: Centralized explorer for open neuroscience data, including the **Dataset Library**, **DANDI**, **EMBER**, and **BossDB** (with direct S3 browsing).
+  * **Apps**: The catalog of public neuroimaging analysis tools, containerized and ready to run.
+  * **Datatypes**: Community-registered datatype standards.
+  * **Public Projects**: Shared open research projects from labs worldwide.
+  * **Research**: Published datasets and reproducibility packages with DOIs.
+
+---
 
 ## Create Project
 
-Let's get to work. To begin using brainlife.io, you will first need to create a new project.
+Projects are workspaces where you organize datasets, run compute workflows, launch interactive analyses, and collaborate with your team.
 
-Projects is where you can organize your datasets, perform data processing, and share work with your team. You will learn more about Projects in the [Projects section](/docs/user/project/) of the documentation.
+1. In the sidebar menu, click **My Projects** (`/projects?scope=mine`).
+2. Click the **New Project** button in the upper right.
+3. Fill in the project creation modal:
+    * **Title**: A concise, descriptive name (e.g. *Longitudinal Tractography Study*).
+    * **Description**: A summary of research questions, cohorts, or methods.
+4. Click **Create project**.
 
-You should automatically land on the Projects page when you enter brainlife.io. If not, your computer is broken. Okay, just kidding. You can click the `Project` button from the menu that runs along the left side of your screen. Then press the `New Project` button in the right-hand corner of the screen.
+Congratulations! Brainlife will create your project and navigate directly to its workspace.
 
-![project new button](../img/new_project_btn.png)
+### Project Structure
 
-Enter any `Name` and `Description` -- be as creative as you want but be sure to leave everything else as the default option. Then click `Submit`.
+Inside your project, you will find five dedicated tabs:
 
-Congratulations! You just created your first private project on brainlife.io. Wow, that was easy!
+1. **1. Overview**: ReadMe documentation, access control (Admins, Members, Guests), related journal articles, and automatic citations for the Apps used.
+2. **2. Data**: Interactive table of all project data-objects, metadata filtering, dataset visualizers, and staging actions.
+3. **3. Processing**: Execution center with three views: **Summary** (job health and execution stats), **Pipeline** (automation rules), and **Processes** (running and completed compute jobs).
+4. **4. Analysis**: Built-in Jupyter Notebook instances running in the cloud directly against your project data.
+5. **5. Publications**: Tools to snapshot and permanently publish datasets and pipelines with citable DOIs.
 
-## Upload Data
+---
 
-Next up: uploading some test data. Once you save your project, it will appear on the top of the Projects page in the `My Projects` section. Click on your project and then click the `Archive` tab.
+<a id="upload-data"></a>
+## Adding Data to Your Project
 
-There are two ways to store data on brainlife.io:
+Once your project is created, navigate to the **2. Data** tab.
 
-* **Archive**
-    The `Archive` tab you are currently on shows all the current content in your data archive. Data-objects under this tab are stored in our archival storage permanently (but not backed-up until you publish them).
+To add data, click the **Add Project Data** button at the top right of the data table. You can choose from multiple sources:
 
-* **Processes**
+* **Copy Data from Public Datasets**:
+  Browse thousands of open-access subjects from **BossDB**, **DANDI**, **OpenNeuro**, and the **Brainlife Dataset Library**, and import them directly into your project with a single click—no local downloading required.
+* **Copy Data From another Project**:
+  Select any public project or another project you belong to and copy datasets directly into your current workspace.
+* **Upload Data from ezBIDS / Local Files**:
+  If you have raw DICOM or NIfTI data on your local machine, convert and organize it using [ezBIDS](/docs/using_ezBIDS/) or upload it through the web uploader or [Brainlife CLI](/docs/cli/upload/).
 
-    You cannot directly run Apps on archived data. Instead, brainlife.io will automatically stage data-objects from our archive and transfer them to compute resources where the Apps can be executed. Data generated in the `Processes` page will be removed within 25 days unless you archive them (see [Archiving](/docs/user/started/#archiving)).
+Once added, your datasets will appear in the **Data** table, displaying their subject IDs, session numbers, datatypes, tags, and status.
 
-Got it? Now, go to the same button you clicked to create your project. When you hover over the button this time, it will say `Upload Data`. Click it!
+---
 
-![upload form](../img/upload.form.png)
+## Visualize Data-Objects
 
-Once you see this form, select the Datatype you want to upload, attach your file, and provide the subject name. If you do not have any data to upload, you can upload data from other [public projects](https://brainlife.io/projects){target=_blank} or import data from the [datasets page](https://brainlife.io/datasets){target=_blank} (one of the many benefits of brainlife.io!). If you do decide to download data from brainlife.io to add to your project, you will need to change the file type, so make sure you have 7-Zip or similar software on your computer. Once you download the data you want, right-click on the file and hover over `7-Zip` and then click `Extract.` Click `OK.` That will extract the data in a GZ file, which you can then upload into your brainlife.io project!
+You can inspect brain images, segmentations, and tractography results directly in your web browser without downloading multi-gigabyte files to your computer:
 
-If everything looks good on your data upload, click `Archive`.
+1. On the **2. Data** tab, locate any dataset row in the table.
+2. Click the **Visualize** icon (:fa-eye: eyeball) on the right side of the row.
+3. Select an available viewer suited for that datatype:
+    * **Volume Viewer**: Slices through 3D/4D anatomical and functional volumes.
+    * **Freeview / FSLeyes**: GPU-accelerated cloud viewers streamed directly to your browser via WebRTC/VNC.
+    * **TractView**: Interactive 3D white matter tractography and streamline visualizer.
+4. The viewer will launch in a clean modal overlay, letting you adjust contrasts, toggle overlays, and perform quick visual quality control.
 
-Now you can see the details of your data in your Archives tab. The `Archived in` field shows where your data is archived (it may take a large data-object a bit longer to be archived). You can make small edits to this profile, such as adding details about the data and tags or editing the metadata. 
-
-![data-object](../img/data-object.png)
-
-## Visualize Data-objects
-
-Now for the fun stuff. To launch a visualization program, click your data-object record (not the checkbox). Then click on the visualizer icon (which is a fancy way of saying the eyeball (:fa-eye:)) in the upper right-hand corner of the box.
-
-Any data-objects stored in brainlife.io can be visualized using web-based apps or brainlife.io Apps registered for each datatype. 
-
-Once you click the visualizer icon, you will see all of the apps your data-object can be visualized with. Web-based apps have a black bar and brainlife.io registered Apps have a green bar (you can also read which is which in the app descriptions). 
-
-![viewers](../img/viewers.png)
-
-!!! note
-    If you are wondering how you can develop and contribute new visualization Apps to run on brainlife.io, email us at [brlife@iu.edu](mailto:brlife@iu.edu). You can also let us know if there is a particular app you would like us to add!
-
-To visualize your data -- simply select the App you want to launch! 
-
-## Downloading BIDS
-
-You can search, select, and bulk-download data using BIDS. In the Archive tab, select the data-object you'd like to download by checking the box next to it. A panel will appear on the right, where you can select the `Download` button. 
-
-![download](../img/download.png)
-
-There, you can copy and paste the command for the BIDS download into the terminal on your computer (be sure you have [Bash Shell](https://www.windowscentral.com/install-windows-subsystem-linux-windows-10){target=_blank} downloaded if you use Windows). Then simply type `Terminal` in your search bar and copy and paste the command in the app.
-
-brainlife.io will stage selected data-objects, organize them into a [BIDS structure](http://bids.neuroimaging.io), and let you download the entire structure as a single tarball. Once it's ready, click `Download`.
-
-!!! note
-    At the moment, all brainlife.io data-objects will be stored under `/derivatives` directory, regardless of the datatype.
-
-## Apps
-
-Let's move on to `Apps`. Apps are small programs that perform a specific type of data processing. Although we have a few Apps that behave more like a typical *pipeline* or *workflow* (including pre- and post-processing, data analysis, and reporting work), most brainlife.io Apps only perform one specific task.
-
-You can find all of our publicly available brainlife.io `Apps` on the main brainlife.io menu on the left. Don't worry, it is OK to feel both overwhelmed and excited by the amount of Apps you are currently looking at. Sort through them with the `Categories` panel on the right.
-
-![apps](../img/apps.png)
+---
 
 ## Data Processing
 
-Now that we understand `Apps`, we can practice some data processing on your project!
+To run computational analysis on your data, Brainlife Connects offers two integrated methods: **Processes** for on-demand task runs and **Pipelines** for automated batch execution.
 
-1. To start, open the `Processes` tab in your project -- this is where you will always submit Apps, which can share input-output data-objects.
+### Running a Process (On-Demand Execution)
 
-2. Create a new process by clicking the `New Process` button. This time, you will find it in the panel on the left-hand side of the `Processes` tab. Enter a name for your process and hit "OK."
+1. Go to the **2. Data** tab and select the dataset(s) you wish to process using the checkboxes on the left.
+2. In the action bar that appears above the table, click **Stage to process** (or click the List icon on an individual row).
+3. Select an existing process or choose to create a new process instance.
+4. Open the **3. Processing** tab and switch to the **Processes** sub-view.
+5. Click **Submit App** to search the App catalog for an appropriate analysis tool (for example, *FSL Anat (T1)* or *FreeSurfer* for anatomical processing).
+6. Configure the App parameters and click **Submit**.
 
-![create process](../img/new_process_btn.png)
+Brainlife's orchestrator ([Amaretti](https://github.com/brainlife/amaretti){target=_blank}) automatically transfers your data to an optimal computing resource, submits the batch job, and monitors its execution:
 
-3. Nice! In order to process the data, you first need to stage data from your `Archive` to your process. Each process can only process data that is either staged or generated by other Apps. You can find the `Stage New Data` button on the bottom of the screen, click it.
+* **Requested**: The job is queued and waiting for compute resources.
+* **Running**: The job is actively executing on the designated HPC/cloud cluster.
+* **Finished**: Execution succeeded! Derivative datasets are automatically added to your project's data catalog.
+* **Failed**: If an error occurred, expand the task's **Raw Output** to inspect `stdout`, `stderr`, and log files.
 
-![stage data](../img/stage data.png)
+### Automating with Pipeline Rules
 
-4. Then select a project (we used `Brainlife demo` and you can too) and choose any `anat/t1w` data-object.
+If you need to analyze dozens or hundreds of subjects:
 
-![select data](../img/select data.png)
+1. In the **3. Processing** tab, select the **Pipeline** sub-view.
+2. Click **Add Rule** to select an App and set fixed parameters.
+3. Configure your input matching tags and output tags.
+4. Once active, the rule continuously evaluates your project: whenever new subjects matching your criteria are added, Brainlife automatically launches the App and catalogs the outputs.
 
-5. Once you have staged your data-object, you can submit an App. Click the `Submit New App` button (it is to the left of the `Stage Data` button). 
+---
 
-![submit app](../img/submit app.png)
+## Interactive Analysis
 
-6. You will see a list of Apps that you can submit using your `anat/t1w` data-object. brainlife.io only allows you to select the Apps where you have all required input data, so do not worry if you are unsure. A good App to practice with is `ACPC alignment via ART`, so let's use that one!
+Brainlife Connects integrates statistical analysis directly into your project via the **4. Analysis** tab:
 
-7. Find and click `ACPC alignment via ART`. Your staged data should automatically be selected as the input. All you need to do now is hit `Submit`. 
+1. Click the **4. Analysis** tab.
+2. Click **New analysis** to launch an interactive cloud **Jupyter Notebook**.
+3. Choose to start from a blank template or import a published analysis notebook.
+4. The notebook runs directly inside your project environment, allowing you to load dataset derivatives, compute group averages, plot tract profiles, and generate figures without downloading datasets to your local workstation.
 
-![search apps](../img/search apps.png)
+---
 
-As you see above, brainlife.io automatically searches for and selects the best resource to run your App. brainlife.io will transfer data to the resource and submit it to the local batch scheduler. The task should not take too long to run. 
+## Next Steps
 
-Once it is completed, your successful App submission will look like this:
+Now that you understand the core flow of Brainlife Connects:
 
-![task success](../img/task success.png)
-
-8. **You DID IT!** You can browse and download any output files as they are generated under the `Raw Output` section. Do you want to visualize it? Launch the visualization tool by clicking the :fa-eye: button next to the `Output` section of your executed App. 
-
-9. Open `Volume Viewer` to see it.
-
-10. And for fun -- click the:fa-eye: button next to the `Output` section of staged data to compare data that has not yet been ACPC-aligned to the data we ran with the `ACPC alignment via ART` App.
-
-11. Check out the before and after images of the original output data vs. the output data with ACPC alignment. The bottom image is clearly better aligned and re-positioned at the ACPC line. That is because `ACPC alignment via ART` is a common alignment tool used to re-orient and re-position the brain image in common orientations better-suited for image analysis. For more info on ACPC alignment [go here](https://github.com/vistalab/vistasoft/wiki/ACPC-alignment){target=_blank}.
-
-![original orient](../img/acpc.orient.png)
-![acpc orient](../img/acpc.orient.png)
-
-**Bonus**: Now that you have finished running ACPC alignment, you will find that you can submit a few more Apps than you could before. Go have fun and try them out!
-
-!!! hint
-    If you are not sure which data to stage, go to the [Apps page](https://brainlife.io/apps){target=_blank} to see which datatype each App requires to run.
-
-## Archiving
-
-So far, you have staged data, submitted an App that generated data derivatives, and visualized them. Nice work!
-
-We should now talk about how to archive these processes. All processes are meant to be temporary, and brainlife.io will remove processes within 25 days of data generation (some resources have a shorter data purging policy).
-
-If you want to permanently keep the output data you generated, you will need to `Archive` the output by clicking on the :fa-archive: button in the Output section (it is in the same section as the eyeball). You can edit any metadata and the description, and then archive the data. Double-check that your data is now listed under the `Archive` tab, where you can click on the data-object record to see more details.
-
-* **Data Provenance**
-
-    As you submit more Apps and generate data from them, it becomes harder to keep track of how the data is generated. brainlife.io keeps a record of how each data-object was generated for you (called `data provenance`).
-
-    To see this record, go to the `Archive` tab and select the data-object you just archived. Click the `Provenance` tab.
-
-    ![provenance](../img/provenance.png)
-
-    The green box represents the original input data-object uploaded to brainlife.io and the white box shows the App run to generate the data derivatives. You can move around and zoom in and out on the diagram or edit the layout of items by dragging and dropping.
-
-## What's Next?
-
-You have just become familiar with all the basic functionalities of brainlife.io. We are proud of you! So what's next?
-
-* Learn how to write and register an App on brainlife.io: [App Developer Guide](/docs/apps/introduction)
-* Learn how to bulk process multiple subjects: [Pipeline documentation](/docs/user/pipeline)
-* Or just keep moving down the documentation pipeline with the next section: [Projects](/docs/user/project/)
-
-Be sure to [let us know](mailto: brlife@iu.edu) how we can improve this tutorial for you, or send us pull requests with your edits!
+* Explore [ezBIDS](/docs/using_ezBIDS/) to standardize raw scanner data into BIDS.
+* Read the [Pipeline Guide](/docs/user/pipeline/) to automate large cohort workflows.
+* Learn how to wrap your own analysis scripts in the [App Developer Guide](/docs/apps/introduction/).
+* Have questions or need assistance? Join the [Brainlife Slack Community](https://brainlife.slack.com){target=_blank} or ask **SKAI** directly in Brainlife Connects!

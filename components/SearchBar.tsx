@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, X, FileText, ArrowRight, CornerDownLeft } from 'lucide-react';
+import { Search, X, FileText, ArrowRight } from 'lucide-react';
 import { getAssetPath } from '@/lib/basePath';
 
 export interface SearchDoc {
@@ -39,7 +39,6 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
     const listRef = useRef<HTMLUListElement>(null);
     const router = useRouter();
 
-    // Fetch the search index JSON lazily when needed
     const loadSearchIndex = useCallback(async () => {
         if (hasLoaded || isLoading) return;
         setIsLoading(true);
@@ -57,7 +56,6 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
         }
     }, [hasLoaded, isLoading]);
 
-    // Keyboard shortcut to open search (⌘K or Ctrl+K or /)
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -80,7 +78,6 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [loadSearchIndex, onCloseMobile]);
 
-    // Handle clicks outside the search container to close
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -94,79 +91,67 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen]);
 
-    // Focus input when mobile modal opens
     useEffect(() => {
         if (isMobileOpen) {
             loadSearchIndex();
-            setIsOpen(true);
             setTimeout(() => inputRef.current?.focus(), 50);
         }
     }, [isMobileOpen, loadSearchIndex]);
 
-    // Filter and score search results
-    const results = useMemo<SearchResult[]>(() => {
-        const trimmed = query.trim().toLowerCase();
-        if (!trimmed || docs.length === 0) return [];
+    const results = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!q || docs.length === 0) return [];
 
-        const terms = trimmed.split(/\s+/).filter(Boolean);
-
+        const terms = q.split(/\s+/).filter(Boolean);
         const matched: SearchResult[] = [];
 
         for (const doc of docs) {
-            const sectionLower = doc.section.toLowerCase();
+            let score = 0;
             const titleLower = doc.pageTitle.toLowerCase();
-            const categoryLower = doc.category.toLowerCase();
+            const sectionLower = doc.section.toLowerCase();
             const contentLower = doc.content.toLowerCase();
+            const categoryLower = doc.category.toLowerCase();
 
-            // All terms must appear in at least one field
-            const allTermsMatch = terms.every(
-                (term) =>
-                    sectionLower.includes(term) ||
-                    titleLower.includes(term) ||
-                    categoryLower.includes(term) ||
-                    contentLower.includes(term)
-            );
+            let allTermsMatch = true;
+            for (const term of terms) {
+                let termScore = 0;
+                if (titleLower === term) termScore += 100;
+                else if (titleLower.includes(term)) termScore += 50;
+
+                if (sectionLower === term) termScore += 80;
+                else if (sectionLower.includes(term)) termScore += 40;
+
+                if (categoryLower.includes(term)) termScore += 20;
+
+                if (contentLower.includes(term)) {
+                    termScore += 10;
+                    const matches = contentLower.split(term).length - 1;
+                    termScore += Math.min(matches * 2, 20);
+                }
+
+                if (termScore === 0) {
+                    allTermsMatch = false;
+                    break;
+                }
+                score += termScore;
+            }
 
             if (!allTermsMatch) continue;
 
-            let score = 0;
-
-            // Full phrase matches get highest priority
-            if (sectionLower.includes(trimmed)) score += 120;
-            if (titleLower.includes(trimmed)) score += 90;
-            if (categoryLower.includes(trimmed)) score += 40;
-            if (contentLower.includes(trimmed)) score += 30;
-
-            // Per-term scores
-            for (const term of terms) {
-                if (sectionLower.startsWith(term)) score += 40;
-                else if (sectionLower.includes(term)) score += 25;
-
-                if (titleLower.startsWith(term)) score += 30;
-                else if (titleLower.includes(term)) score += 20;
-
-                if (categoryLower.includes(term)) score += 10;
-                if (contentLower.includes(term)) score += 5;
-            }
-
-            // Generate contextual snippet
             let snippet = '';
-            let firstMatchIdx = -1;
-            for (const term of terms) {
-                const idx = contentLower.indexOf(term);
-                if (idx !== -1 && (firstMatchIdx === -1 || idx < firstMatchIdx)) {
-                    firstMatchIdx = idx;
+            if (doc.content) {
+                const firstTerm = terms[0];
+                const idx = contentLower.indexOf(firstTerm);
+                if (idx !== -1) {
+                    const start = Math.max(0, idx - 45);
+                    const end = Math.min(doc.content.length, idx + 100);
+                    snippet = (start > 0 ? '...' : '') +
+                              doc.content.substring(start, end).replace(/\s+/g, ' ').trim() +
+                              (end < doc.content.length ? '...' : '');
+                } else {
+                    snippet = doc.content.substring(0, 110).replace(/\s+/g, ' ').trim() +
+                              (doc.content.length > 110 ? '...' : '');
                 }
-            }
-
-            if (firstMatchIdx !== -1) {
-                const start = Math.max(0, firstMatchIdx - 45);
-                const end = Math.min(doc.content.length, firstMatchIdx + 110);
-                snippet = (start > 0 ? '...' : '') +
-                    doc.content.substring(start, end).trim() +
-                    (end < doc.content.length ? '...' : '');
-            } else {
-                snippet = doc.content.substring(0, 140) + (doc.content.length > 140 ? '...' : '');
             }
 
             matched.push({
@@ -181,12 +166,10 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
         return matched.slice(0, 12);
     }, [query, docs]);
 
-    // Reset selected index when results change
     useEffect(() => {
         setSelectedIndex(0);
     }, [results]);
 
-    // Scroll active item into view
     useEffect(() => {
         if (!listRef.current) return;
         const activeEl = listRef.current.children[selectedIndex] as HTMLElement;
@@ -225,7 +208,6 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
         }
     };
 
-    // Helper to highlight search terms
     const renderHighlightedText = (text: string, terms: string[]) => {
         if (!terms || terms.length === 0 || !text) return text;
 
@@ -239,14 +221,11 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
             <>
                 {parts.map((part, i) =>
                     regex.test(part) ? (
-                        <mark
-                            key={i}
-                            className="bg-[#2693D8]/30 text-[#50bfff] font-medium px-0.5 rounded"
-                        >
+                        <span key={i} className="text-[#50bfff] font-bold">
                             {part}
-                        </mark>
+                        </span>
                     ) : (
-                        part
+                        <span key={i}>{part}</span>
                     )
                 )}
             </>
@@ -273,7 +252,7 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                         setIsOpen(true);
                     }}
                     onKeyDown={handleKeyDown}
-                    placeholder="Search docs..."
+                    placeholder="Search documentation..."
                     aria-label="Search documentation"
                     className="w-full pl-9 pr-16 py-1.5 bg-[#1f2633] text-sm text-gray-100 placeholder-gray-400 rounded-md border border-[#4a5568] focus:outline-none focus:border-[#2693D8] focus:ring-1 focus:ring-[#2693D8] transition-colors"
                 />
@@ -293,13 +272,13 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                 ) : (
                     <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
                         <kbd className="text-[10px] font-mono font-medium text-gray-400 bg-[#2d3748] px-1.5 py-0.5 rounded border border-[#4a5568]">
-                            ⌘K
+                            ⌘ K
                         </kbd>
                     </div>
                 )}
             </div>
 
-            {/* Live Search Results Dropdown (MkDocs Material style) */}
+            {/* Live Search Results Dropdown */}
             {isOpen && query.trim().length > 0 && (
                 <div className="absolute left-0 right-0 mt-2 z-50 bg-[#1f2633] border border-[#3a4352] rounded-lg shadow-2xl overflow-hidden backdrop-blur-md">
                     {/* Header info */}
@@ -401,7 +380,7 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                                 No documentation found matching &ldquo;{query}&rdquo;
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
-                                Try searching for alternative keywords (e.g. &ldquo;singularity&rdquo;, &ldquo;freesurfer&rdquo;, &ldquo;cli&rdquo;, &ldquo;bids&rdquo;)
+                                Try searching for alternative keywords (e.g. &ldquo;apps&rdquo;, &ldquo;project&rdquo;, &ldquo;cli&rdquo;, &ldquo;bids&rdquo;)
                             </p>
                         </div>
                     )}
