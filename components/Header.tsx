@@ -62,6 +62,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
                                 alt="brainlife logo"
                                 width={28}
                                 height={28}
+                                priority
                                 style={{ width: 'auto', height: 'auto' }}
                                 className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
                                 onError={(e) => {
