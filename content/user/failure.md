@@ -1,129 +1,91 @@
-# Handling Job Failure
+# Handling Job and Task Failure
 
-![failed](../img/failed.png)
+In high-throughput scientific computing, compute jobs and pipeline tasks can occasionally fail. Tasks may fail due to incorrect configuration options, incompatible input data, application-level bugs, or temporary High-Performance Computing (HPC) cluster glitches.
 
-Your job could fail due to variety of reasons such as 
+On Brainlife Connects, all compute tasks are tracked in real time. When a task fails, the platform flags the process, isolates the error logs, and provides tools to inspect, diagnose, and rerun the workflow.
 
-* There is a bug with the App.
-* Something is wrong with your input data.
-* Something is wrong with the configuration options you chose.
-* Your input data is valid but the App is not designed to run on your data.
-* The App, data, configurations are all correct, but something is (or was) wrong with the compute-resource (either temporary or permanently) that your job ran on.
-* Temporary glitch. The HPC systems are complex, so there is always a possibility of gremlins causing a temporary problem that goes away if you just rerun your job.
-* A bug with brainlife.io platform itself.
-* and many others..
+---
 
-Unfortunately, it is often up to each user to figure out which of above case applies, and take appropriate course of action. If the failure is caused by your data/configuration, then you will need to correct those issues and resubmit. If the issue is caused by the bug with the App itself, then you will need to contact the App developer. For compute-resource/platform issued, you need to contact the resource administrator, or the brainlife.io team, and so on.
+## 1. Locating Failed Processes
 
-This documentation will guide you through determining the cause of the failure.
+To find failed tasks in your project:
 
-!!! note 
-    You are most welcome to contact our [#issues](https://app.slack.com/client/T3X5ND3U1/C6WBY79SB){target=_blank} slack channel to seek assistance. You may also find it helpful to search in the slack channel for older messages to see if your issue has already been addressed.
+1. Open your project and navigate to the **3. Processing** tab.
+2. Click on the **Processes** sub-tab (`/processing/processes`).
+3. In the processes table, locate processes displaying the red **Failed** badge.
+4. You can use the **Status** filter dropdown in the table header to isolate all failed processes across your project, or search by subject ID.
 
-## Finding the error message
+---
 
-To figure out what went wrong, first you need to examine the log files. Click and expand the `Raw Output` section toward the bottom of the job.
+## 2. Inspecting the Process Side Panel
 
-![failed raw output](../img/failed_rawoutput.png)
+Clicking on any process row in the table opens the sliding **Process Side Panel**:
 
-Here you can see a list of files produced by the job, and they are sorted based on file modification time. The name of the log depends on the computing resources that it ran on, but normally you should see files with some numbers and file extensions like `.log` or `.err` toward the end.
+- **Process Header**: Displays the process title, execution instance ID, and overall status.
+- **Task Stepper**: Shows the execution stages of the process (e.g., input staging, data preparation, App execution, and output archiving).
+- **Process Actions**:
+  - **Quick add app**: Append a new App task directly to this process.
+  - **Quick add data**: Stage additional datasets into this process.
+  - **Editor**: Jump directly to the visual **Process DAG Editor** (`/processing/processes/:instanceId/editor`).
+  - **Delete**: Permanently remove the failed process instance.
 
-Click on `.log` and `.err` files to view the contents.
+---
 
-Here is what I see for this particular instance.
+## 3. Viewing Error Logs
 
-![error logs](../img/errorlog.png)
+When an App task fails, Brainlife captures standard error (`stderr`), standard output (`stdout`), and job scheduler output from the remote computing resource.
 
-According to this, it looks like something went wrong when `mri_deface` command tries to open some file that it needed (`./mri_deface: could not open GCA /average/talairach_mixed_with_skull.gca.`). 
+To view the error:
 
-!!! note
-    Many programs outputs 2 stream of log files; stdout(`.log`) and stderr(`.err`). The stdout log mainly contains normal output from the App (via echo or print command) and shows what the App was doing and information about status of the job depending of the App. stderr, on the other hand, contains critical error messages and normally you will find more information about the job failure in this log. You will often need to look at both files.
+1. In the sliding side panel, locate the failed App step in the **Task Stepper**.
+2. Expand the **Run** section and click on the **Logs** accordion.
+3. **Automatic Error Log Detection**:
+   Brainlife automatically detects the primary HPC error log (such as `slurm-*.err`) and streams it directly in the inline log viewer.
+4. **Advanced File Browser**:
+   Toggle the **Advanced** switch in the Logs header to reveal the full **Task Files** browser:
+   - `slurm-*.out`: Full standard output from the cluster node.
+   - `config.json`: The exact input configurations, parameter values, and data paths provided to the container.
+   - `_app.sh` / wrapper script: The container invocation command executed on the compute node.
+   - Intermediate files and scratch directories generated before the failure occurred.
 
-## Handling Application Error
+---
 
-Assuming that this error is caused by a bug with an App, I should now find who the maintainer of this App is, then report this issue to them. 
+## 4. Common Failure Causes & Solutions
 
-If you click the App banner at the top of the job, it will take you back to the brainlife's App detail page for this App.
+### A. Missing or Incompatible Input Data
+* **Symptom**: The log indicates missing files or unexpected input formats (e.g., `FileNotFoundError: dwi.bvals not found`).
+* **Cause**: The input dataset was incomplete, lacked required datatype tags, or the App expected a specific preprocessing stage (such as skull-stripped or ACPC-aligned data).
+* **Fix**: Check the App's required inputs in the **Apps** catalog (`/apps/:appId`). Ensure your input data-objects match the required datatype and datatype tags.
 
-I see these maintainer for this App.
+### B. High-Performance Computing (HPC) Resource Glitches
+* **Symptom**: Errors such as `Disk quota exceeded`, `Out of Memory (OOM)`, `Bus error`, or SLURM walltime cancellation (`CANCELLED AT ... DUE TO TIME LIMIT`).
+* **Cause**: Large datasets (such as multi-shell DWI or high-resolution 7T fMRI) may exceed default RAM limits or cluster scratch allocations.
+* **Fix**:
+  1. Open the process in the **Process DAG Editor**.
+  2. Click on the task node and adjust compute resource parameters (request more memory or longer execution time).
+  3. Alternatively, choose a different registered compute resource under your project's **Settings > Resources**.
 
-![maintainer](../img/maintainer.png)
+### C. Application or Container Bugs
+* **Symptom**: Python/C++ stack traces, segmentation faults inside the container, or tool-specific exit codes.
+* **Cause**: An unhandled edge case or software defect within the App itself.
+* **Fix**:
+  1. Click the App name in the side panel or navigate to `/apps/:appId`.
+  2. Review the App documentation and maintainer list.
+  3. Click the **GitHub Repository** link to check existing issues or open a new bug report with the maintainer.
+  4. Reach out to the community on the Brainlife Slack `#issues` channel with the task ID and error snippet.
 
-You can contact one of these people via email or slack. Most of the maintainers of the brainlife App are on the brainlife slack, so you can directly contact them post your message on #issue or #general channel to start a conversation (you can use "@someone" to ping that person if you think the person might not be monitoring the channel)
+---
 
-If you prefer, you can also file a github issue for the App. You can click the github repo name for the App.
+## 5. Rerunning or Editing Failed Tasks
 
-![githublink](../img/githublink.png)
+Once you have identified the cause of the failure:
 
-It which takes you to the github page for this App.
-
-![githubiussues](../img/githubissues.png)
-
-Under the `Issues` tab, you can click the `New Issues` button to submit your issue. 
-
-!!! note
-    Some Apps might not have `Issues` tab available. A developer can disable `Issues` especially if they want the users to submit issues elsewhere. 
-
-## Handling Resource Errors
-
-Not all job failure is caused by the App itself, but often due to (often temporarily) issues related to the compute-resource. Compute-resource might fail in variety of reasons such as..
-
-* Unrecoverable network / hardware issues
-* scratch out of space - where the data is staged
-* /tmp out of space on the compute nodes, or any other compute node specific issues
-* Resource incompatibility with the App. Some Apps might not work or might failure more often on certain resources. You will need to notify the App developer and see if the App should be un-registered to run on such resources.
-* Resource environment issue. Most brainlife app uses to normalize the execution environment. However, when the new version of singularity being installed, or updates to the configuration file might cause issues with some Apps - although it is usually an temporally issue.
-
-If your job fails with error message that doesn't make sense, of fail only on certain resources, you should suspect that the issue is caused by the resource. Most resource issues are temporally, so you could also try resubmitting the job again to see if that solves the issue (Please contact the brainlife.io team to let them know that there might be something wrong with the resource).
-
-You can find out where the job ran by hovering your mouse over the Graph icon.
-
-![failresource](../img/failresource.png)
-
-This particular job ran on a resource `hayashis@carbonate` which is my personal compute-resource that I use for testing. 
-
-
-# Common Errors
-
-## "Dependency removed"
-
-This happens when the job that produced the output gets removed before the job finishes. Previous jobs gets removed in variety of reasons including 1) user removes the job manually 2) jobs gets too old and purged by the HPC system, 3) user turns off the pipeline rule that submitted the previous jobs.
-
-brainlife will try to prevent a job from getting prematurely removed if the output from the job is used by another job, but you will need to re-stage the input and re-submit if you see this message.
-
-For pipeline submitted jobs, however, all you need to do is remove that particular job and brainlife should automatically stage the input data (if archived) and resubmit the job itself. 
-
-## "failed to cache app .. code:1"
-
-This error occurs when brainlife fails to git clone the App on selected resources. The git clone could fail due to variety of reasons such as.. 
-
-* the git repo no longer exists.
-* the repo includes submodules that no longer exist (or not accessible).
-* the repo includes submodules that uses `git@` format instead of `http:` please see below
-* the branch requested no longer exists.
-
-To troubleshoot, please try git clonining the app/branch locally or contact the app developer.
-
-### failed to cache app with submodules
-
-App developers often uses submodules as part of their git repo, and sometimes they use `git@` formatted URLs like this.
-
-[.git/config]
-```
-[submodule "jsonlab"]
-    url = git@github.com:fangq/jsonlab.git
-```
-
-`git@github.com` forces git cline to use ssh to access github.com. This works as long as the git client has access to public key registered to *any* existing github account. Most brainlife resource, however, does not have their local ssh key registered on github, so this results in error message such as this
-
-```
-fatal: clone of 'git@github.com:fangq/jsonlab.git' into submodule path '/N/project/brainlife/workdir/prod/appcache/app-voxeleronOCT-d30fb565bf36d95a683238db7785827c2004c462.clone/jsonlab' failed
-```
-
-If your app is failing and it uses submodules, and if the submodules is configured to use `git@github.com` url (see .git/config), then you will need to ask the developer to update the URL to use `https://github.com` url instead. For example, above `.git/config` should be updated to this instead.
-
-```
-[submodule "jsonlab"]
-    url = https://github.com/fangq/jsonlab.git
-```
-
+1. **Rerun the Task**:
+   If the failure was due to a temporary network blip or cluster timeout, click the **Rerun** button directly on the task in the side panel. Brainlife will resubmit the job to the cluster.
+2. **Modify in the Process DAG Editor**:
+   Click the **Editor** button in the side panel to open the interactive node graph:
+   - Adjust task configuration parameters.
+   - Rewire input data connections to alternative data-objects.
+   - Click **Run** to execute the updated graph.
+3. **Clean Up Failed Processes**:
+   If a task is permanently invalid or superseded by a newer pipeline run, click the **Delete** button in the side panel to delete the process instance and free up cluster scratch space.

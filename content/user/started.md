@@ -150,14 +150,18 @@ Brainlife's orchestrator ([Amaretti](https://github.com/brainlife/amaretti){targ
 * **Finished**: Execution succeeded! Derivative datasets are automatically added to your project's data catalog.
 * **Failed**: If an error occurred, expand the task's **Raw Output** to inspect `stdout`, `stderr`, and log files.
 
-### Automating with Pipeline Rules
+### Automating with Pipeline Automations
 
-If you need to analyze dozens or hundreds of subjects:
+If you need to analyze dozens or hundreds of subjects across your project:
 
 1. In the **3. Processing** tab, select the **Pipeline** sub-view.
-2. Click **Add Rule** to select an App and set fixed parameters.
-3. Configure your input matching tags and output tags.
-4. Once active, the rule continuously evaluates your project: whenever new subjects matching your criteria are added, Brainlife automatically launches the App and catalogs the outputs.
+2. Click the **`+ Automation`** button to launch the 4-step wizard:
+   - **Select App**: Choose an App from the catalog.
+   - **Configure App Settings**: Set fixed runtime flags and arguments.
+   - **Configure Inputs**: Set datatype tag filters, project overrides, and regex **Subject/Session Filters**.
+   - **Configure Outputs**: Add output tags to identify derivatives cleanly.
+3. Organize related rules into collapsible groups with **`+ Automation Group`**.
+4. Once active, the automation continuously evaluates your project: whenever subjects matching your criteria are added or upstream derivatives are produced, Brainlife automatically launches the App and archives the outputs.
 
 ---
 

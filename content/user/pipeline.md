@@ -1,63 +1,129 @@
-# Pipelines
+# Pipelines & Automations
 
-The `Preprocesses` tab allows you to submit tasks one at a time. This is great if you are exploring different Apps or experimenting with different configurations that can best process your datasets. However, once you find the optimal set of Apps, you would probably want to run it across many subjects and submitting them one by one is simply not a good option.
+The **Processes** tab allows you to submit tasks one at a time. This manual approach is ideal when you are exploring different Apps, inspecting intermediate results, or testing configurations on a single subject. However, once you have identified your optimal processing steps and need to scale across tens, hundreds, or thousands of subjects, submitting them individually is neither practical nor reproducible.
 
-<!--
-When you are processing a large number of subjects, it is often inevitable that some subject would require a different set of configuration, or simply not possible to process at all. This might be due to data quality issues, incorrect metadata, etc. With a common workflow orchestration system, you are often tasked to develop a workflow script or some sort, submit it, and keep up with witch subjects has failed on which part of the workflow so that you can repeatedly re-submit a partial workflow until all subjects are processed.
--->
+Brainlife solves this through **Pipelines and Automations** (rule-based stream processing). Instead of requiring you to write and maintain complex workflow scripts (like Snakemake, Nextflow, or Nipype DAGs) that run once and fail if any single participant errors out, Brainlife evaluates independent **Automations** continuously across your project.
 
-Brainlife allows you to setup *pipeline rules* that can automate the submission of tasks. Instead of describing the entire workflow that you submit **once** (or re-submit if something fails), you will define a set of individual rules which will be continuously evaluated until there are no more data to process. You can think of it as a factory assembly line producing products where each steps within the assembly line as piepline rules. When a subject fails to produce an output dataset for a specific rule, you can examine and handle it manually. Once you can produce a valid output, the rest of the pipeline rules will pick it up as if it came from the original rule.
+---
 
-<!--
-We believe our rule-based submission system is easier to setup, and more error-tolerant that more conventional orchestration methods (it is also much easier to implement).
--->
+## How Brainlife Automations Work
 
-## Setting up Pipeline Rule
+Think of a Brainlife pipeline as an intelligent assembly line:
 
-To setup a new pipeline rule, go to Project > `Pipelines` tab and click on "Add Rule" button.
+```
+[ Input Datasets ] ──> ( Automation 1: App A ) ──> [ Derivative 1 ] ──> ( Automation 2: App B ) ──> [ Final Results ]
+```
 
-Each rule will be responsible for submitting a specific App with a specific set of configurations. Enter a description for this rule, and search for the App that you'd like to submit. Once you select an App, you will be able to set its configuration parameters.
+1. **Independent Rules**: Each automation defines an App to run, its configuration parameters, required input criteria (datatypes, tags, subject filters), and expected output tags.
+2. **Continuous Event-Driven Evaluation**: Brainlife continuously monitors your project. Whenever a subject or session possesses all required input datasets and has not yet produced the designated output, a new process is automatically dispatched.
+3. **Automatic Derivative Archiving**: As soon as an App finishes running, its output datasets are archived into your project and immediately satisfy the input requirements for downstream automations.
+4. **Fault Tolerance & Resilience**: If a particular subject fails (e.g., due to scan artifacts or motion), only that specific subject stops at that step. The rest of your cohort continues through the pipeline uninterrupted. You can inspect logs, resolve the issue, and once the missing output is produced, downstream automations pick it right back up.
 
-![pipeline.app](../img/rule_app.png)
+---
 
-All Brainlife Apps have a defined list of input datatypes that App requires to run. Brainlife will look for any subject that provides all required input datatypes, and submit a new process for each subject using above specified configuration. If your project contains more than one data objects that matches the required datatype for a subject, you will need to add specificity to the input data by adding datatype / object tags in the input tab.
+## Accessing the Pipeline View
 
-![pipeline.input](../img/rule_input.png)
+To view and manage your project pipelines:
 
-When you are submitting your first rule, you might not have all the input data objects stored in your project itself. The selection override field allows you to pull data from other "parent" projects.
+1. Open your project on Brainlife.
+2. Select the **`3. Processing`** tab from the top navigation bar.
+3. In the sub-navigation toggle, switch from **Summary** or **Processes** to **`Pipeline`**.
 
-If you'd like to submit jobs only for a subset of subjects/sessions, you can specify subject names (in regular expression) in `Subject/Session Filter` field.
+!!! note "Prerequisites"
+    If your project does not contain any datasets yet, you will be prompted to first add or copy data into the project under the **`2. Data`** tab before configuring automations.
 
-![pipeline.filter](../img/pipeline.filter.png)
+---
 
-The above example will make this rule to only submit for subjects with names that start with "100" or "200". When you are setting up your first rule, it's always good to limit the number of subjects to make sure your rule is set up correctly.
+## Creating a New Automation
 
-!!! hint
-    There are regular expression tutorials available online. Also, please feel free to send us your question via Brainlife slack team.
+To add a new rule to your pipeline, click the **`+ Automation`** button in the top-right toolbar. This opens the **Add New Automation to Pipeline** wizard.
 
-Brainlife also won't submit a new process if your project already has an output that matches the output datatype/tags (for example, maybe other rules has already produced the output, or copied from other project, or generated manually by the user through process tab). To be more specific about which data objects are generated by which rule, you can specify output dataset tags under the output tab.
+The creation flow guides you through four sequential steps:
 
-![pipeline.output](../img/rule_output.png)
+### Step 1: Select App
+Browse or search the Brainlife App catalog to select the App you want to automate (e.g., FreeSurfer, FSL BET, Tractoflow, etc.). You can search by App name, keywords, or modalities.
 
-You can leave this default if you know there won't be any other App generating the same output datatype. We recommend to always set output dataset tags just in case.
+### Step 2: Configure App Settings
+Configure the parameters and arguments for the chosen App:
+- Adjust default numeric values, flags, and configuration toggles required for your analysis.
+- Expand the **Advanced** section if your analysis requires specialized execution flags or custom script options.
 
-## Monitoring Pipeline Rules
+### Step 3: Configure Inputs
+This step defines the matching criteria Brainlife will use to select datasets for each subject and session:
 
-Once you submit your pipeline rule, it should start submitting processes and you can monitor them its status on the main pipeline page. You can find out more details about the rule by clicking "Detail" button.
+- **Required Datatypes**: Review the expected input datatypes (e.g. `neuro/anat/t1w`, `neuro/dwi`).
+- **Datatype Tags & Annotation Filters**: If your project contains multiple datasets of the same datatype for a subject (e.g., multiple T1w runs or sessions), add specific datatype tags or annotation tags to resolve ambiguity and specify exactly which dataset to use.
+- **Parent Project Overrides**: If the input datasets reside in another project (such as a shared raw data repository), you can specify a project override to read data directly from the parent project without copying or duplicating files.
+- **Global Subject / Session Filters**:
+  Expand the **Global Subject/Session Filters** panel to restrict the automation to specific subjects or sessions using regular expressions:
+  - **Subject Filter**: Enter a regex pattern (e.g., `^100` to process only subjects whose IDs begin with `100`, or `sub-(01|02|03)` for specific cohorts).
+  - **Session Filter**: Enter a regex pattern to limit processing to specific sessions (e.g., `01` or `ses-baseline`).
+- **Live Match Counter**: A real-time badge indicates how many subjects/datasets in your project currently match your filter criteria.
 
-![pipeline.rule](../img/rule.png)
+### Step 4: Configure Outputs
+Specify how generated derivatives should be identified:
 
-![pipeline.rule](../img/rule_detail.png)
+- **Output Dataset Tags (Annotations)**: Add descriptive tags to the generated outputs (e.g., `acpc_aligned`, `freesurfer7`).
+- **Output Descriptions**: Optionally provide a label or description for downstream tracking.
 
-As pipeline rule simply automates submission of jobs, you can also monitor job executions under Preprocessing tab just as you'd monitor tasks submitted manually in the preprocessing tab.
+!!! tip "Always Add Output Dataset Tags"
+    Tagging your outputs is strongly recommended. Output tags distinguish datasets generated by this specific automation from other Apps producing the same datatype, and they prevent accidental duplicate runs while enabling downstream automations to target this exact derivative.
 
-![pipeline.processes](../img/pipeline.processes.png)
+Click **Create** to activate the automation and add it to your pipeline.
 
-You can interact with pipeline submitted tasks as you normally do with any processes; examine outputs, stop, restart, etc. The output datasets will be automatically archived once each task has completed successfully.
+---
 
-!!! note
-    If you remove a process or task, Brainlife will resubmit another process to handle that subject if the subject has all required input datasets and has not produced the output from the requested app yet. If you don't want them to be resubmitted, please remove or deactivate your rule.
+## Organizing Pipelines: Automation Groups
 
-## Updating Pipeline Rule
+As your analysis grows in complexity, you can group related automations together:
 
-If you need to update your pipeline rule, you should first deactivate the rule so that no more jobs will be submitted, and depending on the type of the update you are making, you should also remove all existing jobs especially if you are trying to make configuration changes. Otherwise, some subject will be processed using the old configuration, and some will be processed using the new configuration. You will also need to remove any output already generated / archived using the old configuration.
+1. Click the **`+ Automation Group`** button in the pipeline toolbar.
+2. Enter a descriptive name (e.g., `Structural Preprocessing`, `Diffusion Processing`, or `Network Analysis`).
+3. Once created, groups appear on the canvas and in the sidebar list.
+4. You can collapse or expand groups to keep your workflow clean and focused.
+5. Move individual automations into or out of groups via the automation action menu (`Move to group`).
+
+---
+
+## Interactive Flowchart Canvas
+
+The pipeline page provides an interactive, visual flowchart canvas powered by an automated graph layout engine:
+
+- **Nodes**: Each card represents an automation App, showing its icon, name, active status, and live subject processing counters.
+- **Connections (Edges)**: Directed lines automatically connect Apps when an output datatype and tag match downstream input requirements, showing you the end-to-end data flow at a glance.
+- **Canvas Controls**: Pan by dragging, zoom with your mouse wheel or the mini-map controls, and click nodes to open detailed inspectors.
+- **Collapsible Automations Sidebar**: Click the sidebar toggle on the left to reveal a searchable, ordered list of all automations and groups in your project.
+- **View Settings**: Click the **View Settings** button to toggle options such as **Show Inactive Automations** or customize canvas display preferences.
+
+---
+
+## Monitoring Automation Status
+
+Clicking on any automation card in the flowchart opens the **Automation Details** modal, which breaks down all subjects into four clear categories:
+
+| Status Group | Description |
+| :--- | :--- |
+| **Waiting** | Subjects that have not run yet because required input datasets or upstream prerequisites are not yet available. |
+| **Processing** | Tasks that have met all prerequisites and are currently requested, queued, or running on compute resources. |
+| **Complete** | Subjects that have finished processing successfully and whose output datasets are safely archived. |
+| **Attention** | Subjects requiring user attention, including failed tasks or cases with ambiguous matching inputs (e.g., multiple matching datasets where tags are needed to distinguish them). |
+
+From the Automation Details modal, you can:
+- **Toggle Active / Inactive**: Use the switch to temporarily pause or resume automatic job submission.
+- **View in Processes**: Click the list icon to jump directly to the **Processes** tab with filters pre-set to show all tasks associated with this automation.
+- **Edit Automation**: Click the pencil icon to modify configuration settings, input filters, or output tags.
+- **Delete Automation**: Remove the rule from your pipeline.
+
+---
+
+## Modifying & Updating Automations
+
+If you need to change configurations or update parameters on an existing automation:
+
+1. Open the automation details and toggle the status switch to **Inactive** so no new jobs are submitted with the old parameters.
+2. Click the **Edit** (pencil) button to adjust your App settings or filters.
+3. If the change alters data outputs (e.g., different resolution or registration target), navigate to the **Processes** tab or **Data** tab to clean up any obsolete tasks or outputs generated with the old configuration.
+4. Toggle the automation back to **Active** to resume processing.
+
+!!! note "Automatic Re-submission Behavior"
+    Brainlife will automatically submit a task whenever a subject has valid inputs but no matching archived output. If you remove an existing task or output dataset while an automation remains **Active**, Brainlife will automatically re-queue and re-run that subject. If you do not want it re-submitted, deactivate the automation first.

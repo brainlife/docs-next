@@ -33,17 +33,6 @@ export const DOCS_SECTIONS: NavSection[] = [
         ],
     },
     {
-        title: 'GETTING STARTED',
-        items: [
-            { title: 'Quick Start', href: '/docs/user/started', icon: 'CheckCircle2' },
-            { title: 'Projects', href: '/docs/user/project', icon: 'Folder' },
-            { title: 'Datasets', href: '/docs/user/datasets', icon: 'Database' },
-            { title: 'Apps', href: '/docs/apps/introduction', icon: 'Box' },
-            { title: 'Pipelines', href: '/docs/user/pipeline', icon: 'GitFork' },
-            { title: 'Visualizations', href: '/docs/user/datatypes', icon: 'Eye' },
-        ],
-    },
-    {
         title: 'USER GUIDE',
         items: [
             {
@@ -52,13 +41,13 @@ export const DOCS_SECTIONS: NavSection[] = [
                 children: [
                     { title: 'Getting Started', href: '/docs/user/started', path: 'user/started.md' },
                     { title: 'Projects', href: '/docs/user/project', path: 'user/project.md' },
+                    { title: 'Project Data', href: '/docs/user/archive', path: 'user/archive.md' },
                     { title: 'Datatypes', href: '/docs/user/datatypes', path: 'user/datatypes.md' },
-                    { title: 'Archive', href: '/docs/user/archive', path: 'user/archive.md' },
-                    { title: 'Preprocess', href: '/docs/user/process', path: 'user/process.md' },
+                    { title: 'Processes', href: '/docs/user/process', path: 'user/process.md' },
                     { title: 'Pipelines', href: '/docs/user/pipeline', path: 'user/pipeline.md' },
                     { title: 'Publications', href: '/docs/user/publication', path: 'user/publication.md' },
-                    { title: 'Datasets', href: '/docs/user/datasets', path: 'user/datasets.md' },
-                    { title: 'Failure', href: '/docs/user/failure', path: 'user/failure.md' },
+                    { title: 'Public Datasets', href: '/docs/user/datasets', path: 'user/datasets.md' },
+                    { title: 'Troubleshooting & Failure', href: '/docs/user/failure', path: 'user/failure.md' },
                 ],
             },
             {
@@ -112,9 +101,6 @@ export const DOCS_SECTIONS: NavSection[] = [
                     { title: 'Registering Resource', href: '/docs/resources/register', path: 'resources/register.md' },
                 ],
             },
-            { title: 'Publications', href: '/docs/user/publication', icon: 'FileText' },
-            { title: 'Data Types', href: '/docs/user/datatypes', icon: 'Layers' },
-            { title: 'Archive', href: '/docs/user/archive', icon: 'Archive' },
         ],
     },
     {
@@ -125,13 +111,12 @@ export const DOCS_SECTIONS: NavSection[] = [
                 icon: 'Sliders',
                 children: [
                     { title: 'Architecture', href: '/docs/technical/arthitecture', path: 'technical/arthitecture.md' },
-                    { title: 'APIs', href: '/docs/technical/api', path: 'technical/api.md' },
+                    { title: 'Task Orchestration (Amaretti)', href: '/docs/technical/amaretti', path: 'technical/amaretti.md' },
+                    { title: 'Amaretti REST API', href: '/docs/technical/api', path: 'technical/api.md' },
                     { title: 'ezBIDS', href: '/docs/technical/ezBIDS', path: 'technical/ezBIDS.md' },
                 ],
             },
-            { title: 'API Reference', href: '/docs/technical/api', icon: 'Code' },
-            { title: 'Troubleshooting', href: '/docs/user/failure', icon: 'HelpCircle' },
-            { title: 'FAQ', href: '/docs/contact', icon: 'HelpCircle' },
+            { title: 'FAQ & Contact', href: '/docs/contact', icon: 'HelpCircle' },
         ],
     },
     {

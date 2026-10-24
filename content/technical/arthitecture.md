@@ -8,9 +8,9 @@ brainlife.io is composed of a collection of [microservices](https://microservice
 
 These services are distributed across multiple docker hosts and various VMs on [Jetstream-Cloud](https://jetstream-cloud.org/){target=_blank}. They mainly communicate through REST APIs and/or AMQP message bus. All external web traffic is proxied through our API proxy (nginx). Our infrastructure also includes monitoring and operational services (not included in the diagram).
 
-### Amaretti
+### Amaretti Task Engine
 
-[Amaretti](https://brainlife.github.io/amaretti/){target=_blank} is another major service group that handles the orchestration of tasks(jobs) and workflows on various computing resources. Amaretti is what we call a "meta" orchestration service, meaning it sits on top of various local batch scheduling systems such as PBS, CondorHT, and Slurm to handle the actual job executions on the remote computing resources. Amaretti simply orchestrates and monitors these heterogeneous computing resources and abstracts various common operations requested by our users.
+[Amaretti](/docs/technical/amaretti) is the primary task orchestration service that handles the execution of jobs and workflow DAGs across distributed computing resources. Amaretti is a "meta" orchestration engine, meaning it sits directly on top of local batch scheduling systems (such as SLURM, PBS, and HTCondor) to manage containerized execution, direct inter-cluster data synchronization via `rsync`, and scratch space lifecycles. For deep technical details, see the [Amaretti Task Orchestration Guide](/docs/technical/amaretti) and the [Amaretti REST API Reference](/docs/technical/api).
 
 ### Authentication
 

@@ -22,29 +22,22 @@ When you register to brainlife.io, we will send you an invite for our slack team
 ## Newsletter Subscription
 
 <!-- Begin Mailchimp Signup Form -->
-<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-	/* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
-	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-</style>
 <div id="mc_embed_signup">
 <form action="https://brainlife.us12.list-manage.com/subscribe/post?u=0f52b0cd65a88d27aa83d8005&amp;id=8d07cef694" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
     <div id="mc_embed_signup_scroll">
 	
 <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
 <div class="mc-field-group">
-	<label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
-</label>
-	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+	<label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label>
+	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" placeholder="name@institution.edu" required>
 </div>
 <div class="mc-field-group">
-	<label for="mce-FNAME">First Name </label>
-	<input type="text" value="" name="FNAME" class="" id="mce-FNAME">
+	<label for="mce-FNAME">First Name</label>
+	<input type="text" value="" name="FNAME" class="" id="mce-FNAME" placeholder="First name">
 </div>
 <div class="mc-field-group">
-	<label for="mce-LNAME">Last Name </label>
-	<input type="text" value="" name="LNAME" class="" id="mce-LNAME">
+	<label for="mce-LNAME">Last Name</label>
+	<input type="text" value="" name="LNAME" class="" id="mce-LNAME" placeholder="Last name">
 </div>
 <div id="mce-responses" class="clear">
     <div class="response" id="mce-error-response" style="display:none"></div>

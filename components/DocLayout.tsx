@@ -32,8 +32,8 @@ export default function DocLayout({ children, headings = [], githubEditUrl }: Do
                 />
 
                 {/* Main Content Area */}
-                <main className="flex-1 min-w-0 flex justify-between px-6 sm:px-10 lg:px-14 xl:px-16 py-8">
-                    <div className="flex-1 max-w-4xl min-w-0">
+                <main className="flex-1 min-w-0 flex justify-between gap-8 lg:gap-10 xl:gap-12 px-6 sm:px-8 lg:px-10 xl:px-12 py-8">
+                    <div className="flex-1 min-w-0 max-w-5xl xl:max-w-6xl">
                         {children}
 
                         {/* Page Footer */}

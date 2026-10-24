@@ -1,74 +1,80 @@
-# Processes
+# Processes & Task Execution
 
-> Hey there! If you have not read the [data processing section](/docs/user/started/#data-processing) of the introductory tutorial yet, please do that first.
+While **Pipelines** are designed for automated batch processing across large cohorts, the **Processes** interface allows for hands-on, on-demand execution. A Process is a workspace instance where you stage specific input datasets, execute Apps one at a time, inspect intermediate results, and link tools together into custom analysis workflows.
 
-Now that we are `Projects` experts, we can cover `Processes` in-depth. In any Project you create, you will have a `Processes` tab (like in the image below), where you will perform all of your data analysis. A Process is a logical grouping of data analysis and processing tasks that share input and output datasets.
+---
 
-![processes](../img/processes.png)
+## Accessing Processes
 
-## Staging Data 
+To manage on-demand tasks in your project:
 
-Processing data begins with **staging your dataset.** You can stage a dataset from any project and subject you have read access to (but remember that it may be helpful to create a separate Process for each subject). To stage data, simply click the `Stage Data` button and fill in the [data-object information](/docs/user/started/#brainlifeio-terms-to-know). 
+1. Open your project on Brainlife.
+2. Select the **`3. Processing`** tab from the top navigation bar.
+3. In the sub-navigation toggle bar, switch to **`Processes`**.
 
-![stage data](../img/stage data.png)
+```
+[ Summary ] ── [ Pipeline ] ── [ Processes (active) ]
+```
 
-If you want a step-by-step guide for staging data, follow our [data processing tutorial](/docs/user/started/#data-processing).
+---
 
-After you submit a task, brainlife.io will automatically assign your task to the next available computing resource (that you have access to). Our task orchestration service, called [Amaretti](https://github.com/brainlife/amaretti){target=_blank}, takes care of data transfer. 
+## Running an On-Demand Task
 
-Amaretti also monitors your task status for you. You can see this once you submit a task -- a blue bar pops up and says "Requested" once you submit and then "Running" while the task is processing. The bar turns green and says "Finished" when the task is done. You can see the log content by opening the `Raw Output` section of the task and selecting any log files you want to take a closer look at.
+A typical process workflow consists of staging data, selecting an App, configuring execution settings, and monitoring execution:
 
-![rawoutput](../img/raw.output.png)
+### Step 1: Staging Input Data
+Processing begins by selecting the datasets you want to analyze:
+1. Navigate to the **`2. Data`** tab.
+2. Check the boxes next to the participant datasets you want to process.
+3. In the action bar above the table, click **Stage to process**.
+4. In the dialog, either select an existing process instance or create a new named process (e.g., `sub-01-exploratory-tractography`).
+5. Brainlife will copy/link the datasets into your process scratch space.
 
-!!! note
-    The `Raw Output` section will not be available for tasks that are not yet assigned to a resource.
+### Step 2: Submitting an App
+1. Go to the **`3. Processing`** tab and switch to **`Processes`**.
+2. Click **Submit App** (or use the App catalog at `/apps` and click **Execute**).
+3. Brainlife filters available Apps to only show those whose required input datatypes match the data objects staged in your process.
+4. Select the App you want to run (e.g., *FreeSurfer*, *FSL BET*, *MRtrix CSD*).
+5. Configure the App parameters, thresholds, or flags in the configuration modal.
+6. Click **Submit**.
 
-If you want to download a file, you simply click the (:fa-download:) icon to download individual files and entire directories.
+---
 
-## Submitting Apps
+## Monitoring Job Status
 
-The Processing tab is not only where you stage data on brainlife.io but also where you submit Apps. To submit an App, simply click the `Submit App` button in your `Processes` tab. 
+Brainlife's orchestrator, **Amaretti**, dispatches your task to an optimal computing resource (HPC cluster, cloud VM, or campus grid) and monitors its lifecycle:
 
-![submit app](../img/submit app.png)
+| Status | Meaning |
+| :--- | :--- |
+| **Requested** | The job is queued in Brainlife's system and waiting for an available computing resource that matches the task's hardware requirements. |
+| **Running** | A compute resource has been assigned, input data has been transferred, and the job is actively executing in a containerized environment (Singularity/Docker). |
+| **Finished** | The job completed with return code `0`. All output datasets are automatically validated, cataloged, and archived into your project's **`2. Data`** tab. |
+| **Failed** | The job exited with an error. You can inspect the execution logs (`stdout`, `stderr`) in the side panel to troubleshoot the issue. |
+| **Removed** | To conserve cluster storage, the temporary scratch work directory on the remote cluster is automatically purged after 25 days. Your archived output datasets remain safe and permanently stored. |
 
-brainlife.io selects Apps that you can execute by comparing the datasets staged in your process with the required input datasets for each App. The more datasets you stage or create, the more Apps you can submit. If you do not find the App you are looking for, head over to the [Apps page](https://brainlife.io/apps){target=_blank}. When you find the App you want, you can execute it directly from the App page by selecting the `Execute` button. Or you can go back to the Processes page and generate or stage the dataset required to run the App.
+---
 
-![app.execute](../img/app.execute.png)
+## The Processes Table & Side-Panel Inspector
 
-When you submit an App through the `Execute` button, brainlife.io will create a new process in your selected project, stage all of the input files you selected, and submit your App in a single step.
+The **Processes** view provides a high-density, faceted table designed for tracking multiple tasks:
 
-!!! tip
-    If you are looking for a sample dataset, try the [O3D project](https://doi.org/10.25663/bl.p.3){target=_blank} which contains a lot of common data derivatives.
-    
-## Task Status
+- **Faceted Filters**: Quickly filter jobs by status (**Requested**, **Running**, **Finished**, **Failed**), App name, submitter, execution resource, or date.
+- **Batch Selection**: Select multiple tasks to restart or delete failed jobs.
+- **Side-Panel Inspector**: Clicking on any process row opens a sliding drawer on the right side of the screen containing:
+  - **Live Log Stream**: View real-time terminal output, standard output (`stdout`), and error output (`stderr`).
+  - **Task Files & Raw Output**: Browse and download all intermediate log files, configuration files, and script outputs.
+  - **Compute Resource Information**: Details about the host cluster, walltime duration, memory consumption, and exit code.
 
-Before we finish talking about Processes, let's do a quick breakdown of the task statuses you may encounter while processing data:
+---
 
-* Requested
+## Interactive Process DAG Editor
 
-    When you first submit your task, brainlife.io will confirm it has been `Requested` as the task waits to be assigned to a resource. If there are a lot of tasks being processed on the platform at the same time, it may take a few minutes for your task to be picked up.
+For complex, multi-step workflows that involve chaining multiple Apps together, Brainlife Connects provides the **Interactive Process Editor**:
 
-* Running
+1. In the Processes table, click the **Process Editor** link or navigate to `/projects/:projectId/processing/processes/:instanceId/editor`.
+2. The editor launches a visual, interactive **ReactFlow canvas** representing the workflow Directed Acyclic Graph (DAG) for that specific process instance:
+   - **Data Nodes**: Represent staged raw input datasets or intermediate derivatives generated by Apps.
+   - **App Nodes**: Represent individual tool executions (e.g., App 1: Skull Stripping $\rightarrow$ App 2: Registration $\rightarrow$ App 3: Tractography).
+   - **Dependency Edges**: Visually map the flow of data objects from App outputs to downstream App inputs.
+3. You can click on any node in the graph to inspect intermediate outputs, check task status, or attach new Apps directly into the pipeline graph.
 
-    Once brainlife.io finds the right resource, your task will enter a queue for the resource and then start `Running`. Remember that most resources have their own local batch scheduling systems, so brainlife.io's status might show the task is `Running` while it is actually waiting in the remote queue.
-
-* Finished
-
-    Success! `Finished` means the task was completed **successfully.** You can now visualize output datasets by clicking :fa-eye: buttons next to each output dataset (Hint: This is covered in the [data processing tutorial](/docs/user/started/#data-processing){target=_blank} we keep talking about). If you requested to auto-archive the output datasets, they will be copied to you project's `Archive`.
-
-* Failed
-
-    Job could fail (exit with non-0 return code) in variety of different reasons, so you will need to look at the log file under `Raw Output` and determine why the job failed. Please see [Handling Job Failure](/docs/user/failure/) for more information about troubleshooting.
-    
-    You can always ask for help in the **#general** channel on [brainlife.io's Slack](/docs/contact/). You can also contact the App developer or submit a Github issue. 
-
-* Removed
-
-    Most resources use a **scratch space** to stage the task's work directory. Normally, scratch spaces have a time limit on how long the data files remain in the system. When brainlife.io detects the task directory no longer exists, it will let you know with a `Removed` tag.
-
-    !!! note
-        brainlife.io tries to clean up old task directories within 25 days of the successful completion of the task to provide consistent behavior and reduce disk space across resources. If you have an output dataset you would like to keep, please archive it, or submit the task with the auto-archiving box checked.
-
-        If you archive your output, you will see a list of datasets archived from this output.
-
-        ![status](../img/task.archived.png)

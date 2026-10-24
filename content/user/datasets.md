@@ -1,105 +1,115 @@
-# Datasets
+# Public Datasets
 
-Brainlife provides seamless access to thousands of open neuroimaging and neurophysiology datasets published on **OpenNeuro**, **DANDI**, **BossDB**, **EMBER**, and curated collections in the **Brainlife Dataset Library**.
+Brainlife Connects provides seamless access to thousands of open neuroimaging, connectomics, and neurophysiology datasets through the **Public Datasets** hub (`/public-datasets`).
 
-Powered by [DataLad](https://www.datalad.org/) and cloud-native virtual storage, datasets can be searched, explored, filtered by modality, and copied directly into your Brainlife projects without requiring manual downloads or consuming your local disk space.
-
----
-
-## Supported Repositories
-
-Brainlife integrates with major open-science data repositories:
-
-- **Dataset Library**: Curated public dataset collections and benchmarks maintained directly on Brainlife.
-- **OpenNeuro**: Open archive of BIDS-compliant neuroimaging datasets (MRI, MEG, EEG, iEEG, and PET) from researchers worldwide.
-- **DANDI Archive**: Distributed Archives for Neurophysiology Data Integration, hosting cellular and extracellular neurophysiology datasets.
-- **BossDB**: Brain Observatory Storage Service for petascale volumetric electron microscopy and connectomics data.
-- **EMBER**: FAIR neurophysiology datasets providing standardized access for discovery, visualization, and reproducible computing.
+Datasets can be searched, explored, filtered by modality, and copied directly into your projects as virtual DataLad references—without requiring manual downloads or consuming your local disk space.
 
 ---
 
-## 1. Browsing and Filtering Public Datasets
+## Supported Public Repositories
 
-To find datasets for your analysis:
+From the **Public Datasets** hub (`/public-datasets`), you can access four primary open-science data sources:
 
-1. Click on **Public Datasets** under the **EXPLORE** section in the left sidebar (or navigate to [brainlife.io/public-datasets](https://brainlife.io/public-datasets)).
-2. Use the **Search datasets...** bar to search by dataset title, author, keyword, or accession ID (e.g., `ADHD200`, `ds002218`).
-3. Click on repository chips (such as **All sources**, **DANDI**, **EMBER**, **BossDB**, **OpenNeuro**, or **Dataset Library**) to filter by a specific archive.
-4. Use the **Datatype** dropdown filter in the search header to narrow down datasets that contain specific modalities (e.g., `neuro/anat/t1w`, `neuro/func/task`, `dwi`).
+```
+                          ┌───────────────────────────┐
+                          │   Public Datasets Hub     │
+                          │   (/public-datasets)      │
+                          └─────────────┬─────────────┘
+                                        │
+      ┌──────────────────┬──────────────┴──────────────┬──────────────────┐
+      ▼                  ▼                             ▼                  ▼
+┌─────────────┐  ┌───────────────┐             ┌───────────────┐  ┌───────────────┐
+│   Dataset   │  │ DANDI Archive │             │    BossDB     │  │ EMBER Archive │
+│   Library   │  │  (Cellular /  │             │ (Connectomics │  │(Neurophysiol. │
+│ (/library)  │  │  Electrophys) │             │  & EM / S3)   │  │   & FAIR)     │
+└─────────────┘  └───────────────┘             └───────────────┘  └───────────────┘
+```
 
-![Public Datasets](../img/connect_datasets/public_dataset.png)
-
-Each dataset card displays the study title, authors, accession identifier, number of subjects and sessions, publication date, and tags for all available datatypes.
-
----
-
-## 2. Inspecting Dataset Content & Datatypes
-
-Click on any dataset card to open its detailed view:
-
-- **1. OVERVIEW**: Displays study abstract, author list, licensing information, participant demographics, and external repository links.
-- **2. DATA**: Provides an interactive browser of all data objects, subjects, and sessions contained in the dataset.
-
-Within the **DATA** tab, you can:
-
-- **Select a Version**: Use the **Version** dropdown to select specific dataset releases or stick with the `Default` latest release.
-- **Filter by Datatype**: Use the **Datatype** filter dropdown to isolate specific imaging modalities (e.g., `anat/t1w`, `func/task`).
-- **Search Subjects**: Use the search field to find specific participants (e.g., `1018959`).
-- **Review Annotations**: Inspect acquisition tags and BIDS metadata entities (e.g., `task-rest`, `acq-1`, `run-1`).
-
-![Select Dataset Datatype](../img/connect_datasets/select_dataset_datatype.png)
-
-!!! info "BIDS Entity Preservation"
-    Brainlife preserves all original BIDS entities and metadata tags associated with the dataset, ensuring full reproducibility when downstream Apps are executed.
+1. **Dataset Library** (`/public-datasets/library`):
+   Curated public neuroimaging collections (including OpenNeuro and benchmark studies) packaged with standardized DataLad versioning for immediate import into Brainlife projects.
+2. **DANDI Archive** (`/public-datasets/dandi`):
+   Distributed Archives for Neurophysiology Data Integration. Direct search and exploration of cellular and extracellular neurophysiology datasets (NWB format).
+3. **BossDB** (`/public-datasets/bossdb`):
+   Brain Observatory Storage Service for petascale volumetric electron microscopy and connectomics data, featuring direct 3D visualizers and an integrated **S3 Browser** (`/public-datasets/bossdb/s3-browser`).
+4. **EMBER Archive** (`/public-datasets/ember`):
+   FAIR neurophysiology datasets providing standardized access for discovery, visualization, and reproducible computing.
 
 ---
 
-## 3. Selecting Data for Your Project
+## 1. Browsing the Dataset Library
 
-Once you have identified the dataset and inspected the subjects and modalities you need:
+To explore curated neuroimaging datasets:
 
-1. Review the data table to verify that the required sessions and datatypes are present.
-2. Click the **COPY TO PROJECT** button located in the top-right corner above the data table.
+1. Click **Public Datasets** in the left sidebar under **EXPLORE**, then select **Browse brainlife's dataset library** (`/public-datasets/library`).
+2. **Search & Pagination**: Use the search bar to filter collections by keyword, study title, or accession ID (e.g., `OpenNeuro/ds000114`).
+3. Click on any collection card to open its detailed view (`/public-datasets/library/:collectionId`).
 
-![Project Dataset View](../img/connect_datasets/project_dataset.png)
+The collection view offers two tabs:
+
+- **1. INFO** (`/info`): Displays study descriptions, creators, publication links, tags, and license terms.
+- **2. DATA** (`/data`): Provides an interactive table listing all data-objects, subjects, sessions, datatypes, and BIDS annotations. You can filter by subject ID or specific datatypes (such as `neuro/anat/t1w` or `neuro/dwi`).
 
 ---
 
-## 4. Copying Data into a Project
+## 2. Copying Data into a Project
 
-Clicking **COPY TO PROJECT** opens the **Copy data to project** dialog:
+To use data from the Dataset Library in your workflows, click the **COPY TO PROJECT** button in the upper-right corner of the collection page. This opens the **Copy data to project** popover:
 
-![Copy Dataset to Project](../img/connect_datasets/copy_dataset.png)
+### Step 1: Select Datatypes
+The modal displays a checklist of all datatypes present in the dataset, along with their data-object counts (e.g., `neuro/anat/t1w (100)`, `neuro/dwi (100)`). Select only the modalities you need for your analysis.
 
-### Step 1: Select Datatypes to Copy
-
-Check the boxes for the datatypes you want to bring into your project (e.g., `neuro/anat/t1w`, `neuro/func/task`).
-
-!!! tip "Selective Importing Saves Storage and Compute"
-    You do not need to copy an entire multi-terabyte dataset if your research only requires specific scans (such as anatomical T1w for Freesurfer). Brainlife lets you select only the modalities you need, keeping your project organized and efficient.
+> [!TIP]
+> Selective importing saves cloud storage and computing resources. You only need to import the modalities required for your pipeline (such as T1w for FreeSurfer).
 
 ### Step 2: Choose Destination Project
-
-Choose where to copy the data:
-
-- **Existing Project**: Select the **Existing** tab, then search and select one of your existing Brainlife projects from the dropdown.
-- **New Project**: Select the **New project** tab to create a brand new project on the spot:
-  - Enter a **Title (required)**.
-  - Enter a **Description (required)**.
+Choose where to stage the datasets:
+- **New Project**: Select the **New** tab and provide a **Title** (required) and **Description** (required).
+- **Existing Project**: Select the **Existing** tab and search for one of your existing Brainlife projects from the dropdown.
 
 ### Step 3: Submit
-
-Click **SUBMIT** (or **Submit**). Brainlife will register the virtual dataset linkages into the target project. You will be redirected to the project's **Data** tab, where your newly added datasets are immediately available to run Apps, configure automated Pipelines, or view in Brainlife's web visualizers.
+Click **Submit**. Brainlife creates virtual DataLad linkages in your destination project's **2. Data** tab. The data is immediately ready for running Apps, configuring automated Pipelines, or viewing in web visualizers.
 
 ---
 
-## Working with Imported Datasets
+## 3. Exploring DANDI Neurophysiology Data
 
-Once datasets are copied into your project:
+Brainlife connects directly to the [DANDI Archive](https://dandiarchive.org) via `/public-datasets/dandi`:
 
-- **Run Processing Apps**: Navigate to the **Apps** tab to launch preprocessing pipelines (such as FSL Anat, Freesurfer, fMRIPrep, or QSIprep) on the imported subjects.
-- **Automate with Pipelines**: Set up automated pipeline rules to process all current and future subjects imported from the dataset.
-- **Visualize in 3D**: Open any data object to inspect surfaces, volumetric slices, or functional time series directly in your web browser.
+1. **Search Dandisets**: Search across public dandisets by ID or keywords.
+2. **Dandiset Detail Page** (`/public-datasets/dandi/:identifier`):
+   - **Overview**: View dandiset metadata, contributors, description, DOI, and external links to the DANDI repository.
+   - **Data**: Browse the complete asset hierarchy, including Neurodata Without Borders (`.nwb`) files organized by subject and session.
 
-!!! note "DataLad Virtual Files"
-    Imported public datasets use DataLad pointers under the hood. Raw data files are downloaded on-demand by Brainlife computing resources only when a processing task or download request requires them.
+---
+
+## 4. Exploring BossDB Connectomics Data
+
+Brainlife integrates with [BossDB](https://bossdb.org) for large-scale volumetric electron microscopy and connectomics data:
+
+1. **BossDB Catalog** (`/public-datasets/bossdb`): Browse volumetric collections and connectomics projects hosted on open AWS cloud storage.
+2. **Dataset Details** (`/public-datasets/bossdb/:id`): Inspect spatial resolution, voxel dimensions, tissue source, and open 3D interactive views via Neuroglancer.
+3. **BossDB S3 Browser** (`/public-datasets/bossdb/s3-browser`):
+   Navigate S3 bucket hierarchies directly in the browser to inspect raw chunks, metadata manifests, and generate direct download URLs.
+
+---
+
+## 5. Exploring EMBER Datasets
+
+The **EMBER Archive** (`/public-datasets/ember`) hosts FAIR neurophysiology and behavioral datasets:
+
+1. Browse electrophysiology and behavioral datasets.
+2. Inspect study metadata, participant demographics, and DANDI-compatible data assets.
+
+---
+
+## Working with Imported Data
+
+Once data from any public repository is copied into your project:
+
+- **2. Data Tab**: Data appears immediately in your project's data table.
+- **Run Apps**: Launch preprocessing workflows (e.g., fMRIPrep, QSIprep, FreeSurfer) from the **Apps** catalog.
+- **Automate Pipelines**: Set up pipeline automation rules to trigger downstream Apps whenever new subjects are staged.
+- **Web 3D Visualization**: Inspect volumes, surfaces, and time-series directly in your browser.
+
+> [!NOTE]
+> Public datasets are linked as virtual pointers. Raw files are fetched on-demand by compute clusters only when an App task or download is requested.
