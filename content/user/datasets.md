@@ -41,13 +41,22 @@ From the **Public Datasets** hub (`/public-datasets`), you can access four prima
 To explore curated neuroimaging datasets:
 
 1. Click **Public Datasets** in the left sidebar under **EXPLORE**, then select **Browse brainlife's dataset library** (`/public-datasets/library`).
-2. **Search & Pagination**: Use the search bar to filter collections by keyword, study title, or accession ID (e.g., `OpenNeuro/ds000114`).
+2. **Search & Pagination**: Use the search bar to filter collections by keyword, study title, or accession ID (e.g., `OpenNeuro/ds000114`), or use repository pills to filter across sources.
+
+![Public Datasets Catalog](../img/connect_datasets/public_dataset.png)
+
 3. Click on any collection card to open its detailed view (`/public-datasets/library/:collectionId`).
 
 The collection view offers two tabs:
 
 - **1. INFO** (`/info`): Displays study descriptions, creators, publication links, tags, and license terms.
-- **2. DATA** (`/data`): Provides an interactive table listing all data-objects, subjects, sessions, datatypes, and BIDS annotations. You can filter by subject ID or specific datatypes (such as `neuro/anat/t1w` or `neuro/dwi`).
+- **2. DATA** (`/data`): Provides an interactive table listing all data-objects, subjects, sessions, datatypes, and BIDS annotations.
+
+![Collection Data View](../img/connect_datasets/project_dataset.png)
+
+You can filter by subject ID or specific datatypes (such as `neuro/anat/t1w` or `neuro/func/task`) using the **Datatype** dropdown in the top-right toolbar:
+
+![Filter Datatypes in Collection](../img/connect_datasets/select_dataset_datatype.png)
 
 ---
 
@@ -55,8 +64,10 @@ The collection view offers two tabs:
 
 To use data from the Dataset Library in your workflows, click the **COPY TO PROJECT** button in the upper-right corner of the collection page. This opens the **Copy data to project** popover:
 
+![Copy Data to Project Popover](../img/connect_datasets/copy_dataset.png)
+
 ### Step 1: Select Datatypes
-The modal displays a checklist of all datatypes present in the dataset, along with their data-object counts (e.g., `neuro/anat/t1w (100)`, `neuro/dwi (100)`). Select only the modalities you need for your analysis.
+The modal displays a checklist of all datatypes present in the dataset, along with their data-object counts (e.g., `neuro/anat/t1w (83)`, `neuro/func/task (83)`). Select only the modalities you need for your analysis.
 
 > [!TIP]
 > Selective importing saves cloud storage and computing resources. You only need to import the modalities required for your pipeline (such as T1w for FreeSurfer).

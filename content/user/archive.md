@@ -22,24 +22,43 @@ Under the **`2. Data`** tab, you can inspect and manipulate your project dataset
 
 ### The Data Table
 The data table organizes your repository across several core columns:
-- **Subject & Session**: Participant identifier and scanning session (e.g., `sub-01`, `ses-01`).
-- **Datatype**: Standardized datatype chip (e.g., `anat/t1w`, `dwi`, `freesurfer`) with distinct color coding.
-- **Datatype Tags**: Immutable intrinsic scan characteristics (e.g., `acpc_aligned`, `single-shell`).
-- **Annotations (Object Tags)**: User-defined organizational labels (e.g., `control`, `patient`, `baseline`).
-- **Status & Actions**: Visual indicator of whether the dataset is active, archived, or in staging.
+- **Subject & Session**: Participant identifier and scanning session (e.g., `002`, `003`).
+- **Datatype**: Standardized datatype chip (e.g., `anat/t1w`, `func/task`, `freesurfer`, `parcellation/volume`, `mask`, `transform/h5`) with distinct color coding.
+- **Source**: Upstream App or tool that generated the derivative (e.g., `fMRIPrep`, `Multi-Atlas Transfer Tool`, `Freesurfer 7.3.2`, `FSL Anat (T1)`).
+- **Datatype Tags**: Immutable intrinsic scan characteristics (e.g., `acpc_aligned`, `preprocessed`, `debiased`).
+- **Annotations (Object Tags)**: User-defined organizational labels (e.g., `control`, `patient`, `hcp-mmp-b`).
+- **Actions**: Direct access to dataset inspection and the eyeball (:fa-eye:) **Visualize** launcher.
+
+![Project Data Repository Table](../img/connect_datasets/select_image_to_visualize.png)
+
+### Filtering by Datatypes and Annotations
+When working with projects containing hundreds of datasets, you can narrow your view using the multi-select filter dropdowns in the table header:
+
+- **Filter by Datatype**: Click the **Datatypes** filter to isolate specific imaging modalities (such as `neuro/anat/t1w`, `neuro/anat/t2w`, or `neuro/dwi`). Each entry displays the live count of matching data objects.
+  
+  ![Filtering by Datatype](../img/connect_datasets/project_datatype.png)
+
+- **Filter by Annotations**: Click the **Annotations** dropdown to filter by user-assigned cohort labels or processing flags (such as `acpc_aligned`, `denoised`, `preprocessed`, or clinical cohorts).
+
+  ![Filtering by Annotations and Tags](../img/connect_datasets/project_annotation.png)
+
 
 ### Batch Operations
 Use the selection checkboxes on the left of each row to perform batch operations via the top action bar:
-- **Stage to Process**: Bundle selected datasets and send them to the **Processes** tab for manual App execution.
+- **Stage to Process**: Bundle selected datasets and send them to the **Processes** tab for manual App execution (e.g., `STAGE TO PROCESS (4)`).
+- **Copy**: Duplicate datasets across projects (`COPY (4)`).
 - **Download Datasets**: Download individual files or generate multi-dataset tarballs directly to your local computer.
 - **Edit Annotations**: Bulk-apply or remove tags across cohorts of subjects.
-- **Delete Datasets**: Remove obsolete or erroneous datasets from your project.
+- **Delete Datasets**: Remove obsolete or erroneous datasets from your project (`DELETE (4)`).
 
-### Dataset Details Modal
+### Dataset Details & In-Browser Visualizers
 Clicking on any dataset row opens the comprehensive **Dataset Details** inspector:
 - **Files & Directory Tree**: Browse individual files, download specific components, or review sizes and file checksums.
 - **Provenance Graph**: An interactive visual diagram displaying the exact processing history—which upstream raw scans and Apps produced this dataset.
-- **Interactive Visualizers**: Launch native WebGL **NiiVue** slice/mesh viewers or remote desktop suites (:fa-server: FSLeyes, Freeview) with one click.
+- **Volume Viewer (Multi-Dataset Comparison)**: Compare up to 4 datasets simultaneously across orthogonal planes (axial, sagittal, coronal) with synchronized crosshairs, voxel/world coordinates, and custom color map thresholds.
+- **Remote Desktop Suites**: Launch GPU-accelerated cloud viewers (:fa-server: FSLeyes, Freeview) with one click.
+
+![Volume Viewer Multi-Dataset Comparison](../img/connect_datasets/visualization.png)
 
 ---
 

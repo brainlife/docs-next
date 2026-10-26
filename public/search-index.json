@@ -1285,7 +1285,7 @@
     "pageTitle": "Contact",
     "section": "Newsletter Subscription",
     "category": "General",
-    "content": "#mcembedsignup / Add your own Mailchimp form style overrides in your site stylesheet or in this style block. We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. / indicates required Email Address First Name Last Name (function($) (jQuery));var $mcj = jQuery.noConflict(true);"
+    "content": "indicates required Email Address First Name Last Name (function($) (jQuery));var $mcj = jQuery.noConflict(true);"
   },
   {
     "id": "/",
@@ -93901,7 +93901,15 @@
     "pageTitle": "Project Data & Storage",
     "section": "The Data Table",
     "category": "Using brainlife",
-    "content": "The data table organizes your repository across several core columns: - Subject & Session: Participant identifier and scanning session (e.g., sub-01, ses-01). - Datatype: Standardized datatype chip (e.g., anat/t1w, dwi, freesurfer) with distinct color coding. - Datatype Tags: Immutable intrinsic scan characteristics (e.g., acpc_aligned, single-shell). - Annotations (Object Tags): User-defined organizational labels (e.g., control, patient, baseline). - Status & Actions: Visual indicator of whether the dataset is active, archived, or in staging."
+    "content": "The data table organizes your repository across several core columns: - Subject & Session: Participant identifier and scanning session (e.g., 002, 003). - Datatype: Standardized datatype chip (e.g., anat/t1w, func/task, freesurfer, parcellation/volume, mask, transform/h5) with distinct color coding. - Source: Upstream App or tool that generated the derivative (e.g., fMRIPrep, Multi-Atlas Transfer Tool, Freesurfer 7.3.2, FSL Anat (T1)). - Datatype Tags: Immutable intrinsic scan characteristics (e.g., acpc_aligned, preprocessed, debiased). - Annotations (Object Tags): User-defined organizational labels (e.g., control, patient, hcp-mmp-b). - Actions: Direct access to dataset inspection and the eyeball (:fa-eye:) Visualize launcher."
+  },
+  {
+    "id": "/docs/user/archive/#filtering-by-datatypes-and-annotations",
+    "url": "/docs/user/archive/#filtering-by-datatypes-and-annotations",
+    "pageTitle": "Project Data & Storage",
+    "section": "Filtering by Datatypes and Annotations",
+    "category": "Using brainlife",
+    "content": "When working with projects containing hundreds of datasets, you can narrow your view using the multi-select filter dropdowns in the table header: - Filter by Datatype: Click the Datatypes filter to isolate specific imaging modalities (such as neuro/anat/t1w, neuro/anat/t2w, or neuro/dwi). Each entry displays the live count of matching data objects. - Filter by Annotations: Click the Annotations dropdown to filter by user-assigned cohort labels or processing flags (such as acpc_aligned, denoised, preprocessed, or clinical cohorts)."
   },
   {
     "id": "/docs/user/archive/#batch-operations",
@@ -93909,15 +93917,15 @@
     "pageTitle": "Project Data & Storage",
     "section": "Batch Operations",
     "category": "Using brainlife",
-    "content": "Use the selection checkboxes on the left of each row to perform batch operations via the top action bar: - Stage to Process: Bundle selected datasets and send them to the Processes tab for manual App execution. - Download Datasets: Download individual files or generate multi-dataset tarballs directly to your local computer. - Edit Annotations: Bulk-apply or remove tags across cohorts of subjects. - Delete Datasets: Remove obsolete or erroneous datasets from your project."
+    "content": "Use the selection checkboxes on the left of each row to perform batch operations via the top action bar: - Stage to Process: Bundle selected datasets and send them to the Processes tab for manual App execution (e.g., STAGE TO PROCESS (4)). - Copy: Duplicate datasets across projects (COPY (4)). - Download Datasets: Download individual files or generate multi-dataset tarballs directly to your local computer. - Edit Annotations: Bulk-apply or remove tags across cohorts of subjects. - Delete Datasets: Remove obsolete or erroneous datasets from your project (DELETE (4))."
   },
   {
-    "id": "/docs/user/archive/#dataset-details-modal",
-    "url": "/docs/user/archive/#dataset-details-modal",
+    "id": "/docs/user/archive/#dataset-details-in-browser-visualizers",
+    "url": "/docs/user/archive/#dataset-details-in-browser-visualizers",
     "pageTitle": "Project Data & Storage",
-    "section": "Dataset Details Modal",
+    "section": "Dataset Details & In-Browser Visualizers",
     "category": "Using brainlife",
-    "content": "Clicking on any dataset row opens the comprehensive Dataset Details inspector: - Files & Directory Tree: Browse individual files, download specific components, or review sizes and file checksums. - Provenance Graph: An interactive visual diagram displaying the exact processing history—which upstream raw scans and Apps produced this dataset. - Interactive Visualizers: Launch native WebGL NiiVue slice/mesh viewers or remote desktop suites (:fa-server: FSLeyes, Freeview) with one click. ---"
+    "content": "Clicking on any dataset row opens the comprehensive Dataset Details inspector: - Files & Directory Tree: Browse individual files, download specific components, or review sizes and file checksums. - Provenance Graph: An interactive visual diagram displaying the exact processing history—which upstream raw scans and Apps produced this dataset. - Volume Viewer (Multi-Dataset Comparison): Compare up to 4 datasets simultaneously across orthogonal planes (axial, sagittal, coronal) with synchronized crosshairs, voxel/world coordinates, and custom color map thresholds. - Remote Desktop Suites: Launch GPU-accelerated cloud viewers (:fa-server: FSLeyes, Freeview) with one click. ---"
   },
   {
     "id": "/docs/user/archive/#long-term-preservation-storage-tiers",
@@ -93949,7 +93957,7 @@
     "pageTitle": "Public Datasets",
     "section": "1. Browsing the Dataset Library",
     "category": "Using brainlife",
-    "content": "To explore curated neuroimaging datasets: 1. Click Public Datasets in the left sidebar under EXPLORE, then select Browse brainlife's dataset library (/public-datasets/library). 2. Search & Pagination: Use the search bar to filter collections by keyword, study title, or accession ID (e.g., OpenNeuro/ds000114). 3. Click on any collection card to open its detailed view (/public-datasets/library/:collectionId). The collection view offers two tabs: - 1. INFO (/info): Displays study descriptions, creators, publication links, tags, and license terms. - 2. DATA (/data): Provides an interactive table listing all data-objects, subjects, sessions, datatypes, and BIDS annotations. You can filter by subject ID or specific datatypes (such as neuro/anat/t1w or neuro/dwi). ---"
+    "content": "To explore curated neuroimaging datasets: 1. Click Public Datasets in the left sidebar under EXPLORE, then select Browse brainlife's dataset library (/public-datasets/library). 2. Search & Pagination: Use the search bar to filter collections by keyword, study title, or accession ID (e.g., OpenNeuro/ds000114), or use repository pills to filter across sources. 3. Click on any collection card to open its detailed view (/public-datasets/library/:collectionId). The collection view offers two tabs: - 1. INFO (/info): Displays study descriptions, creators, publication links, tags, and license terms. - 2. DATA (/data): Provides an interactive table listing all data-objects, subjects, sessions, datatypes, and BIDS annotations. You can filter by subject ID or specific datatypes (such as neuro/anat/t1w or neuro/func/task) using the Datatype dropdown in the top-right toolbar: ---"
   },
   {
     "id": "/docs/user/datasets/#2-copying-data-into-a-project",
@@ -93965,7 +93973,7 @@
     "pageTitle": "Public Datasets",
     "section": "Step 1: Select Datatypes",
     "category": "Using brainlife",
-    "content": "The modal displays a checklist of all datatypes present in the dataset, along with their data-object counts (e.g., neuro/anat/t1w (100), neuro/dwi (100)). Select only the modalities you need for your analysis. > [!TIP] > Selective importing saves cloud storage and computing resources. You only need to import the modalities required for your pipeline (such as T1w for FreeSurfer)."
+    "content": "The modal displays a checklist of all datatypes present in the dataset, along with their data-object counts (e.g., neuro/anat/t1w (83), neuro/func/task (83)). Select only the modalities you need for your analysis. > [!TIP] > Selective importing saves cloud storage and computing resources. You only need to import the modalities required for your pipeline (such as T1w for FreeSurfer)."
   },
   {
     "id": "/docs/user/datasets/#step-2-choose-destination-project",
@@ -94709,7 +94717,7 @@
     "pageTitle": "Pipelines & Automations",
     "section": "Step 1: Select App",
     "category": "Using brainlife",
-    "content": "Browse or search the Brainlife App catalog to select the App you want to automate (e.g., FreeSurfer, FSL BET, Tractoflow, etc.). You can search by App name, keywords, or modalities."
+    "content": "Browse or search the Brainlife App catalog to select the App you want to automate (e.g., FreeSurfer, FSL BET, Tractoflow, etc.). You can search by App name, keywords, or modalities, and toggle compatibility filters to view only Apps that match your project's staged datatypes."
   },
   {
     "id": "/docs/user/pipeline/#step-2-configure-app-settings",
@@ -94776,12 +94784,12 @@
     "content": "While Pipelines are designed for automated batch processing across large cohorts, the Processes interface allows for hands-on, on-demand execution. A Process is a workspace instance where you stage specific input datasets, execute Apps one at a time, inspect intermediate results, and link tools together into custom analysis workflows. ---"
   },
   {
-    "id": "/docs/user/process/#accessing-processes",
-    "url": "/docs/user/process/#accessing-processes",
+    "id": "/docs/user/process/#accessing-processes-processing-summary",
+    "url": "/docs/user/process/#accessing-processes-processing-summary",
     "pageTitle": "Processes & Task Execution",
-    "section": "Accessing Processes",
+    "section": "Accessing Processes & Processing Summary",
     "category": "Using brainlife",
-    "content": "To manage on-demand tasks in your project: 1. Open your project on Brainlife. 2. Select the 3. Processing tab from the top navigation bar. 3. In the sub-navigation toggle bar, switch to Processes. ---"
+    "content": "To manage on-demand tasks in your project: 1. Open your project on Brainlife. 2. Select the 3. Processing tab from the top navigation bar. 3. In the sub-navigation toggle bar, switch between Summary, Pipeline, and Processes. The Summary view provides an operational overview of all compute activity across your project: - Action Status Counters: Real-time status cards tracking tasks that Need action, Running jobs, Failed runs, Completed tasks, and Active automations. - Resources in Use: Direct visibility into cluster queue allocations and resource utilization across connected HPC environments. ---"
   },
   {
     "id": "/docs/user/process/#running-an-on-demand-task",
@@ -94789,23 +94797,23 @@
     "pageTitle": "Processes & Task Execution",
     "section": "Running an On-Demand Task",
     "category": "Using brainlife",
-    "content": "A typical process workflow consists of staging data, selecting an App, configuring execution settings, and monitoring execution:"
+    "content": "A typical process workflow consists of creating a process, staging data, running an App through the 4-step wizard, and tracking execution:"
   },
   {
-    "id": "/docs/user/process/#step-1-staging-input-data",
-    "url": "/docs/user/process/#step-1-staging-input-data",
+    "id": "/docs/user/process/#step-1-creating-a-process-staging-input-data",
+    "url": "/docs/user/process/#step-1-creating-a-process-staging-input-data",
     "pageTitle": "Processes & Task Execution",
-    "section": "Step 1: Staging Input Data",
+    "section": "Step 1: Creating a Process & Staging Input Data",
     "category": "Using brainlife",
-    "content": "Processing begins by selecting the datasets you want to analyze: 1. Navigate to the 2. Data tab. 2. Check the boxes next to the participant datasets you want to process. 3. In the action bar above the table, click Stage to process. 4. In the dialog, either select an existing process instance or create a new named process (e.g., sub-01-exploratory-tractography). 5. Brainlife will copy/link the datasets into your process scratch space."
+    "content": "Processing begins by staging the datasets you want to analyze: 1. From the Processes sub-tab, click + New Process to open the creation dialog. 2. Enter a descriptive Name (e.g., Preprocess Anatomical) and optional description. 3. In the Add Data to Process modal, check the boxes next to the participant datasets you wish to import from your project's repository. 4. Click Import Data Objects (e.g., IMPORT 1 DATA OBJECTS). Brainlife stages the selected data into your process workspace. 5. Click on the staged dataset node or task entry to inspect its metadata, staging logs, and event history in the task inspector dialog:"
   },
   {
-    "id": "/docs/user/process/#step-2-submitting-an-app",
-    "url": "/docs/user/process/#step-2-submitting-an-app",
+    "id": "/docs/user/process/#step-2-the-4-step-app-execution-wizard",
+    "url": "/docs/user/process/#step-2-the-4-step-app-execution-wizard",
     "pageTitle": "Processes & Task Execution",
-    "section": "Step 2: Submitting an App",
+    "section": "Step 2: The 4-Step App Execution Wizard",
     "category": "Using brainlife",
-    "content": "1. Go to the 3. Processing tab and switch to Processes. 2. Click Submit App (or use the App catalog at /apps and click Execute). 3. Brainlife filters available Apps to only show those whose required input datatypes match the data objects staged in your process. 4. Select the App you want to run (e.g., FreeSurfer, FSL BET, MRtrix CSD). 5. Configure the App parameters, thresholds, or flags in the configuration modal. 6. Click Submit. ---"
+    "content": "Once input data is staged, click + Add App on the process canvas or action toolbar to launch the execution wizard: 1. Select App Search or filter the Brainlife App catalog. You can toggle \"Only show apps compatible with staged data\" to immediately identify algorithms that accept your staged datatypes (e.g., FSL Anat (T1), FreeSurfer, fMRIPrep). 2. Configure App Settings Adjust default algorithmic parameters, threshold values, and processing flags required for your experiment. 3. Select Inputs Map your staged input datasets to the specific input slots required by the App. The wizard verifies datatype compatibility and tags automatically. 4. Configure Outputs Specify user-defined output tags and annotations (e.g., acpc_aligned, preprocessed) so the resulting derivatives are clearly labeled when archived into your project repository. Click Submit to dispatch the task to the compute orchestrator. ---"
   },
   {
     "id": "/docs/user/process/#monitoring-job-status",
@@ -94829,7 +94837,7 @@
     "pageTitle": "Processes & Task Execution",
     "section": "Interactive Process DAG Editor",
     "category": "Using brainlife",
-    "content": "For complex, multi-step workflows that involve chaining multiple Apps together, Brainlife Connects provides the Interactive Process Editor: 1. In the Processes table, click the Process Editor link or navigate to /projects/:projectId/processing/processes/:instanceId/editor. 2. The editor launches a visual, interactive ReactFlow canvas representing the workflow Directed Acyclic Graph (DAG) for that specific process instance: - Data Nodes: Represent staged raw input datasets or intermediate derivatives generated by Apps. - App Nodes: Represent individual tool executions (e.g., App 1: Skull Stripping $\\rightarrow$ App 2: Registration $\\rightarrow$ App 3: Tractography). - Dependency Edges: Visually map the flow of data objects from App outputs to downstream App inputs. 3. You can click on any node in the graph to inspect intermediate outputs, check task status, or attach new Apps directly into the pipeline graph."
+    "content": "For complex, multi-step workflows that involve chaining multiple Apps together, Brainlife Connects provides the Interactive Process Editor: 1. In the Processes table, click the Process Editor link or navigate to /projects/:projectId/processing/processes/:instanceId/editor. 2. The editor launches a visual, interactive ReactFlow canvas representing the workflow Directed Acyclic Graph (DAG) for that specific process instance: - Data Nodes: Represent staged raw input datasets or intermediate derivatives generated by Apps. - App Nodes: Represent individual tool executions (e.g., App 1: Skull Stripping $\\rightarrow$ App 2: Registration $\\rightarrow$ App 3: Tractography). - Dependency Edges: Visually map the flow of data objects from App outputs to downstream App inputs. 3. You can click on any node in the graph to inspect intermediate outputs, check task status, configure parameters, or attach new Apps directly into the pipeline graph."
   },
   {
     "id": "/docs/user/project/#projects",
@@ -94861,7 +94869,7 @@
     "pageTitle": "Projects",
     "section": "1. Overview",
     "category": "Using brainlife",
-    "content": "The project homepage provides high-level documentation and governance: - ReadMe Documentation: Rich Markdown detailing your study protocol, hypotheses, and citation instructions. - Project Members & Roles: A list of project administrators, contributing members, and guests with user avatars and institutional affiliations. - Related Publications & DOIs: Direct links to published papers or data releases connected to this project. - Automatic App Citations: A consolidated list of bibliographic citations for all computational Apps executed within the project. - Activity & Comments: A chronological feed of project updates, discussions, and member comments."
+    "content": "The project homepage provides high-level documentation, metrics, and governance: - Project Metrics & Stats: Immediate summary counters displaying total storage consumption (e.g., 22.8 GB), number of Datasets (7), Participants (7), Processes (2), and active Automation Rules (5). - ReadMe Documentation: Rich Markdown detailing your study protocol, hypotheses, experimental design, and data collection notes. - Automatic App Citations: A consolidated list of bibliographic citations for all computational Apps executed within the project, making it effortless to cite software in scientific publications. - People & Roles: A visual roster of project administrators and contributing members, complete with user avatars, institutional affiliations, and the Add Member management interface. - Computing Resources: A transparent panel listing all registered High-Performance Computing (HPC) clusters (e.g., Karst, Big Red 200, Carbonate, Quartz) authorized to process tasks for this project."
   },
   {
     "id": "/docs/user/project/#2-data",
@@ -95117,7 +95125,15 @@
     "pageTitle": "Getting Started with Brainlife Connects",
     "section": "Adding Data to Your Project",
     "category": "Using brainlife",
-    "content": "Once your project is created, navigate to the 2. Data tab. To add data, click the Add Project Data button at the top right of the data table. You can choose from multiple sources: Copy Data from Public Datasets: Browse thousands of open-access subjects from BossDB, DANDI, OpenNeuro, and the Brainlife Dataset Library, and import them directly into your project with a single click—no local downloading required. Copy Data From another Project: Select any public project or another project you belong to and copy datasets directly into your current workspace. * Upload Data from ezBIDS / Local Files: If you have raw DICOM or NIfTI data on your local machine, convert and organize it using ezBIDS or upload it through the web uploader or Brainlife CLI. Once added, your datasets will appear in the Data table, displaying their subject IDs, session numbers, datatypes, tags, and status. ---"
+    "content": "Once your project is created, navigate to the 2. Data tab. To add data, click the Add Project Data button at the top right of the data table. You can choose from multiple sources: Copy Data from Public Datasets: Browse thousands of open-access subjects from BossDB, DANDI, OpenNeuro, and the Brainlife Dataset Library, and import them directly into your project with a single click—no local downloading required. Copy Data From another Project: Select any public project or another project you belong to and copy datasets directly into your current workspace. * Upload Data from ezBIDS / Local Files: If you have raw DICOM or NIfTI data on your local machine, convert and organize it using ezBIDS or upload it through the web uploader or Brainlife CLI."
+  },
+  {
+    "id": "/docs/user/started/#browsing-and-copying-public-datasets",
+    "url": "/docs/user/started/#browsing-and-copying-public-datasets",
+    "pageTitle": "Getting Started with Brainlife Connects",
+    "section": "Browsing and Copying Public Datasets",
+    "category": "Using brainlife",
+    "content": "Brainlife Connects makes open neuroscience datasets immediately available without requiring local downloads or manual staging: 1. Explore the Public Datasets Catalog: Navigate to Explore > Public Datasets (/public-datasets). Use the source pills to filter collections by repository (Dataset Library, DANDI, EMBER, BossDB, or OpenNeuro), or search by title and modality. 2. Inspect Collection Data: Click on any collection (such as ADHD200 - KKI) and switch to its 2. DATA tab to inspect all subjects, sessions, and available modalities. 3. Filter Datatypes: Use the Datatype dropdown in the top-right toolbar to isolate specific modalities (such as anat/t1w or func/task). 4. Copy to Project: Click the COPY TO PROJECT button in the upper-right corner. In the dialog: Select which datatypes you need to import. Choose either an Existing project or create a New project. * Click SUBMIT. Brainlife creates virtual DataLad links in your project instantly. ---"
   },
   {
     "id": "/docs/user/started/#visualize-data-objects",
@@ -95125,7 +95141,7 @@
     "pageTitle": "Getting Started with Brainlife Connects",
     "section": "Visualize Data-Objects",
     "category": "Using brainlife",
-    "content": "You can inspect brain images, segmentations, and tractography results directly in your web browser without downloading multi-gigabyte files to your computer: 1. On the 2. Data tab, locate any dataset row in the table. 2. Click the Visualize icon (:fa-eye: eyeball) on the right side of the row. 3. Select an available viewer suited for that datatype: Volume Viewer: Slices through 3D/4D anatomical and functional volumes. Freeview / FSLeyes: GPU-accelerated cloud viewers streamed directly to your browser via WebRTC/VNC. * TractView: Interactive 3D white matter tractography and streamline visualizer. 4. The viewer will launch in a clean modal overlay, letting you adjust contrasts, toggle overlays, and perform quick visual quality control. ---"
+    "content": "You can inspect brain images, segmentations, and tractography results directly in your web browser without downloading multi-gigabyte files to your computer: 1. On the 2. Data tab, your staged data-objects are organized by subject and session, displaying their datatypes, tags, file sizes, and creation dates. 2. Click the Visualize icon (:fa-eye: eyeball) on the right side of any dataset row, or select multiple rows to compare them. 3. Select an available viewer suited for that datatype: Volume Viewer: Slices through 3D/4D anatomical and functional volumes, with support for side-by-side multi-dataset comparison, voxel/world coordinate inspection, and color map thresholds. Freeview / FSLeyes: GPU-accelerated cloud viewers streamed directly to your browser via WebRTC/VNC. * TractView: Interactive 3D white matter tractography and streamline visualizer. 4. The viewer launches in a clean modal overlay, letting you adjust contrasts, toggle overlays, and perform quick visual quality control before launching compute pipelines. ---"
   },
   {
     "id": "/docs/user/started/#data-processing",

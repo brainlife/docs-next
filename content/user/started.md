@@ -112,7 +112,28 @@ To add data, click the **Add Project Data** button at the top right of the data 
 * **Upload Data from ezBIDS / Local Files**:
   If you have raw DICOM or NIfTI data on your local machine, convert and organize it using [ezBIDS](/docs/using_ezBIDS/) or upload it through the web uploader or [Brainlife CLI](/docs/cli/upload/).
 
-Once added, your datasets will appear in the **Data** table, displaying their subject IDs, session numbers, datatypes, tags, and status.
+### Browsing and Copying Public Datasets
+
+Brainlife Connects makes open neuroscience datasets immediately available without requiring local downloads or manual staging:
+
+1. **Explore the Public Datasets Catalog**: Navigate to **Explore > Public Datasets** (`/public-datasets`). Use the source pills to filter collections by repository (**Dataset Library**, **DANDI**, **EMBER**, **BossDB**, or **OpenNeuro**), or search by title and modality.
+
+    ![Public Datasets Explorer](../img/connect_datasets/public_dataset.png)
+
+2. **Inspect Collection Data**: Click on any collection (such as *ADHD200 - KKI*) and switch to its **2. DATA** tab to inspect all subjects, sessions, and available modalities.
+
+    ![Collection Data View](../img/connect_datasets/project_dataset.png)
+
+3. **Filter Datatypes**: Use the **Datatype** dropdown in the top-right toolbar to isolate specific modalities (such as `anat/t1w` or `func/task`).
+
+    ![Filter Datatypes](../img/connect_datasets/select_dataset_datatype.png)
+
+4. **Copy to Project**: Click the **COPY TO PROJECT** button in the upper-right corner. In the dialog:
+    * Select which datatypes you need to import.
+    * Choose either an **Existing** project or create a **New project**.
+    * Click **SUBMIT**. Brainlife creates virtual DataLad links in your project instantly.
+
+    ![Copy Data to Project](../img/connect_datasets/copy_dataset.png)
 
 ---
 
@@ -120,13 +141,19 @@ Once added, your datasets will appear in the **Data** table, displaying their su
 
 You can inspect brain images, segmentations, and tractography results directly in your web browser without downloading multi-gigabyte files to your computer:
 
-1. On the **2. Data** tab, locate any dataset row in the table.
-2. Click the **Visualize** icon (:fa-eye: eyeball) on the right side of the row.
+1. On the **2. Data** tab, your staged data-objects are organized by subject and session, displaying their datatypes, tags, file sizes, and creation dates.
+
+    ![Project Data Tab](../img/connect_datasets/select_image_to_visualize.png)
+
+2. Click the **Visualize** icon (:fa-eye: eyeball) on the right side of any dataset row, or select multiple rows to compare them.
 3. Select an available viewer suited for that datatype:
-    * **Volume Viewer**: Slices through 3D/4D anatomical and functional volumes.
+    * **Volume Viewer**: Slices through 3D/4D anatomical and functional volumes, with support for side-by-side multi-dataset comparison, voxel/world coordinate inspection, and color map thresholds.
     * **Freeview / FSLeyes**: GPU-accelerated cloud viewers streamed directly to your browser via WebRTC/VNC.
     * **TractView**: Interactive 3D white matter tractography and streamline visualizer.
-4. The viewer will launch in a clean modal overlay, letting you adjust contrasts, toggle overlays, and perform quick visual quality control.
+
+    ![Volume Viewer Multi-Dataset Comparison](../img/connect_datasets/visualization.png)
+
+4. The viewer launches in a clean modal overlay, letting you adjust contrasts, toggle overlays, and perform quick visual quality control before launching compute pipelines.
 
 ---
 

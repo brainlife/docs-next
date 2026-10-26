@@ -30,12 +30,16 @@ Every standard Brainlife project is organized into five dedicated tabs:
 ```
 
 ### 1. Overview
-The project homepage provides high-level documentation and governance:
-- **ReadMe Documentation**: Rich Markdown detailing your study protocol, hypotheses, and citation instructions.
-- **Project Members & Roles**: A list of project administrators, contributing members, and guests with user avatars and institutional affiliations.
-- **Related Publications & DOIs**: Direct links to published papers or data releases connected to this project.
-- **Automatic App Citations**: A consolidated list of bibliographic citations for all computational Apps executed within the project.
-- **Activity & Comments**: A chronological feed of project updates, discussions, and member comments.
+The project homepage provides high-level documentation, metrics, and governance:
+
+![Brainlife Project Overview](../img/connect_datasets/project_overview.png)
+
+- **Project Metrics & Stats**: Immediate summary counters displaying total storage consumption (e.g., `22.8 GB`), number of Datasets (`7`), Participants (`7`), Processes (`2`), and active Automation Rules (`5`).
+- **ReadMe Documentation**: Rich Markdown detailing your study protocol, hypotheses, experimental design, and data collection notes.
+- **Automatic App Citations**: A consolidated list of bibliographic citations for all computational Apps executed within the project, making it effortless to cite software in scientific publications.
+- **People & Roles**: A visual roster of project administrators and contributing members, complete with user avatars, institutional affiliations, and the **Add Member** management interface.
+- **Computing Resources**: A transparent panel listing all registered High-Performance Computing (HPC) clusters (e.g., *Karst*, *Big Red 200*, *Carbonate*, *Quartz*) authorized to process tasks for this project.
+
 
 ### 2. Data
 The central data repository for your project (replacing the legacy "Archive"):
