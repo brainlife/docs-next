@@ -1,210 +1,168 @@
-## Structural connectivity.
+## Structural Connectivity
 
-Let's start by learning a little bit about **structural connectivity.** Diffusion MRI measures how **anisotropic** the movement of water is, with the basic principle that myelinated tissue will create more anisotropic water movement. **Structural connectivity** is one type of analysis that describes the structural organization of the white matter using diffusion MRI data. This type of analysis characterizes how connected different regions are by computing the number of **diffusion tractography streamlines** that terminate into a particular region. The rationale is that regions that have greater density of streamline terminations have greater connectivity with the regions where those streamlines also terminate. These density values are stored in what is known as a connectivity matrix. Each position in the matrix represents the connectivity between two particular regions.
+Let's start by learning a little bit about **structural connectivity**. Diffusion MRI measures how **anisotropic** the movement of water is, with the basic principle that myelinated axon bundles restrict water displacement preferentially along the direction of the fibers. **Structural connectivity** describes the structural organization of white matter pathways across the entire brain. This analysis characterizes how connected different brain regions are by computing the density and number of **diffusion tractography streamlines** that connect or terminate into pairs of regions.
 
-From these matrices, scientists can then examine properties that describe the inter-relatedness of many regions. These properties can be used to identify **network-level**, inter-individual differences in a large cohort.
+These connectivity values are stored in a **connectivity matrix** (or adjacency matrix), where each cell $(i, j)$ represents the structural connection weight between region $i$ and region $j$ defined by an anatomical atlas.
 
-This page demonstrates how to generate structural connectivity matrices on brainlife.io. The goal of this tutorial is to show you how to generate structural connectivity matrices following dMRI preprocessing and tractography. This tutorial will be using [Multi-atlas Transfer Tool (MaTT)](https://brainlife.io/app/6016dcdc321a4aafce6decd5) to map the Glasser 180-node cortical atlas to the preprocessed Freesurfer surfaces, [anatomically-constrained tractography](https://brainlife.io/app/5e9dced9f1745d6994f692c0) to generate whole-brain tractograms, and [network matrices](https://brainlife.io/app/626840bbf3858674a29fe791) to compute the connectivity between each region in the atlas.
+From these matrices, neuroscientists can apply graph theory to examine network-level topological properties such as global efficiency, modularity, node degree, and clustering coefficient, revealing inter-individual differences in development, aging, and clinical disorders.
 
-This tutorial will use a combination of skills developed in the [Introduction tutorial](https://brainlife.io/docs/tutorial/introduction-to-brainlife/) and presumes that you have data processed using [dMRI Preprocessing](https://brainlife.io/docs/tutorial/diffusion-preprocessing/) and [diffusion tractography](https://brainlife.io/docs/tutorial/diffusion-tractography/). If you are not comfortable archiving, staging, and running apps on brainlife.io, please go back through the introduction tutorial before beginning this one.
+This tutorial demonstrates how to generate structural connectivity matrices on **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io)). You will learn how to:
+1. Align anatomical images to ACPC space using [FSL Anat](https://brainlife.io/app/5e3c87ae9362b7166cf9c7f4).
+2. Reconstruct cortical surfaces and parcellations using [FreeSurfer 7.3.2](https://brainlife.io/app/5fe1056057aacd480f2f8e48).
+3. Map the Glasser 180-node multi-modal cortical parcellation (HCP-MMP 1.0) using [Multi-atlas Transfer Tool (MaTT)](https://brainlife.io/app/6016dcdc321a4aafce6decd5).
+4. Preprocess raw diffusion MRI data with [MRtrix3 Preprocessing (DESIGNER)](https://brainlife.io/app/5a813e52dc4031003b8b36f9).
+5. Fit CSD models and generate whole-brain tractograms using [MRtrix3 Anatomically-Constrained Tractography (ACT)](https://brainlife.io/app/5e9dced9f1745d6994f692c0).
+6. Construct the structural connectivity matrix using [Structural Connectome MRtrix3 (SCMRT)](https://brainlife.io/app/626840bbf3858674a29fe791).
+7. Standardize the matrix to the `network` datatype for graph-theoretic analyses.
 
-### 1. Anatomical preprocessing.
+> [!NOTE] Prerequisites
+> This tutorial builds upon concepts covered in the [Introduction to Brainlife](/docs/tutorial/introduction-to-brainlife/), [dMRI Preprocessing](/docs/tutorial/diffusion-preprocessing/), and [Diffusion Tractography](/docs/tutorial/diffusion-tractography/) tutorials.
 
-The first step of structural network generation often involves processing the anatomical images. In order to guarantee that any generalizations regarding location made from the preprocessed diffusion data is anatomically-informed, we must have both of our anatomical (T1w or T2w) images and our diffusion MRI images **aligned**. One way we can make this easier for [MRTrix3 Preprocessing](https://brainlife.io/app/5a813e52dc4031003b8b36f9) is by aligning the anatomical images in such a way that the center of the brain is centered in the image. We refer to this as **ACPC-aligned**, as we are aligning the data to the **anterior commissure-posterior comissure plane**. This is the first step in dMRI preprocessing, and is typically done with the [FSL Anat (T1w)](https://brainlife.io/app/5e3c87ae9362b7166cf9c7f4) app. In order to map the Glasser 180-node atlas using the [Multi-atlas Transfer Tool (MaTT)](https://brainlife.io/app/6016dcdc321a4aafce6decd5) and compute the streamline density between each region, we first need to generate cortical and white matter surfaces and brain region parcellations using [Freesurfer](https://brainlife.io/app/5fe1056057aacd480f2f8e48). Once our anatomical image is aligned, our surfaces are generated, and the Glasser 180-node cortical atlas is mapped, we can move on to diffusion preprocessing.
+---
 
-### 2. Diffusion preprocessing
+### 1. Anatomical Preprocessing
 
-The next step in diffusion preprocessing is to actually preprocess the diffusion data. dMRI data, like any other MRI dataset, is quite noisy. Just like fMRI, dMRI data is sensitive to **susceptibility distortions**. This is when regions of the brain look "wavy" or fold inward or outward on itself in images. This is due to how the scanner sweeps across the entire brain during acquisition. Also, dMRI data is very susceptible to **motion**. Because some scans take a long time, it is nearly impossible for a participant to lie completely motionless. Even the most subtle movements can alter the results in a specific region and make your data less accurate. Finally, movement of the magnetic gradients can induce electromagnetic currents which can affect the measurement in any given location. These electromagnetic currents are called **eddy currents**, and they are due to the fact that electricity and magnetism are part of the same field, otherwise known as an **electromagnetic field**. Thankfully, we can use brainlife.io to correct for all of these common artifacts using [MRTrix3 Preprocessing](https://brainlife.io/app/5a813e52dc4031003b8b36f9).
+Anatomical images (T1w and T2w) serve as the spatial reference frame for diffusion tractography. To ensure that streamline endpoints match biological cortical boundaries, our anatomical volumes must be rigidly aligned to the **Anterior Commissure - Posterior Commissure (ACPC)** plane. This centering and standard orientation step is executed using [FSL Anat](https://brainlife.io/app/5e3c87ae9362b7166cf9c7f4).
 
-In addition to these artifacts, dMRI has very low **signal-to-noise ratio (SNR)**, which directly impacts how well you can fit microstructural models and analyze diffusion data. This means that in any given location, the amount of diffusion signal is very low compared to the "noise" of the scanner. There are methods to lower the amount of noise across the brain, and thus increase the SNR. [MRTrix3 Preprocessing](https://brainlife.io/app/5a813e52dc4031003b8b36f9) has the capability to identify and remove noise using principal components analysis (PCA) and Rician analysis.
+Next, cortical surfaces and subcortical segmentations are reconstructed using [FreeSurfer 7.3.2](https://brainlife.io/app/5fe1056057aacd480f2f8e48). The resulting surfaces allow us to project high-resolution parcellation schemes (such as Glasser HCP-MMP) onto each subject's native anatomy using the [Multi-atlas Transfer Tool (MaTT)](https://brainlife.io/app/6016dcdc321a4aafce6decd5).
 
-On top of these issues, dMRI data is sensitive to other artifacts and non-regularities, including **gibbs ringing and bias field inhomogeneities**, which can affect the quality of the data and how well measures can be derived from the data. [MRTrix3 Preprocessing](https://brainlife.io/app/5a813e52dc4031003b8b36f9) can deal with all of these issues for us!
+### 2. Diffusion Preprocessing
 
-Finally, once the dMRI data is preprocessed and cleaned, [MRTrix3 Preprocessing](https://brainlife.io/app/5a813e52dc4031003b8b36f9) will align the dMRI data to the anatomical data. This will ensure that any analyses we do with the dMRI data will be anatomically-informed and biologically-relevant.
+Diffusion MRI datasets inherently suffer from several scanner artifacts:
+- **Susceptibility distortions**: Geometric stretching and compression caused by $B_0$ field inhomogeneities at air-tissue interfaces.
+- **Eddy currents and subject motion**: Phase distortions and misalignment induced by fast gradient switching and inevitable head movements.
+- **Low Signal-to-Noise Ratio (SNR)** and Rician noise floor.
+- **Gibbs ringing**: Spurious oscillations adjacent to sharp tissue boundaries.
+- **$B_1$ field bias inhomogeneities**: Low-frequency intensity variations across the image volume.
 
-Useful information about the preprocessing pipeline that [MRTrix3 Preprocessing](https://brainlife.io/app/5a813e52dc4031003b8b36f9) is designed to run -- Diffusion Parameter EStimation with Gibbs and NoisE Removal (DESIGNER) -- can be found in this [original Neuroimage paper](https://www.ncbi.nlm.nih.gov/pubmed/30077743).
+The [MRtrix3 Preproc (DESIGNER)](https://brainlife.io/app/5a813e52dc4031003b8b36f9) App performs MP-PCA denoising, Gibbs deringing, FSL `topup` susceptibility distortion correction, FSL `eddy` motion/eddy current correction, and $B_1$ bias field correction, followed by rigid registration of the dMRI volume to the ACPC-aligned T1w image.
 
-### 3. Diffusion modeling & anatomically-informed tractography.
+### 3. Diffusion Modeling & Anatomically-Constrained Tractography (ACT)
 
-Once the dMRI data has been cleaned and aligned to the anatomical (T1w) image, the next step is to map the underlying white matter anatomy using diffusion tractography. Diffusion tractography works by modeling how water is moving throughout the brain based on the principle of **anisotropy** -- that water will move unequally in a particular direction given a physical constraint. In the case of diffusion MRI, this constraint comes from the myelin wrapping the many axons arranged into bundles known as **fascicles**. Diffusion tractography generates **streamlines** that act as evidence of underlying white matter organization. We can bundle these streamlines into common white matter tracts digitally, just as we can bundle fascicles into **tracts** using histological methods.
+Once dMRI data is cleaned and aligned to the T1w space, we model white matter fiber orientation distributions using **Constrained Spherical Deconvolution (CSD)**. Unlike single-tensor models, CSD resolves complex fiber architectures including crossing, kissing, and diverging axon fascicles within a single voxel.
 
-The first step is to fit models of diffusion at each location in the dMRI image that can be used as a guide for the tractography algorithms. The most popular model for this is known as **constrained spherical deconvolution**, or **CSD**. CSD allows for the possibility of multiple fascicles entering a single location that may have different trajectories, which is a major advantage of this model over other models of diffusion. The CSD model at each location can tell the tracking algorithm _how strongly_ and in _what direction_ water is diffusing in the brain, and thus where organized and myelinated white matter is likely to be.
+Using the CSD fiber orientation distributions and a 5-tissue-type (5TT) anatomical segmentation derived from FreeSurfer, the [MRtrix3 ACT](https://brainlife.io/app/5e9dced9f1745d6994f692c0) algorithm generates millions of anatomically valid streamlines. ACT dynamically terminates streamlines that cross into cerebrospinal fluid or exit through gray matter boundaries, eliminating biologically implausible connections.
 
-Once we know the direction of water movement using the CSD model, we can then perform **diffusion tractography** to map the underlying organized white matter. Diffusion tractography *sews* together regions with common directions of water movement into streamlines that provide evidence for organized, myelinated white matter. These operations can be done millions of times across the entire brain to form **tractograms**. There are many algorithms for doing this that fall into two main categories: **deterministic** and **probabilistic**. **Deterministic** algorithms work by strictly following the directions of water movement, while **probabilistic** algorithms infer a probability of different directions of water movement at any given location. Deterministic tractography tends to be an overly conservative representation of the white matter, as modeling is never perfectly accurate. Probabilistic tractography tends to provide *hairy* streamline representations, as the model allows for a probability of different directions of water movement at any given location. Recently, it was discovered that combining both algorithms, or **ensembling** them, provides the most anatomically-accurate tractograms.
+### 4. Generating Structural Connectivity Matrices
 
-On brainlife.io, we have many options for performing tractography! For this tutorial, we will focus on Probabilistic tractography, using the [mrtrix3 - WMC Anatomically Constrained Tractography (ACT) ](https://brainlife.io/app/5e9dced9f1745d6994f692c0) app, which restricts streamline representations to those that are biologically-plausible (i.e. not crossing CSF or gray matter)! Within this app, both the CSD and DTI models will be fit to the diffusion data and returned as outputs!
+With our whole-brain tractogram and the Glasser 180-node cortical parcellation volume aligned in native space, the [Structural Connectome MRtrix3 (SCMRT)](https://brainlife.io/app/626840bbf3858674a29fe791) App maps streamline endpoints to pairs of atlas regions. It computes:
+- **Streamline count (density)**: The raw and length-normalized number of streamlines connecting region $i$ to region $j$.
+- **Microstructural weighting**: Connecting matrices weighted by mean fractional anisotropy (FA), mean diffusivity (MD), or tract length.
 
-More information on ensemble tractography can be found in this [PLOS Computational Biology article](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004692) paper. More information on **ACT** can be found in this [Neuroimage publication](https://www.ncbi.nlm.nih.gov/pubmed/22705374).
+---
 
-### 4. Generate structural connectivity matrices.
+## Step-by-Step Walkthrough
 
-Once the whole-brain tractograms have been generated, we can now compute the streamline density between each region and generate our **structural connectivity matrices**. These matrices can then be used to derive **network-related** measures of the white matter organization of an individual or of common properties amongst groups. For this tutorial, we will use [network matrices](https://brainlife.io/app/626840bbf3858674a29fe791) to generate our structural connectivity matrix.
+### Step 1: Copy Tutorial Data
 
-Now, let's get to work! The following steps of this tutorial will show you how to:
+1. Open the [Tutorial Data Project](https://brainlife.io/project/5e7638f6de643b02832a8246/detail) on Brainlife.
+2. Click the **2. Data** tab to view available datasets.
+3. Filter or locate subject **test001** and check the boxes for:
+   - `dwi` (both AP and PA phase-encoded acquisitions)
+   - `anat/t1w`
+   - `anat/t2w`
+4. Click **Stage to process** in the action bar:
+   - **Project**: Select your target project.
+   - **Process**: Select **Create New Process** and name it `Structural Network Neuroscience`.
+   - Click **Submit** to copy and stage the datasets into your project.
 
-1. ACPC-align the anatomical (T1w) image,
-1. Generate Freesurfer surfaces and parcellations,
-1. Map Glasser 180-node cortical atlas to the surface,
-1. Preprocess dMRI data,
-1. Perform diffusion tractography,
-1. and generate network matrices from the regions of the Glasser 180-node atlas.
-1. convert to conmat datatype
-1. convert to network datatype
+---
 
-### Copy appropriate data over from a single subject in the Tutorial data project
+### Step 2: Preprocess Anatomical Data (FSL Anat)
 
-1. Click the following link to go to the project's page for the [Tutorial](https://brainlife.io/project/5e7638f6de643b02832a8246/detail)
-1. Click the 'Archive' tab at the top of the screen to go to the Archives page.
-1. Select the following datatypes from one subject by clicking the boxes next to the data for subject 'test001':
-    * dwi
-        * Both dwi files (AP and PA dataset-tagged)
-    * anat/t1w
-    * anat/t2w
-1. Click the 'Stage to process' button on the right side of the screen
-    * For 'Project', select your project from the drop-down menu.
-    * For 'Process,' select 'Create New Process' and title it "Network neuroscience - structural tutorial." Hit 'Submit.'
-        * This will take you to the process on your Projects page
-1. Archive the data in your project by clicking the 'Archive' button next to each dataset.
+#### 1. T1w ACPC Alignment
+1. In your project, navigate to the **3. Processing** tab and open your `Structural Network Neuroscience` process.
+2. Click **Execute / Submit App** and search for **FSL Anat (T1w)** (`5e3c87ae9362b7166cf9c7f4`).
+3. Select your staged `anat/t1w` dataset as input.
+4. Enable **crop** and **reorient** (leave other settings at default).
+5. Enable **Archive all output datasets when finished** and add the tag `fsl_anat`.
+6. Click **Submit**.
+7. Once finished, click the eye icon next to the output and select the in-browser **3D volume viewer (NiiVue)** to confirm that the T1w image is properly oriented and centered at the anterior commissure.
 
-Your data should now be staged for processing and archived in your projects page! You're now ready to move onto the first step: preprocessing of the anatomical (T1w & T2w) images!
+#### 2. T2w ACPC Alignment
+1. Click **Execute / Submit App** and search for **FSL Anat (T2w)** (`5e3c88089362b75a6ef9c7f6`).
+2. Select your staged `anat/t2w` dataset as input.
+3. Enable **crop** and **reorient**.
+4. Enable **Archive all output datasets when finished** and tag with `fsl_anat`.
+5. Click **Submit**.
 
-### Preprocess anatomical (T1w & T2w) data using FSL
+---
 
-#### T1w data
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'FSL Anat (T1w).'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For input, select the staged raw anatomical (T1w) image by clicking the drop-down menu and finding the appropriate datasets.
-    * Select the boxes for 'crop' and 'reorient'. Leave all other defaults the same.
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'fsl_anat'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'FSLeyes' as your viewer
-        * This will load the the preprocessed T1w data.
+### Step 3: Cortical Reconstruction (FreeSurfer 7.3.2)
 
-#### T2w data
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'FSL Anat (T2w).'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For input, select the staged raw anatomical (T2w) image by clicking the drop-down menu and finding the appropriate datasets.
-    * Select the boxes for 'crop' and 'reorient'. Leave all other defaults the same.
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'fsl_anat'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'FSLeyes' as your viewer
-        * This will load the the preprocessed T2w data.
+1. In your process, click **Execute / Submit App** and search for **Freesurfer 7.3.2** (`5fe1056057aacd480f2f8e48`).
+2. Configure the inputs:
+   - **anat/t1w**: Select your ACPC-aligned T1w output from FSL Anat (`fsl_anat` tag).
+   - **anat/t2w**: (Optional) Select your ACPC-aligned T2w output to improve pial surface placement.
+   - Enable `hippocampal` and `thalamicnuclei` subsegmentation if desired.
+3. Enable **Archive all output datasets when finished** and tag with `freesurfer`.
+4. Click **Submit**.
+5. Once completed, inspect the results using the in-browser **Surface Viewer** and **3D volume viewer (NiiVue)** to verify brain extraction (`brainmask.nii.gz`) and cortical boundary segmentations (`aseg.nii.gz`, pial and white surfaces).
 
-Once you're happy with the surfaces, you can move onto running Freesurfer!
+---
 
-### Freesurfer.
+### Step 4: Map Cortical Atlas with MaTT
 
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'Freesurfer 7.1.1'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For input, select the staged preprocessed, 'acpc_aligned'-tagged anatomical (T1w & T2w) images by clicking the drop-down menu and finding the appropriate datasets.
-    * Select the boxes for 'hippocampal' and 'thalamicnuclei'. Leave all other defaults the same
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'fsl_anat'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'freeview' as your viewer
-        * This will load the following volumes and surfaces: aseg, brainmask, white matter mask, T1, left/right hemisphere pial (cortical), and white (white matter) surfaces.
-    * To view the aparc.a2009s segmentation on an inflated surface, do the following:
-        * Click File --> Load surface
-            * Choose the lh.inflated and rh.inflated surfaces
-            * Hit 'OK'
-        * Select inflated surface of choice (i.e. left or right hemisphere)
-        * Click the drop-down menu next to 'Annotation' and choose 'Load from file'
-            * Choose the appropriate hemisphere aparc.a2009s.annot file (lh.aparc.a2009s.annot)
-            * Hit 'OK'
-            * The aparc.a2009s parcellation should be overlaid on your inflated surface! Now, repeat the process on the other hemisphere.
+1. Click **Execute / Submit App** and search for **Multi-Atlas Transfer Tool (MaTT)** (`6016dcdc321a4aafce6decd5`).
+2. Select your `freesurfer` output dataset as the input.
+3. Set **space / atlas** to `hcp-mmp-b` (Glasser 180-node cortical parcellation).
+4. Enable **Archive all output datasets when finished** and tag with `Glasser`.
+5. Click **Submit**.
 
-Once you're happy with the surfaces, you can move onto running Multi-Atlas Transfer Tool!
+---
 
-### Map the Glasser 180-node atlas:
+### Step 5: Preprocess Diffusion MRI Data (MRtrix3 DESIGNER)
 
-1. On the 'Process' tab, click 'Submit App' to submit a new application.
-    * In the search bar, type 'Multi-Atlas Transfer Tool'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For input, select the staged Freesurfer output generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * For 'space,' select 'hcp-mmp-b' from the drop-down menu.
-    * Select the box for 'Archive all output datasets' when finished
-        * For 'Dataset Tags,' type and enter 'Glasser'
-    * Hit 'Submit'
+1. Click **Execute / Submit App** and search for **MRTrix3 Preprocess (DESIGNER)** (`5a813e52dc4031003b8b36f9`).
+2. Configure inputs:
+   - **anat/t1w**: Select your ACPC-aligned T1w image.
+   - **dwi**: Select the primary DWI dataset (e.g., tag `PA`).
+   - **dwi (reverse phase)**: Select the opposite phase-encoded DWI dataset (e.g., tag `AP`).
+   - **acqd**: Select `posterior -> anterior (y) (PA)`.
+3. Enable **Archive all output datasets when finished** and tag with `acpc_aligned`.
+4. Click **Submit**.
+5. Once finished, inspect the preprocessed `dwi` output in the in-browser **3D volume viewer (NiiVue)** to confirm clean geometry and alignment with the anatomical scan.
 
-Once the app is finished, you're ready to move on to the final step: network matrix generation!
+---
 
-### Preprocess diffusion MRI data with MRTrix3 preproc.
+### Step 6: Whole-Brain Anatomically-Constrained Tractography (ACT)
 
-1. On the 'Process' tab, click 'Submit App' to submit a new application.
-    * In the search bar, type 'MRTrix3 preproc'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For anat/t1w, select the staged ACPC-aligned anatomical (T1w) image by clicking the drop-down menu and finding the appropriate dataset.
-    * For dwi, select the dwi image with the tag "PA" by clicking the drop-down menu and finding the appropriate dataset.
-    * For dwi (reverse), select the dwi image with the tag "AP" by clicking the drop-down menu and finding the appropriate dataset.
-    * for acqd, choose 'posterior -> anterior (y) (PA) by clicking the drop-down menu and finding the appropriate choice.
-    * Leave all the other options as default
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'acpc_aligned'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'fsleyes' as your viewer
-    * Only have the file titled 'dwi.nii.gz' selected in the viewer
-1. You can also generate a QA image of the DWI-T1 alignment by running the 'Generate images of DWI overlaid on T1' using the ACPC-aligned anatomical image and the preprocessed dMRI image generated above! Archive the results and save with the tag 'qa dmri-t1 overlay'.
+1. Click **Execute / Submit App** and search for **MRTrix3 - WMC Anatomically Constrained Tractography (ACT)** (`5e9dced9f1745d6994f692c0`).
+2. Configure inputs:
+   - **dwi**: Select your preprocessed DWI dataset (`acpc_aligned` tag).
+   - **anat**: Select your ACPC-aligned T1w dataset.
+   - Set desired streamline count (e.g., `500000` to `1000000` streamlines).
+3. Enable **Archive all output datasets when finished** and tag with `whole_brain_tractography`.
+4. Click **Submit**.
+5. After execution completes, view the output using the in-browser **Tractography 3D Viewer** to verify streamline distribution across cortical and subcortical structures.
 
-Once you're happy with the results, you can move on to fitting the CSD, DTI, and performing tractography!
+---
 
-### Fit the CSD & DTI models, perform diffusion tractography.
+### Step 7: Construct Structural Connectivity Matrices (SCMRT)
 
-1. On the 'Process' tab, click 'Submit App' to submit a new application.
-    * In the search bar, type 'MRTrix3 - WMC Anatomically Constrained Tractography (ACT)'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For dwi, select the preprocessed dMRI image generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * For anat, select the ACPC-aligned T1w image generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * Leave all other options as defaults
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'whole_brain_tractography'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'mrview' as your viewer
-        * This will overlay the tractogram on the generated fractional anisotropy (FA) image
-1. You can also generate a QA image of the whole-brain tractograms by running the 'Generate figures of whole-brain tractogram (tck)' using the whole-brain tractogram (tck) generated above! Archive the results and save with the tag 'qa whole brain tractogram'.
+1. Click **Execute / Submit App** and search for **Structural Connectome MRTrix3 (SCMRT)** (`626840bbf3858674a29fe791`).
+2. Configure inputs:
+   - **parcellation/volume**: Select the Glasser volume parcellation from MaTT (`Glasser` tag).
+   - **track/tck**: Select your whole-brain tractogram from ACT (`whole_brain_tractography` tag).
+   - **tensor**: Select the DTI tensor output generated during preprocessing.
+3. Enable **Archive all output datasets when finished** and tag with `structural_matrix`.
+4. Click **Submit**.
 
-If you're happy with the results, you're ready to move on to structural connectivity generation!
+---
 
-### Generate structural connectivity matrix.
+### Step 8: Convert Matrix to Network Datatype
 
-1. On the 'Process' tab, click 'Submit App' to submit a new application.
-    * In the search bar, type 'Structural Connectome MRTrix3 (SCMRT)'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For parcellation/volume, select the Glasser volume generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * For track/tck, select the whole brain tractogram generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * For tensor, select the DTI tensor output generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * Leave all other options empty or as defaults.
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'structural_matrix'
-    * Hit 'Submit'
+1. Click **Execute / Submit App** and search for **Conmat to network** (`60b961b10ad40d58e1ca7fe7`).
+2. Configure input:
+   - **conmat**: Select the generated `neuro/conmat` (datatype tag: `density`) dataset.
+3. Enable **Archive all output datasets when finished** and tag with `structural_network`.
+4. Click **Submit**.
 
-Once the app is finished, you can now move on to converting the matrices to the appropriate datatypes!
+---
 
-### Convert conmat to network datatype:
+## Next Steps
 
-1. On the 'Process' tab, click 'Submit App' to submit a new application.
-    * In the search bar, type ' Conmat to network'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For conmat, select the neuro/conmat (datatype-tag: density) datatype generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'structural connectivity networks'
-    * Hit 'Submit'
-
-**Nice work! Now that the app is finished, you're ready to perform group analyses on your connectivity matrices and examine the network structure of your data!!!!**
+Your structural connectome is now generated and standardized in the `network` datatype. You can proceed with:
+- **Network Metrics**: Run the [Network Measurements](https://brainlife.io/app/5ea70853f1745db7d9f7b0dc) App to compute graph-theoretical metrics (node degree, path length, clustering, modularity).
+- **Interactive Cloud Analysis**: Open the **4. Analysis** tab in your project to launch a JupyterLab environment and analyze your connectivity matrices using Python (`networkx`, `scipy`, `bctpy`) or MATLAB (Brain Connectivity Toolbox).
+- **Group Studies**: Aggregate multiple subjects across your cohort using the [Group Analysis](/docs/user/groupanalysis/) tools.

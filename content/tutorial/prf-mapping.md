@@ -1,131 +1,98 @@
-## Population receptive field mapping.
+# Population Receptive Field (pRF) Mapping
 
-This page demonstrates common steps used to map population receptive field (pRF) measures to the occipital cortex. This tutorial will walk through ways to [automatically map pRF data based on an atlas](https://brainlife.io/app/5cc4cd3f4ed9df00317f621d) and to [map fMRI pRF data](https://brainlife.io/app/5afc9831322997002773ed1c).
+This tutorial demonstrates common steps used to map population receptive field (pRF) measures to the occipital cortex on **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank}).
 
-The tutorial will use a combination of skills developed in the [Introduction tutorial](https://brainlife.io/docs/tutorial/introduction-to-brainlife/) and the [Anatomical Preprocessing tutorial](https://brainlife.io/docs/tutorial/t1w-preprocessing/) you recently completed. If you haven't read our introduction to brainlife, or if you're not comfortable staging, processing, archiving, and viewing data on brainlife.io, please go back through that tutorial before beginning this one.
+The goal of this tutorial is to map visual retinotopic properties—including **eccentricity** (distance from the fovea) and **polar angle** (angular position in the visual field)—onto the cortical surface using automated atlas-based fitting:
+* **[pRFs / Benson14-Retinotopy](https://brainlife.io/app/6115c829a5a04c2a80f9e7f7){target=_blank}**: Fits Bayesian retinotopic templates (Benson et al., 2014) to reconstructed anatomical surfaces.
+* **[FreeSurfer 7.3.2](https://brainlife.io/app/5fe1056057aacd480f2f8e48){target=_blank}**: Reconstructs the underlying cortical surfaces required for retinotopic mapping.
 
-### 1. Anatomical preprocessing.
+This tutorial builds on concepts from the [Introduction to Brainlife Connects](/docs/tutorial/introduction-to-brainlife) and [Anatomical Preprocessing](/docs/tutorial/t1w-preprocessing) tutorials.
 
-The first step of pRF mapping often involves processing the anatomical images. In order to automatically map pRF measures using an atlas, or to map functional MRI pRF data, we first need to generate cortical and white matter surfaces and brain region parcellations using [Freesurfer](https://brainlife.io/app/5fe1056057aacd480f2f8e48). These surfaces and parcellations will be used to map pRF data to the occipital lobe surface.
+---
 
-### 2. pRF Mapping.
+## Retinotopic Mapping Overview
 
-The next step is to map **population receptive field (pRF)** data to the cortical occipital surface. **pRF** is a method that uses fMRI to map visual function in the **occipital lobe**, which is the visual processing center of the brain. Specifically, stimuli designed to cover different properties of the visual field are used to map functional activitation of the occipital lobe. These specific properties include location in space (eccentricity) and orientation of the stimuli (polar angle). This works due to the unique preservation of every location in our visual field onto the retina all the way to the cortex, a property called **retinotopy**.
+Retinotopy is the spatial preservation of the visual field from the retina through the lateral geniculate nucleus to the primary visual cortex (V1) and higher visual areas (V2, V3, hV4). 
 
-There are two ways you can map this visual function data to the cortex: the first involves the [fitting of an atlas](https://brainlife.io/app/6115c829a5a04c2a80f9e7f7) to the occipital lobe and the other involves [fitting fMRI pRF data](https://brainlife.io/app/5cae3ef776cdaa0030b9232b) to the occipital lobe. On brainlife.io, we developed apps to perform both of these tasks! This tutorial will walk you through the atlas-based method.
+```
+[Raw Anatomical T1w]
+        │
+        ▼
+1. FSL Anat (T1)                 ──► ACPC alignment, bias correction, skull stripping
+        │
+        ▼
+2. FreeSurfer 7.3.2              ──► Cortical surface reconstruction (pial and white surfaces)
+        │
+        ▼
+3. Benson14-Retinotopy           ──► Bayesian template fitting of visual field maps (V1, V2, V3)
+        │
+        ▼
+[Interactive Surface Visualizer] ──► Inspect eccentricity and polar angle overlays on 3D meshes
+```
 
-Useful information about pRF can be found in this [Neuroimage paper](https://pubmed.ncbi.nlm.nih.gov/17977024/). More information about the atlas-based mapping can be found in this [PLOS Computational Biology paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003538).
+### Why Atlas-Based Retinotopic Mapping?
+Functional retinotopy experiments require specialized visual display setups and prolonged MRI scan sessions. Atlas-based Bayesian retinotopic mapping algorithms (Benson et al., 2014, *PLOS Computational Biology*) predict individual retinotopic maps with high biological fidelity solely from the subject's cortical anatomy and sulcal geometry.
 
-Now, let's get to work! The following steps of this tutorial will show you how to:
+---
 
-1. generate anatomical surfaces using Freesurfer,
-1. map pRF data using an atlas,
-1. compute statistics of cortical thickness and volume across eccentricities
-#1. and map pRF data using fMRI pRF data
+## Step 1: Copy Tutorial Data
 
-### Copy appropriate data over from a single subject in the Tutorial data project
+1. In your project on [Brainlife Connects](https://connects.brainlife.io/){target=_blank}, click on the **2. Data** tab.
+2. Click **Add Project Data** and select **Copy from another Project**.
+3. Select the *Tutorial Data* project (`5e7638f6de643b02832a8246`) and copy the anatomical `anat/t1w` dataset for subject `test001`.
+4. Confirm to copy the data into your project's **Data** table.
 
-1. Click the following link to go to the project's page for the [Tutorial](https://brainlife.io/project/5e7638f6de643b02832a8246/detail)
-1. Click the 'Archive' tab at the top of the screen to go to the Archives page.
-1. Select the following datatypes from one subject by clicking the boxes next to the data for subject 'test001':
-    * anat/t1w
-    * anat/t2w
-1. Click the 'Stage to process' button on the right side of the screen
-    * For 'Project', select your project from the drop-down menu.
-    * For 'Process,' select 'Create New Process' and title it "Network neuroscience - structural tutorial." Hit 'Submit.'
-        * This will take you to the process on your Projects page
-1. Archive the data in your project by clicking the 'Archive' button next to each dataset.
+---
 
-Your data should now be staged for processing and archived in your projects page! You're now ready to move onto the first step: preprocessing of the anatomical (T1w & T2w) images!
+## Step 2: Preprocess and ACPC-Align Anatomical T1w (FSL Anat)
 
-### Preprocess anatomical (T1w & T2w) data using FSL
+1. In the **2. Data** tab, select your `anat/t1w` dataset and click **Stage to process**.
+2. Name the process `pRF Mapping Pipeline` and confirm.
+3. Switch to the **3. Processing** tab and select the **Processes** view.
+4. Select your process and click **Submit App**.
+5. Search for **FSL Anat (T1)**:
+    * **t1**: Staged raw `anat/t1w` dataset.
+    * Check **crop** and **reorient**.
+6. Click **Submit**.
 
-#### T1w data
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'FSL Anat (T1).'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For input, select the staged raw anatomical (T1w) image by clicking the drop-down menu and finding the appropriate datasets.
-    * Select the boxes for 'crop' and 'reorient'. Leave all other defaults the same.
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'fsl_anat'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'FSLeyes' as your viewer
-        * This will load the the preprocessed T1w data.
+---
 
-#### T2w data
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'FSL Anat (T2).'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For input, select the staged raw anatomical (T2w) image by clicking the drop-down menu and finding the appropriate datasets.
-    * Select the boxes for 'crop' and 'reorient'. Leave all other defaults the same.
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'fsl_anat'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'FSLeyes' as your viewer
-        * This will load the the preprocessed T2w data.
+## Step 3: Reconstruct Cortical Surfaces (FreeSurfer 7.3.2)
 
-Once you're happy with the surfaces, you can move onto running Freesurfer!
+1. In the **Processes** view, click **Submit App**.
+2. Search for **FreeSurfer 7.3.2**.
+3. Configure the inputs:
+    * **t1**: ACPC-aligned T1w output from FSL Anat (`acpc_aligned` tag).
+    * Check **hippocampal** and **hires**.
+4. Click **Submit**.
 
-### Generate surfaces using Freesurfer:
+---
 
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'Freesurfer.'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For input, select the staged raw anatomical (T1w) image by clicking the drop-down menu and finding the appropriate dataset.
-    * Select the boxes for 'hippocampal' and 'hires'
-    * For 'version,' select '6.0.0' from the drop-down menu.
-    * Select the box for 'Archive all output datasets when finished'
-        * For 'Dataset Tags,' type and enter 'freesurfer'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon to the right of the dataset
-    * Choose 'freeview' as your viewer
-        * This will load the following volumes and surfaces: aseg, brainmask, white matter mask, T1, left/right hemisphere pial (cortical), and white (white matter) surfaces.
-    * To view the aparc.a2009s segmentation on an inflated surface, do the following:
-        * Click File --> Load surface
-            * Choose the lh.inflated and rh.inflated surfaces
-            * Hit 'OK'
-        * Select inflated surface of choice (i.e. left or right hemisphere)
-        * Click the drop-down menu next to 'Annotation' and choose 'Load from file'
-            * Choose the appropriate hemisphere aparc.a2009s.annot file (lh.aparc.a2009s.annot)
-            * Hit 'OK'
-            * The aparc.a2009s parcellation should be overlaid on your inflated surface! Now, repeat the process on the other hemisphere.
+## Step 4: Atlas-Based Retinotopic Mapping (Benson14)
 
-Once you're happy with the surfaces, you can move onto running the atlas-based pRF mapping!
+1. In the **Processes** view, click **Submit App**.
+2. Search for **pRFs / Benson14-Retinotopy** ([App Link](https://brainlife.io/app/6115c829a5a04c2a80f9e7f7){target=_blank}).
+3. Configure:
+    * **freesurfer**: Select the completed FreeSurfer output from Step 3.
+4. Click **Submit**.
 
-### pRF Mapping - Atlas-based
+This App aligns the anatomical surfaces to the fsaverage template and fits the visual field map model across visual areas V1, V2, V3, and hV4.
 
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'pRFs / Benson14-Retinotopy'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For freesurfer, select the Freesurfer output generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * Select the box for 'Archive all output datasets' when finished
-        * For 'Dataset Tags,' type and enter 'atlas_based'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon next to the 'prf' tagged output.
-    * Choose the 'PRF' viewer
-    * To view the eccentricity map, select the "r2 * eccentricity" selection from the 'Overlay' drop-down menu.
+---
 
-<!--  
-### pRF Mapping - fMRI-based
+## Step 5: Visualizing Retinotopic Maps
 
-1. On the 'Process' tab of your project, click 'Submit App' to submit a new application.
-    * In the search bar, type 'pRFLife mrTools'
-    * Click the app card.
-1. On the 'Submit App' page, select the following:
-    * For func/task, select the staged func/task pRF data by clicking the drop-down menu and finding the appropriate dataset.
-    * For stimulus, select the staged stimulus pRF data by clicking the drop-down menu and finding the appropriate dataset.
-    * For freesurfer, select the Freesurfer output generated above by clicking the drop-down menu and finding the appropriate dataset.
-    * Leave all other options as defaults.
-    * Select the box for 'Archive all output datasets' when finished
-        * For 'Dataset Tags,' type and enter 'fmri_based'
-    * Hit 'Submit'
-1. Once the app is finished running, view the results by clicking the 'eye' icon next to the 'prf' tagged output.
-    * Choose the 'PRF' viewer
--->
-**If you're happy with the results, then you have successfully finished mapping visual function data (pRF) using an atlas-based mapping method! You're now ready to move onto the next tutorial!**
+Once the task finishes:
+1. Locate the output card tagged with `prf`.
+2. Click the **Eye (View)** icon and select the **Brainlife Surface Visualizer**.
+3. In the viewer, select:
+    * **Eccentricity**: Visualizes distance from the center of gaze (degrees of visual angle).
+    * **Polar Angle**: Visualizes angular representation (upper vs. lower visual field, horizontal vs. vertical meridians).
+    * **Visual Area Labels**: Displays segmented contours for primary visual areas V1, V2, and V3.
+
+---
+
+## Next Steps
+
+* **[Cortex Tissue Mapping](/docs/tutorial/cortex-tissue-mapping)**: Sample diffusion microstructural parameters along visual cortex boundaries.
+* **[Interactive Group Analysis](/docs/user/groupanalysis)**: Collate visual area cortical thickness, surface area, and retinotopic statistics across subjects in cloud Jupyter Notebooks.

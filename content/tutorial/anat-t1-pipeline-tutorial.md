@@ -1,96 +1,119 @@
-## Introduction to Pipelines on Brainlife.io
+## Pipeline Automation: Anatomical (T1w) Preprocessing
 
-Welcome to a specialized tutorial in which we transition from manual task submission to automated tasks from pipelines in the Anatomical (T1-weighted or T1w) preprocessing on brainlife.io. This tutorial is tailored for those looking to streamline their neuroimaging workflows, emphasizing the power and convenience of pipeline automation.
+Welcome to this tutorial on creating **automated pipelines** on Brainlife. In earlier tutorials, you learned how to manually stage datasets and submit apps one by one. While manual execution is ideal for exploratory testing on a single subject, managing large cohorts (dozens, hundreds, or thousands of subjects) requires automation.
 
-By leveraging pipelines, you can automate repetitive tasks, ensure uniformity across your data processing, and save valuable time. This tutorial will guide you through converting the traditional, manual steps of T1w preprocessing into a set of pipeline rules that work seamlessly in the background.
+**Brainlife Pipelines** allow you to chain applications together declaratively. By defining **pipeline rules**, any dataset matching your specified datatype and tags will automatically trigger downstream apps in the cloud as soon as prerequisite outputs become available.
 
-This tutorial assumes familiarity with brainlife.io and basic neuroimaging concepts. If you're new to brainlife.io, consider completing the introduction-to-brainlife tutorial before proceeding.
+In this tutorial, you will build an automated T1w anatomical pipeline that chains:
+1. **FSL Anat (T1w)**: Brain extraction, bias correction, and ACPC alignment.
+2. **FreeSurfer 7.3.2**: Cortical surface reconstruction and subcortical parcellation.
+3. **Multi-Atlas Transfer Tool (MaTT)**: Mapping the Glasser HCP-MMP cortical atlas.
 
-In today's example, we will recreate pieces of Anatomical (T1w) preprocessing as a pipeline, automating the preprocessing of several datasets at once. 
+> [!NOTE] Prerequisites
+> Before building automated pipelines, you should be familiar with project navigation and manual app submission described in the [Introduction to Brainlife](/docs/tutorial/introduction-to-brainlife/) tutorial.
 
-## Role of Tags in Pipelines
-Tags play a crucial role in Brainlife Pipelines as they provide a way to organize, categorize, and track data throughout the pipeline workflow. They serve several important purposes:
+---
 
-- Pipeline Flow Control: Tags are used to specify input and output data requirements for each rule in the pipeline. They ensure that the correct data is used as input for a specific task and that the resulting output is properly tagged for future steps.
+## How Pipelines Work: The Power of Tags
 
-- Data Organization: Tags help categorize and label datasets, making managing and locating specific data objects within your project easier. This is especially valuable when dealing with large datasets and complex workflows.
+Brainlife pipelines evaluate rules reactively:
+- **Input matching**: Each rule monitors your project's data archive for objects matching a specific datatype (e.g., `anat/t1w`) and dataset tags (e.g., `acpc_aligned`).
+- **Triggering execution**: Whenever a matching dataset is uploaded or produced by an upstream app, the rule automatically instantiates a new process and submits the App with your preconfigured parameters.
+- **Output tagging & chaining**: The rule assigns specific tags to its outputs (e.g., `preprocessed`, `freesurfer`). Downstream rules listening for those tags will automatically detect the new outputs and begin execution.
 
-- Data Versioning: Tags help maintain data versioning and lineage. By tracking which rule produced which output with specific tags, you can trace the history of your data and ensure data consistency.
+```mermaid
+flowchart LR
+    A["Raw T1w Data<br/>(anat/t1w)"] -->|Rule 1: FSL Anat| B["ACPC Aligned T1w<br/>tags: preprocessed, acpc_aligned"]
+    B -->|Rule 2: FreeSurfer 7.3.2| C["Cortical Surfaces<br/>tag: freesurfer"]
+    C -->|Rule 3: MaTT| D["HCP-MMP Parcellation<br/>tag: Glasser"]
+```
 
-- Customization and Flexibility: Tags allow you to customize and tailor your pipeline rules to your project's specific needs. You can use tags to filter and select data for processing, ensuring each rule operates on the correct data subset.
+---
 
-## Step 1: Importing the Dataset
+## Step 1: Import the Tutorial Dataset
 
-**Dataset Import**: Import the dataset from [Sample Dataset](https://brainlife.io/dataset/datasets.datalad.org/labs/gobbini/famface/data) into your brainlife.io project.
+1. In Brainlife, create a new private project or open your existing tutorial project.
+2. Navigate to the [Sample Dataset Project](https://brainlife.io/dataset/datasets.datalad.org/labs/gobbini/famface/data).
+3. Click the **2. Data** tab.
+4. Filter by datatype `anat/t1w`.
 
-!!! warning
-    Note: Only choose anat/t1w data
+> [!WARNING] Select Only T1w Data
+> For this tutorial, select only `anat/t1w` objects. Do not select DWI or fMRI series.
 
-![Dataset ](../img/tutorial_pipeline_anat_t1_w_dataset.png)
+![Dataset Selection](../img/tutorial_pipeline_anat_t1_w_dataset.png)
 
+5. Check the boxes next to 2–3 subjects, click **Stage to process** (or copy to your project), select your target project, and confirm.
 
 ![Dataset Import](../img/tutorial_pipeline_anat_t1_w_dataset_import.png)
 
-## Step 2: Adding Pipeline Rules
+---
 
-### Rule 1: Preprocessing and Alignment of T1w Images
+## Step 2: Configure Pipeline Rules
 
-1. Add Rule: In the Pipelines tab, click "Add Rule".
-2. **App Selection**: Search and select 'FSL Anat (T1)'.
+Navigate to your target project and click the **3. Processing** tab, then select the **Pipeline** sub-view.
+
+### Rule 1: Preprocessing and Alignment (FSL Anat)
+
+1. In the Pipeline canvas, click **Add Rule**.
+2. **App Selection**: Search for **FSL Anat (T1)** (`5e3c87ae9362b7166cf9c7f4`) and click the card.
 3. **Configuration**:
-   - Check 'crop', 'reorient', and 'bias'.
-   - Select 'MNI152_1MM' as the template.
-4. Submit the rule.
+   - Check **crop**, **reorient**, and **bias**.
+   - Set template to `MNI152_1MM`.
+4. **Input Tags**: Leave blank to match any incoming raw `anat/t1w` data.
+5. **Output Tags**:
+   - Specify output tags: `preprocessed` and `acpc_aligned`. These tags allow downstream rules to distinguish aligned T1w scans from raw scans.
+6. Click **Submit Rule**.
 
-![FSL Anat (t1) ](../img/tutorial_pipeline_anat_t1_w_select_app_fsl_anat_t1w.png)
+![FSL Anat Configuration](../img/tutorial_pipeline_anat_t1_w_select_app_fsl_anat_t1w.png)
+![FSL Anat Output Tags](../img/tutorial_pipeline_anat_t1_w_output_app_fsl_anat_t1w.png)
 
+---
 
-**Output Tags**:
-- Click on the output tab.
-- Note the tags 'preprocessed' and 'acpc_aligned'. These tags will be referenced in subsequent apps.
+### Rule 2: Cortical Surface Reconstruction (FreeSurfer 7.3.2)
 
-![FSL Anat (t1) ](../img/tutorial_pipeline_anat_t1_w_output_app_fsl_anat_t1w.png)
-
-### Rule 2: Freesurfer Surface Generation and Parcellation
-
-1. Add Rule: Click "Add Rule" again.
-2. **App Selection**: Search and select 'Freesurfer 7.3.2'.
+1. Click **Add Rule** to create your second pipeline stage.
+2. **App Selection**: Search for **Freesurfer 7.3.2** (`5fe1056057aacd480f2f8e48`).
 3. **Configuration**:
-   - For input, select the ACPC aligned anatomical image (output from the previous rule).
-   - Enable 'hippocampal' and 'thalamicnuclei'.
-   - Enable 'Archive all output datasets when finished'.
-   - Type 'freesurfer' in 'Dataset Tags'.
+   - Enable **hippocampal** and **thalamicnuclei** subsegmentation.
+   - Set Output Dataset Tag to `freesurfer`.
 4. **Input Tags**:
-   - Go to the Input tab.
-   - Add the object tags 'acpc_aligned' and 'preprocessed'. These tags will link to the output of the first app.
-5. Submit the rule.
+   - In the **Input** tab, require the tags `acpc_aligned` and `preprocessed`. This ensures FreeSurfer will only run on the output of Rule 1, avoiding unaligned raw images.
+5. Click **Submit Rule**.
 
-![Select FreeSurfer](../img/tutorial_pipeline_anat_t1_w_select_app_free_surfer.png)
+![FreeSurfer App Selection](../img/tutorial_pipeline_anat_t1_w_select_app_free_surfer.png)
+![FreeSurfer Input Tags](../img/tutorial_pipeline_anat_t1_w_input_app_free_surfer.png)
 
-![Input FreeSurfer](../img/tutorial_pipeline_anat_t1_w_input_app_free_surfer.png)
+---
 
-### Rule 3: Multi-Atlas Transfer Tool
+### Rule 3: Multi-Atlas Transfer Tool (MaTT)
 
-1. Add Rule: Add another rule.
-2. **App Selection**: Search and select 'Multi-Atlas Transfer Tool'.
+1. Click **Add Rule** to create the final stage.
+2. **App Selection**: Search for **Multi-Atlas Transfer Tool (MaTT)** (`6016dcdc321a4aafce6decd5`).
 3. **Configuration**:
-   - For input, select the Freesurfer output (from the previous rule).
-   - Select 'hcp-mmp-b' as the atlas.
-4. Submit the rule.
+   - Select `hcp-mmp-b` (Glasser 180-node atlas) as the target space/atlas.
+   - Set Output Dataset Tag to `Glasser`.
+4. **Input Tags**:
+   - FreeSurfer produces a unique datatype (`fs` / `freesurfer`), so MaTT can automatically bind to the outputs tagged `freesurfer`.
+5. Click **Submit Rule**.
 
-![Multi-Atlas Transfer Tool](../img/tutorial_pipeline_anat_t1_w_select_app_multi_atlas.png)
+![Multi-Atlas Transfer Tool Rule](../img/tutorial_pipeline_anat_t1_w_select_app_multi_atlas.png)
 
-Once this is ready, make all rules active!
+---
 
-Check the progress by refreshing and by clicking the details icon. 
+## Step 3: Activate and Monitor the Pipeline
+
+1. Ensure the toggle switch on each of your pipeline rules is set to **Active**.
+2. Switch to the **Summary** or **Processes** view under the **3. Processing** tab.
+3. Brainlife will automatically detect your staged T1w subjects, generate the execution graph, and submit jobs to available high-performance compute clusters.
+4. Click the refresh button or open the details drawer to view live task statuses, resource utilization, and execution logs.
 
 ![Details and Refresh](../img/tutorial_pipeline_anat_t1_w_details_refesh.png)
+![Pipeline Progress Stats](../img/tutorial_pipeline_anat_t1_w_details_stats.png)
 
+---
 
-![Progress](../img/tutorial_pipeline_anat_t1_w_details_stats.png)
+## Summary and Key Takeaways
 
-
-## Exercises
-
-1. Question: Why did we not use input tags for `Multi-Atlas Transfer Tool`? 
-2. Practice: Complete the Pipeline with `Freesurfer Brain Parcellation - Statistics` in a new project 
+1. **Automation**: Once rules are configured, simply uploading or staging new subjects into your project automatically triggers the entire pipeline from beginning to end without manual intervention.
+2. **Quality Control**: Use tags to enforce rigorous validation checkpoints (e.g., only running tractography on datasets with verified QA tags).
+3. **Reproducibility**: Pipeline rules are versioned and can be exported, shared with collaborators, or published alongside datasets with a citable DOI.

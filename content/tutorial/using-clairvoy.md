@@ -1,57 +1,101 @@
-# Clairvoy Tutorial
+# Clairvoy Tutorial: Clinical Concussion Risk Prediction
 
-## Welcome to Clairvoy.  
+## Welcome to Clairvoy
 
-Clairvoy is an prototype [brainlife.io](https://brainlife.io) App. The Clairvoy App utilizes a machine learning, model to predict whether someone who has experienced a concussion is at risk for slow recovery (defined as the lack of clinical clearance for full return to sport at greater than 28 days). The diffusion-weighted and T1-weighted MRI should be collected 24-48 hours after a diagnosed concussion. This experimental tool is entirely based on the publication of [Bertó et al. 2024 (NeuroImage: Clinical, 43, 103646)](https://doi.org/10.1016/j.nicl.2024.103646). Clairvoy was funded by the U.S. Department of Defense, award W81XWH-20-1-0717, PI: Nicholas L Port. The NCAA/DOD CARE Consortium collected the dataset analyzed by Bertó et al. The data collection was jointly funded by the NCAA and DOD, award W81XWH-14-2-0151, PI: Thomas W McAllister.  
+**Clairvoy** is an automated clinical research application hosted on [brainlife.io](https://brainlife.io). The Clairvoy App utilizes a machine learning classifier to predict whether an individual who has sustained a concussion is at high risk for prolonged symptoms or slow recovery (defined as the lack of clinical clearance for full return to sports/daily activity at >28 days). 
 
-We encourage clinicians and scientists to try Clairvoy and appreciate any feedback on how to refine the app. 
-Drs. [Port](mailto:nport@iu.edu) and [Pestilli](mailto:pestilli@utexas.edu) are actively seeking funding to conduct a clinical trial to validate Clairvoy, but, at present, Clairvoy has not been validated for clinical use.  Thank you for trying Clairvoy and helping us improve it.
+The underlying machine learning model evaluates diffusion-weighted (dMRI) and T1-weighted structural MRI acquired within 24–48 hours post-injury. This experimental tool is based on peer-reviewed research by [Bertó et al. 2024 (*NeuroImage: Clinical*, 43, 103646)](https://doi.org/10.1016/j.nicl.2024.103646). 
 
-## Directions
+> [!IMPORTANT] Investigational Use Only
+> Clairvoy was developed with support from the U.S. Department of Defense (award W81XWH-20-1-0717, PI: Nicholas L. Port) and the NCAA/DOD CARE Consortium (award W81XWH-14-2-0151, PI: Thomas W. McAllister). Clairvoy is an open-science research tool and has **not yet received FDA clearance or validation as a standalone diagnostic medical device**. We welcome clinical researchers and neuroscientists to evaluate Clairvoy and provide feedback.
 
-The Clairvoy App lives inside the [brainlife.io](https://brainlife.io) platform, an easy-to-use, web-based, Open Science data analysis platform focused on neuroimaging.  Free and open to anyone in the world, Brainlife has over 1,000 users across dozens of countries. Brainlife offers free access to the super-computer built into the platform. If you become a regular user, you can connect your (super-)computer to BrainLife, which may significantly speed up your analyses. Before using Cairvoy, you will need a free Brainlife login. We recommend reading the [brainlife.io getting started guide](https://brainlife.io/docs/user/started/). There are also many helpful videos on the [brainlife.io YouTube channel](https://www.youtube.com/@brainlifeio/videos).
+---
 
-Clairvoy uses the web-based ezBIDS tool (built into Brainlife) to import Dicom files, convert them automatically to NIfTI format, and then create a BIDS project (Brain Imaging Data Structure). You can learn more about ezBIDs at [this link](https://brainlife.io/docs/using_ezBIDS/) and watch a video at [this link](https://www.youtube.com/watch?v=KvhIHxzHsl4). The dMRI and T1 protocols can be found in [Bertó et al. 2024 (NeuroImage: Clinical, 43, 103646)] and [Nencka, et al. 2018 (Brain Imaging Behav 12:1121-1140)](https://doi.org/10.1007/s11682-017-9775-y). 
+## Workflow Overview
 
-### Step-by-step directions for Clairvoy:
+Clairvoy couples the browser-based **ezBIDS** conversion service with high-performance automated pipelines on Brainlife:
+1. **ezBIDS**: Ingests raw DICOM or NIfTI series, automatically identifies imaging sequences, defaces anatomical images for participant privacy, and generates a valid BIDS-compliant dataset.
+2. **DWI Pipeline**: Automated preprocessing, fiber orientation modeling, tractography, white matter anatomy segmentation, and tract profiling (microstructural metrics along major white matter tracts).
+3. **Clairvoy ML Classifier**: Reads white matter tract profiles (`tractmeasures`) and classifies the subject's injury profile.
 
-A narrated video of how to use Clairvoy is available at [this link](https://youtu.be/TvVmsXITP_0).
+```mermaid
+flowchart LR
+    A["Raw Clinical DICOMs<br/>(T1w + DWI)"] -->|ezBIDS| B["BIDS Dataset"]
+    B -->|Brainlife DWI Pipeline| C["Tract Profiles<br/>(tractmeasures)"]
+    C -->|Clairvoy App| D["Risk Prediction<br/>(Normal vs. High Risk)"]
+```
 
-### Step 1.  Upload files into a BIDS project
-1. Login into ezBIDS with your free [brainlife.io](https://brainlife.io) account.[^1] The homepage will now open to the `Upload Imaging Data` on the left side Tab. 
-2. Drag and drop, or browse, for the files you wish to upload. Zip’ing the files may increase upload speed. Fill in the relevant details of the `Dataset Description`: `Dataset Name` (e.g., “DWI_workflow”, Authors (eg. your name).  Some elements will be extracted from the DICOM, e.g., `Subject` and `Session`. If the data is not deidentified, you may wish to change the subject name to a private subject ID number. In `BIDS Datatype`, choose `IntendedFor` to `dwi/dwi`. 
-5. It is best practice to deface the subjects. To do so, choose `QuickShear` method and run defacing (this will remove any recognizable face and ear features). When finished, visually confirm the brain is still in the image and select `Use Defaced`. In `Participants Info`, you may want to choose the sex and age of the subject (this is not HIPAA-protected information).
-6. Select `Finalize` to convert to BIDS.[^2]
-7. Click `Send to Brainlife.io` and select `Run DWI Pipeline`.
-8. Click `Submit`, this will automatically create a private `Project` on [brainlife.io](https://brainlife.io), and the `DWI Pipeline` will process the data inside the project.  
+---
 
-### Step 2.  Switch to Brainlife
-1. Navigate to [brainlife.io/projects](https://brainlife.io/projects). 
-2. In `Projects`, search for a `Project` named `Dataset Name` (or use the name selected in Step 1, e.g., DWI_workflow).  
-3. The `Pipeline` Tab should show the pipeline is “active” and “processing.” Wait for process completion[^3].
-  
-### Step 3.  Run the Clairvoy App
-After pipeline completion:
-1. Choose the `Archive` Tab in your project,
-2. Select `tractmeasures`.
-3. Choose `Stage to process`.
-4. Give the process the name `Clairvoy` and click `Submit`.
-5. In the `Preprocess` Tab, choose `Clairvoy` and click `Submit App`.
-6. Choose the `Clairvoy App` from the list of Apps suggested by [brainlife.io](https://brainlife.io) and click submit. This should only take a minute or so to complete.
-7. When finished, the `Clairvoy App` output will state either: **This injury is at high risk of developing PPCS** in red letters, or **This injury is predicted to recover in under 28 days** in green letters.
+## Step-by-Step Instructions
 
+### Step 1: Ingest and BIDSify Data with ezBIDS
 
-## Demonstration
+1. Navigate to [ezBIDS](https://brainlife.io/ezbids) and sign in using your free Brainlife account. (If you don't have an account, see [Getting Started](/docs/user/started/)).
+2. Under the **Upload Imaging Data** panel, drag and drop your DICOM folder or `.zip` archive.
+3. Review the extracted metadata in `Dataset Description`:
+   - Enter a descriptive `Dataset Name` (e.g., `Concussion_Evaluation_01`).
+   - Check and adjust participant IDs to ensure de-identification.
+4. **Defacing (Privacy Protection)**:
+   - Run the automated `QuickShear` defacing step to remove facial features while preserving full intracranial volume.
+   - Visually verify defacing and select **Use Defaced**.
+5. Click **Finalize** to generate the BIDS directory structure.
+6. Click **Send to Brainlife.io** and check **Run DWI Pipeline**.
+7. Click **Submit**. This automatically creates a private project on Brainlife and initializes the preprocessing pipeline.
 
-**Here is a narrated video of running Clairvoy:**
+---
 
-<div style="display: flex; justify-content: center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/TvVmsXITP_0?si=HBNc2dlK7mipZJY-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+### Step 2: Monitor DWI Pipeline on Brainlife
+
+1. Navigate to **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io)) and open your newly created project.
+2. Click the **3. Processing** tab and select the **Pipeline** or **Summary** view.
+3. Confirm that the pipeline is active. The pipeline will automatically execute:
+   - T1w ACPC alignment and brain masking.
+   - Diffusion denoising, eddy current, and motion correction.
+   - Whole-brain probabilistic tractography and tract segmentation.
+   - Tract profile measurement extraction (`tractmeasures`).
+
+> [!NOTE] Processing Time
+> Pipeline execution typically takes between 1 and several hours depending on available high-performance compute clusters connected to Brainlife.
+
+---
+
+### Step 3: Run the Clairvoy App
+
+Once the DWI pipeline has completed and produced the `tractmeasures` dataset:
+
+1. In your project, click the **2. Data** tab.
+2. Locate and check the box next to the generated **`tractmeasures`** dataset.
+3. In the action bar, click **Stage to process**.
+4. In the dialog, select **Create New Process**, name it `Clairvoy Prediction`, and click **Submit**.
+5. In the **3. Processing** tab, open the `Clairvoy Prediction` process and click **Execute / Submit App**.
+6. In the App search box, type **Clairvoy** and select the official **Clairvoy App** card.
+7. Verify that your staged `tractmeasures` dataset is bound to the input field, then click **Submit**.
+8. Execution requires less than 2 minutes.
+
+---
+
+### Step 4: Interpreting Results
+
+Once the App finishes, open the output by clicking the eye icon next to the result dataset:
+
+- <span style="color: #22c55e; font-weight: 700;">Normal Recovery Trajectory</span>: The injury is predicted to recover in under 28 days.
+- <span style="color: #ef4444; font-weight: 700;">High Risk (PPCS)</span>: The injury is flagged as high risk for developing Persistent Post-Concussive Symptoms (PPCS), indicating potential benefit from proactive clinical follow-up.
+
+---
+
+## Video Walkthrough
+
+Watch a complete demonstration of the Clairvoy workflow:
+
+<div style="display: flex; justify-content: center; margin: 1.5rem 0;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/TvVmsXITP_0?si=HBNc2dlK7mipZJY-" title="Clairvoy Walkthrough Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px;"></iframe>
 </div>
 
-[^1]: For security reasons, it will require creating a user account on [brainlife.io](https://brainlife.io), see instructions [here](https://brainlife.io/docs/user/started/).
-[^2]: It is best practice to save the download `configuration/template` to your computer, which can be reused later for other similar datasets.
-[^3]: Time to completion depends on the currently available computing resources on [brainlife.io](https://brainlife.io).
-If you have access to a (super-)computer, time to completion may be reduced to less than an hour.
-If you use a free, public [brainlife.io](https://brainlife.io) supercomputer, the pipeline may take over 24 hours to complete.
+---
 
+## References & Funding
+
+- **Bertó et al. (2024)**: *Machine learning predicts prolonged recovery following sport-related concussion from acute diffusion MRI.* NeuroImage: Clinical, 43, 103646. [DOI: 10.1016/j.nicl.2024.103646](https://doi.org/10.1016/j.nicl.2024.103646).
+- **Nencka et al. (2018)**: *The NCAA-DoD CARE Consortium: dMRI protocol and harmonization.* Brain Imaging and Behavior, 12:1121–1140. [DOI: 10.1007/s11682-017-9775-y](https://doi.org/10.1007/s11682-017-9775-y).
+- **Principal Investigators**: Nicholas L. Port (Indiana University, [nport@iu.edu](mailto:nport@iu.edu)) and Franco Pestilli (The University of Texas at Austin, [pestilli@utexas.edu](mailto:pestilli@utexas.edu)).

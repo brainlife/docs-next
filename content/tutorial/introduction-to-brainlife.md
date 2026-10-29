@@ -1,122 +1,156 @@
-## Introduction to brainlife.
+# Introduction to Brainlife Connects
 
-This page highlights the most important first steps in learning how to use brainlife.io, including creating an account and project, interacting with datasets, launching processes, visualizing results, and creating pipelines. If you have not read the documentation regarding these topics, please see [Getting Started/](/docs/user/started).
+Welcome to **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank})! Brainlife is a free, cloud-based platform for reproducible neuroimaging data management, high-performance computing pipelines, interactive data analysis, and open-science publication.
 
-![landing](../img/brainlife-landing-page.png)
+This tutorial guides you through the foundational steps of using Brainlife:
+1. [Creating an account](#a-create-an-account)
+2. [Creating a research project](#b-create-a-project)
+3. [Adding data to your project](#c-add-data-to-your-project)
+4. [Launching an App & processing data](#d-launch-an-app-and-process-data)
+5. [Visualizing results in your browser](#e-visualize-results-in-your-browser)
+6. [Archiving and data provenance](#f-archiving-and-data-provenance)
 
-### A. Create an account.
+![Brainlife Connects Project Overview](../img/connect_datasets/project_overview.png)
 
-The first step to processing data using brainlife is to go to brainlife.io and create an account.
+---
 
-To do make an account and project, follow these steps:
+## A. Create an Account
 
-1. Enter brainlife.io into your browser web address. 
-1. Once on the homepage, click the "signup" button in the top left corner.
-    * Enter the following information on the signup page:
-        * username
-        * email
-        * password
-        * full name
-        * institution/university
-        * biography
-        * position (undergraduate student)
-1. Read the Acceptable Use and Privacy policies and then check the box that says "I have read and consent to brainlife.io Acceptable Use Policy and Privacy Policy" and hit submit
+To begin using Brainlife, create a free user account:
 
-### B. Create a Project.
+1. Visit the [Brainlife authentication page](https://brainlife.io/auth/){target=_blank}.
+2. Select your preferred login method:
+    * **Single Sign-On (SSO)**: Sign in instantly using **Google**, **GitHub**, **ORCID**, **Apple**, or your university/academic institution via institutional login.
+    * **Email & Password**: Fill out the [Sign Up form](https://brainlife.io/auth/#!/signup){target=_blank} with your name, email, and password.
+3. Review and accept the Brainlife Acceptable Use and Privacy Policy, then submit.
 
-Next we will start managing some data on the platform by creating a Project.
+!!! tip "Linking Accounts"
+    You can connect multiple authentication providers (such as ORCID and Google) to a single Brainlife profile under **Settings > Account > Connected Accounts**.
 
-1. Go to the [brainlife.io home page](https://brainlife.io){target=_blank} and click 'home.' This will bring you inside the platform.
-1. Click the 'Projects' tab on the left side of the screen (shield icon).
-1. Click the 'New Project' button at the bottom right corner of the screen.
-    * Enter the following information on the New Project page:
-        * Name
-        * Description
-        * Readme
-        * Navigate to Access Control and add the following accounts in Administrators (if you start typing a name, the system will autocomplete for you):
-            * Brad Caron
-            * Soichi Hayashi
-            * Franco Pestilli
-    * Click submit.
-1. Return to the projects page and select your newly created project.
+---
 
-You are now ready to copy data from another project!
+## B. Create a Project
 
-### C. Copy data from another project.
+Projects are secure collaborative workspaces on Brainlife where you organize datasets, launch automated pipelines, run cloud Jupyter notebooks, and publish citable findings.
 
-The next step will be to copy data into your project. For that, we will use open data from another project.
+To create your first project:
 
-To copy data from an open project follow the steps below.
+1. From the left sidebar navigation, click **My Projects** (under the **Me** section).
+2. Click the **`New Project`** button in the upper-right corner.
+3. In the creation dialog:
+    * **Title**: Enter a clear name for your project (e.g. *Introduction Tutorial Project*).
+    * **Description**: Provide a brief summary of your study goals or data.
+4. Click **Create project**.
 
-1. Go to the main page of your project.
-1. Click on the 'Preprocess' tab.
-1. Once inside the Preprocess tab, click the 'New Process' button at the bottom-right of the screen. 
-1. Add a new process and name it 'temp copy data' in the projects description tab.
-![Processes Page](../img/projects.process.new.png)
+![Create Project on Brainlife Connects](../img/connect_create_project_modal.png)
 
-1. Select the newly created process and hit the 'Stage Data' button at the bottom right corner of the screen.  
-    * In the 'From' section, select the 'IU LAB IN COGNITIVE AND COMPUTATIONAL NEUROSCIENCE - Demo Data' project to pull data from.
-    * For "Subject,' enter BC
-    * For 'Datatype,' you will select a single anatomical file this is a T1-weighted MRI (T1w). The brianlife.io Datatypes is called: neuro/anat/T1w
-    * For 'Data-object,' click the dropdown menu and select the appropriate data. Since there's only one T1, the correct dataset should auto-populate.
-    * Hit 'OK.'
+### The Five Project Tabs
 
-![Import Data From Other Project](../img/projects.processes.stagedata.selecteddata.png)
- 
-The data is now staged and ready for processing!
+Once your project is created, you will see the five standard Brainlife Connects workspace tabs:
 
-<!---
-To upload your own data, follow the following steps:
-1) Select your project from the projects page.
-2) Select the 'archive' tab at the top of the screen.
-3) On the archive page, click the '+' button at the bottom of the screen.
-4) For datatype, choose the specific datatype for each image type (T1, T2, DWI, fMRI):
-    * For each datatype, you'll need to choose the appropriate data files and a subject name (i.e. your randomly assigned ID). You can leave the rest of the fields empty.
-    * Once you fill this information, hit next and then archive.
-The data is now uploaded and archived to your project!
---->
+* **1. Overview**: Study documentation (ReadMe), collaborator management (Admins, Members, Guests), automated App citations, and authorized computing clusters.
+* **2. Data**: Interactive inventory of all neuroimaging data objects, metadata search filters, file inspectors, and data staging tools.
+* **3. Processing**: Execution center containing three sub-views: **Summary** (job health and execution metrics), **Pipeline** (graphical automation rules), and **Processes** (running and finished compute jobs).
+* **4. Analysis**: Built-in cloud JupyterLab environment (`brainlife/ga-python` and `brainlife/ga-octave`) to run group statistics and visualizations directly against your project data.
+* **5. Publications**: Tools to snapshot and permanently publish open datasets and workflows with citable DOIs.
 
-### D. Launch a process, application (app), visualize and archive the results.
+---
 
-The next step is to launch an application (app) in order to process the data. For this, we will process the T1w (anatomical) image staged in C. In this tutorial, we will divide (i.e. segment/parcellate) the T1 anatomical image using Freesurfer.
+## C. Add Data to Your Project
 
-First we will need to To launch a process using the following steps:
+To run neuroimaging pipelines, you need data objects in your project. You can import open data from public repositories or upload your own scans.
 
-1. On the 'Preprocess' tab, make sure the process generated in [Part C](/docs/tutorial/introduction-to-brainlife/#c-copy-data-from-another-project) is selected.
-1. Click on the 'Submit App' button at the bottom right of the screen. This will launch a page with the many apps that can be used on your staged data. 
-1. In the searchbar, type 'Freesurfer' and click on the app card. This will open a page with options for choosing which project to save the results and specific input parameters that may affect the outputs of the app.
-1. For now, leave all the inputs and parameters as is. We will discuss what these options do in later tutorials.
-1. Hit 'OK.'
+For this tutorial, we will copy a demo anatomical T1-weighted (`neuro/anat/t1w`) scan:
 
-Once the app is launched, a card will appear on the 'Preprocess' tab with a blue header. This means the app is currently running, or waiting to run. 
-![Blue-header](../img/app-freesurfer-running-blue-header.png)
+1. Click on the **2. Data** tab in your project.
+2. Click the **Add Project Data** button in the upper-right corner.
 
-Once this turns green, that means the app is finished and you can view the results!
-![Green-header](../img/app-freesurfer-complete-green-header.png)
+![Add Project Data](../img/add_project_data1.png)
 
-To view the results:
+3. Choose one of the following methods:
+    * **Copy Data from Public Datasets**: Browse thousands of open neuroimaging datasets from **OpenNeuro**, **DANDI**, **EMBER**, or the **Brainlife Dataset Library**, and import individual modalities with a single click without downloading anything to your local computer.
+    * **Copy from another Project**: Select an open demo project (such as *Brainlife Demo Data*) and select a subject's `neuro/anat/t1w` dataset.
+    * **Upload Data**: If using your own imaging files, convert them to BIDS using [ezBIDS](/using_ezBIDS/) or upload directly via the Brainlife CLI (`bl data upload` or `bl bids upload`).
 
-1. Click the eye icon next to the output and choose 'Freeview' as your viewer.
+![Copy Dataset from Open Project](../img/connect_datasets/copy_dataset.png)
 
-This will automatically load important outputs generated by Freesurfer, including cortical and white matter surfaces and a standard parcellation of the cortical surface.
+Once selected, click **Submit**. Your new dataset will appear in the **Data** table with the green `anat/t1w` datatype badge.
 
-![Freesurfer-output](../img/output-freesurfer-freeview.png)
+---
 
-In order to make sure the generated data does not get deleted over time, we need to save (i.e. archive) the data. Archived data can be viewed and staged via the 'Archive' tab on the Projects page. There are two ways to archive data on brainlife.io: when submitting the and after the app is completed.
+## D. Launch an App and Process Data
 
-To archive the data automatically once the app is finished running, follow these steps:
+Now that you have anatomical data in your project, let's process it using an automated neuroimaging App. In this example, we will run **[FSL Anat (T1w)](https://brainlife.io/app/5e3c87ae9362b7166cf9c7f4){target=_blank}** to perform ACPC alignment, bias field correction, and skull stripping.
 
-1. After Step 4 above, click the box next to the option 'Archive all output datasets when finished.' This will save (i.e. archive) the data immediately following completion of processing.
+### Step 1: Stage Data to a Process
 
-![App-archive](../img/app-freesurfer-archive-data.png)
+1. In the **2. Data** tab, select the checkbox next to your `anat/t1w` dataset.
+2. Click the **Stage to process** button at the top of the data table (or click the List icon on the row).
+3. In the dialog, enter a process name (e.g. `Anatomical Preprocessing`) and click **Submit**.
 
-To archive the data after the app is completed and you've reviewed the results, follow these steps:
+![Stage Data to Process](../img/connect_datasets/project_process_add_data_to_process.png)
 
-1. In the 'Output' section, select the file drawer icon on the far right of the screen.
-1. Hit 'OK.'
+### Step 2: Select and Configure the App
 
-![Archive-output](../img/archive-freesurfer-outputs.png)
+1. Navigate to the **3. Processing** tab and select the **Processes** view.
+2. Select your newly created process, then click **Submit App**.
+3. In the App search catalog, type `FSL Anat (T1)` and select the App card.
+4. Review the inputs and configuration parameters:
+    * **t1**: The staged `anat/t1w` dataset should auto-populate as the input.
+    * **crop**: Checked (`true` to remove neck and non-brain tissue).
+    * **reorient**: Checked (`true` to match standard MNI orientation).
+5. Click **Submit**.
 
-### You're finished! ###
+![Configure App Setup](../img/connect_datasets/project_configure_app_setup.png)
 
-You've now successfully created an account and project, copied data from an open project, and launched an application and processed your first MRI data on brainlife.io!
+### Step 3: Monitor Execution
+
+Once submitted, a task card will appear under your process:
+* **Blue Header / Waiting**: The job is queued and waiting for an available High-Performance Computing (HPC) cluster.
+* **Blue Header / Running**: The containerized pipeline is actively executing on the supercomputer.
+* **Green Header / Finished**: The pipeline finished successfully, and output data objects have been generated!
+
+![App Complete](../img/app-freesurfer-complete-green-header.png)
+
+---
+
+## E. Visualize Results in Your Browser
+
+Brainlife features built-in WebGL-based visualization tools powered by **NiiVue**, enabling you to inspect 3D volumes, cortical surfaces, and tractography streamlines directly in your web browser without downloading multi-gigabyte files.
+
+To inspect the preprocessed output:
+
+1. On the completed task card in the **Processes** view (or in the **2. Data** tab), click the **Eye (View)** icon next to the preprocessed output.
+2. Select the **NiiVue Volume Viewer** or appropriate surface visualizer.
+
+![Select Image to Visualize](../img/connect_datasets/select_image_to_visualize.png)
+
+3. An interactive 3D viewer will launch inside your browser, allowing you to scroll through axial, sagittal, and coronal orthogonal slices, adjust contrast, and check registration alignment in real time.
+
+![Interactive Visualization](../img/connect_datasets/visualization.png)
+
+---
+
+## F. Archiving and Data Provenance
+
+One of Brainlife's core strengths is automated, immutable **Data Provenance**:
+
+* When an App finishes running, its output data objects are **automatically archived** and registered into your project's **2. Data** tab.
+* Click any dataset row to open the **Dataset Inspector**:
+  * **Provenance Graph**: Visually traces every preceding step—which raw data, specific App version, GitHub commit, compute cluster, and parameter settings produced this exact file.
+  * **Datatype Tags**: Automatically assigned tags (e.g. `acpc_aligned`, `preprocessed`) signify the processing state so downstream Apps can reliably consume the dataset.
+
+---
+
+## Next Steps
+
+Congratulations! You have successfully created an account and project, imported imaging data, executed a containerized neuroimaging pipeline on cloud HPC resources, and visualized the 3D results.
+
+Explore our hands-on modality tutorials to continue:
+
+* **[Anatomical Preprocessing (T1w)](/docs/tutorial/t1w-preprocessing)**: Complete FreeSurfer surface reconstruction, multi-atlas transfer (maTT), and regional statistics.
+* **[Diffusion MRI Preprocessing](/docs/tutorial/diffusion-preprocessing)**: Denoising, Gibbs ringing, motion correction, and eddy current removal with MRtrix3 and QSIPrep.
+* **[Diffusion Tractography](/docs/tutorial/diffusion-tractography)**: Whole-brain streamline tractography, white matter tract segmentation, and tractometry profiles.
+* **[Functional MRI Preprocessing](/docs/tutorial/fmri-preprocessing-tutorial)**: Motion estimation, susceptibility distortion correction, and surface registration using fMRIPrep.
+* **[Pipeline Automation](/docs/tutorial/anat-t1-pipeline-tutorial)**: Automate batch processing across hundreds of subjects using rule-based pipelines.
+* **[Interactive Group Analysis](/docs/user/groupanalysis)**: Conduct project-level statistics and plot group figures with cloud Jupyter Notebooks.
