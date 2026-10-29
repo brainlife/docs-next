@@ -1,187 +1,189 @@
-!!! warning
-    This is a draft. Comments are welcomed!
+# Downloading Data
 
-# Downloading Data-Object
+Brainlife CLI provides several flexible ways to download your data objects, entire BIDS-structured datasets, publication releases, and raw files stored in project S3 buckets.
 
-Before downloading a data-object, let's see what data-objects are available for you to download.
+---
 
-### Querying project ID
+## 1. Querying Data Objects
 
-```
-$ bl project query -q o3d
+Before downloading, locate the project and data objects you wish to retrieve.
+
+### Find Project ID
+Search for a project by name or keyword using `bl project query`:
+
+```bash
+$ bl project query --query "O3D"
 Id: 5a022fc99c0d250055709e9c
 Name: O3D
 Admins: hayashis, avesani, frakkopesto
-Members: hayashis, avesani, frakkopesto
-Guests: 
-Access: Access: public
-Description: O3D (Open Diffusion Data and Derivative) is a reference repository for precision connectome mapping, white matter tracts analysis and algorithmic development.
-
+Access: public
+Description: O3D (Open Diffusion Data and Derivative)
 (Returned 1 result)
-
 ```
 
-### Querying Data-Object
+### Find Data Objects within a Project
+List data objects in that project using `bl data query`:
 
-```
-
-$ bl data query -p 5a022fc99c0d250055709e9c
-...
+```bash
+$ bl data query --project 5a022fc99c0d250055709e9c --subject "0008"
 
 Id: 5bb5713a12512a003f32e9b6
 Project: O3D
-Admins: hayashis, avesani, frakkopesto
-Members: hayashis, avesani, frakkopesto
-Guests: 
 Subject: 0008
-Session: 
 Datatype: neuro/wmc<dt_stream, afq>
 Description: AFQ with no Life (dt_stream) run1
-Create Date: 10/3/2018, 9:47:38 PM (4 months ago)
 Storage: wrangler
 Status: stored
 Tags: dt_stream, pre_life, run1
-
-2708 total data objects, showing first 100. To view the next 100, run 'bl data query --skip 100'
+Create Date: 10/3/2018, 9:47:38 PM
 ```
 
-### Downloading a single data-object
+You can filter results using:
+* `--datatype <name_or_id>`: Filter by datatype (e.g. `neuro/anat/t1w`).
+* `--subject <subject>`: Filter by subject identifier.
+* `--session <session>`: Filter by session.
+* `--tag <tag>`: Filter by search tag.
+* `--datatype_tag <dtag>`: Filter by datatype tag.
+* `--skip <n>` and `--limit <n>`: Paginate through query results.
+* `--json`: Output full raw records in JSON format.
 
-Finally, now that you know the data-object ID to download, you can ..
+---
 
+## 2. Downloading Individual Data Objects (`bl data download`)
+
+Once you know the ID of a data object, download it using `bl data download`:
+
+```bash
+bl data download --id 5a050ad5d76a2a002737e572 --directory ./t1_output
 ```
-$ bl data download -i 5a050ad5d76a2a002737e572
-Download dataset to 5a050ad5d76a2a002737e572
-100% done
 
-$ ls 5a050ad5d76a2a002737e572
+* `--id <id>` (or `-i`): The MongoDB ID of the data object. (Can also be passed as a positional argument: `bl data download 5a050ad5d76a2a002737e572`).
+* `--directory <dir>` (or `-d`): Local directory where files will be unpacked. If omitted, a folder named after the object ID is created.
+* `--json` (or `-j`): Suppress progress output and print output details as JSON.
+
+Once finished, the folder contains the individual files corresponding to that datatype:
+
+```bash
+$ ls ./t1_output
 t1.nii.gz
-
 ```
 
-## Bulk Downloading
+---
 
-You can bulk download a certain datatype from a selected project with something like a following bash script.
+## 3. Downloading Datasets in BIDS Format (`bl bids download`)
+
+Instead of downloading files one by one and manually reconstructing folders, `bl bids download` automatically queries the warehouse, generates a BIDS-compliant directory tree, and streams all files locally:
 
 ```bash
-set -e
-
-project=5b0dad8041711001e958b519
-datatype="neuro/tractprofile"
-
-#only need to run this once
-bl data query --limit 10000 --project $project --datatype $datatype --json | jq . > all.json
-
-for subject in $(jq -r '.[].meta.subject' all.json | sort -u)
-do
-    echo "downloading subject:$subject ---------------"
-    mkdir -p 2019_tractprofile/$subject/
-    ids=$(jq -r '.[] | select(.meta.subject == '\"$subject\"') | ._id' all.json)
-    for id in $ids
-    do
-        echo $id $tags
-        tags=$(jq -r '.[] | select(._id=='\"$id\"') | .tags | join(".")' all.json)
-        outdir=2019_tractprofile/$subject/$tags
-        if [ ! -d $outdir ]; then
-            bl data download $id --directory $outdir
-        fi
-    done
-done
-
+bl bids download --project 5a022fc99c0d250055709e9c --output ./my_bids_dataset
 ```
 
-## Download published data-objects
+### Advanced BIDS Filtering
 
-Brainlife allows users to permanently publish data-objects from a project. You can query published data-objects by first querying the publication ID.
+You can filter what to download so you only retrieve the subjects or modalities you need:
 
 ```bash
-bl login
-
-bl pub query -q o3d --json | jq .[0].releases
-[
-  {
-    "removed": false,
-    "_id": "5bab993aa918ae0027024192",
-    "name": "1",
-    "create_date": "2018-09-01T00:00:00.000Z"
-  },
-  {
-    "removed": true,
-    "_id": "5bb2437c19fdb40027307f7b",
-    "name": "",
-    "create_date": "2018-10-01T00:00:00.000Z"
-  },
-  {
-    "removed": false,
-    "_id": "5c0ff604391ed50032b634d1",
-    "name": "2",
-    "create_date": "2018-12-11T00:00:00.000Z"
-  }
-]
-
+bl bids download \
+    --project 5a022fc99c0d250055709e9c \
+    --subject "0001" \
+    --subject "0002" \
+    --datatype "neuro/anat/t1w" \
+    --datatype "neuro/dwi" \
+    --tag "preprocessed" \
+    --output ./filtered_bids
 ```
 
-You can then use the publication release ID to query all data-objects that belongs to this release (and filter by subject) and download each data-objects.
+* `--project <project_id>`: Target project ID.
+* `--subject <subject_id>`: Filter to specific subjects (repeatable).
+* `--datatype <datatype>`: Filter to specific datatypes (repeatable).
+* `--tag <tag>`: Filter by data tag (repeatable; prepend `!` to exclude, e.g. `!bad`).
+* `--datatype_tag <dtag>`: Filter by datatype tag.
+* `--pub <pub_id>`: Download datasets associated with a specific Brainlife publication release.
+* `--output <dir>`: Local destination directory.
 
+---
+
+## 4. Downloading Project Files from S3 Storage
+
+Brainlife projects support raw S3 storage for files and folders that may not be registered as discrete datatypes (e.g. project documentation, raw DICOM archives, custom scripts).
+
+### Listing S3 Files in a Project
+Use `bl data query --s3` to inspect files stored in a project's S3 storage:
 
 ```bash
-
-for id in $(bl data query --limit 200 \
-  --pub 5bab993aa918ae0027024192 \
-  --subject 0001 \
-  --json | jq -r ".[]._id"); do
-	bl data download $id
-done
+bl data query --project 5a022fc99c0d250055709e9c --s3
 ```
 
-## Downloading from existing processes.
+To list a specific subdirectory:
 
-So far we have described how you can upload / download data from brainlife.io which is stored in Brainlife's project archive. On brainlife.io, you run
-Apps inside "process" and data generated there can be "archived" to the brainlife.io's project archive. Sometimes, you want to download files generated
-inside a process, which may contain extra files that are not archived in project archive. You might also want to access process data as you can specify 
-which files / directory to download - rather than the entire `.tar.gz` content from project archive.
+```bash
+bl data query --project 5a022fc99c0d250055709e9c --s3 --path raw_dicoms/
+```
 
-The following python script demonstrates how you can query for existing processes / tasks, and download content stored under each tasks. 
+### Downloading a Single S3 File
+Specify `--project` and `--path` together:
+
+```bash
+bl data download \
+    --project 5a022fc99c0d250055709e9c \
+    --path raw_dicoms/sub-01.tar.gz \
+    --directory ./local_downloads
+```
+
+### Downloading an S3 Folder
+To download an entire folder from S3, end the path with a trailing slash (`/`). The Brainlife warehouse automatically streams the folder as an uncompressed tar archive and the CLI extracts it into your target directory:
+
+```bash
+bl data download \
+    --project 5a022fc99c0d250055709e9c \
+    --path raw_dicoms/ \
+    --directory ./local_dicoms
+```
+
+---
+
+## 5. Downloading Published Datasets
+
+Brainlife allows researchers to permanently publish open datasets with DOIs. You can discover publications using `bl pub query`:
+
+```bash
+$ bl pub query --query "O3D" --json | jq .[0].releases
+```
+
+You can then download all data objects attached to a publication release using `bl bids download --pub`:
+
+```bash
+bl bids download --pub 59e51b181e188c0028e3b2e3 --output ./o3d_published_bids
+```
+
+---
+
+## 6. Downloading Files from Active / Completed Processes (Amaretti API)
+
+When Brainlife runs an App, intermediate and unarchived task files exist inside the computing task directory on the compute cluster. You can download specific files or folders directly from a task using the Amaretti task download API:
 
 ```python
-#!/usr/bin/python3
-
-import requests
+#!/usr/bin/env python3
 import os
-import json
+import requests
 
-# load the jwt token (run bl login to create this file)
-jwt_file = open(os.environ['HOME']+'/.config/brainlife.io/.jwt', mode='r')
-jwt = jwt_file.read()
+# Load authentication token
+jwt_path = os.path.expanduser('~/.config/brainlife.io/.jwt')
+with open(jwt_path) as f:
+    jwt = f.read().strip()
 
-# query datasets records
-find = { 
-    '_group_id': '851', #see project detail page 
-    'service': 'brainlife/app-freesurfer', 
-    #'service_branch': '0.0.5',
-    'status': 'finished' }
-params = { 
-    'limit': 500, 
-    'select': 'config._inputs.meta', # for subject id
-    'find': json.JSONEncoder().encode(find) }
-res = requests.get('https://brainlife.io/api/amaretti/task', params=params, headers={'Authorization': 'Bearer '+jwt})
+task_id = "60a7e1f48c089a1b023e10ab"
+# Specify relative path inside the task directory (e.g. output/stats)
+path_in_task = "output/stats"
 
-if res.status_code != 200:
-    raise Exception("failed to download datasets list:"+res.status_code)
+url = f"https://brainlife.io/api/amaretti/task/download/{task_id}/{path_in_task}?at={jwt}"
+res = requests.get(url, stream=True)
 
-# loop over each task and download "output/stats" directories.
-tasks = res.json()["tasks"]
-for task in tasks:
-    taskid=task["_id"]
-    subject=task["config"]["_inputs"][0]["meta"]["subject"]
-    print(taskid, subject)
-    url = 'https://brainlife.io/api/amaretti/task/download/'+taskid+'/freesurfer/output/stats?at='+jwt
-    res = requests.get(url, allow_redirects=True)
-    open(subject+'.tar.gz', 'wb').write(res.content)
-
+if res.status_code == 200:
+    with open("task_stats.tar.gz", "wb") as f:
+        for chunk in res.iter_content(chunk_size=8192):
+            f.write(chunk)
+    print("Downloaded task output successfully.")
+else:
+    print(f"Failed to download task files: {res.status_code}")
 ```
-
-
-
-
-

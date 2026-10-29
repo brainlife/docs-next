@@ -1,186 +1,100 @@
-!!! warning
-    This page has been deprecated. The information contained here would not work.
+# Group Analysis
 
-Once you are able to generate large amount of data derivatives on brainlife.io, your next step might involve performing data aggregation for group or statistical analysis. You can download all data derivatives to your computer and conduct any post-processing on your own computer, however, downloading all derivatives might take a long time, and consume a lot of disk space. If you are wanting to quickly explore results of your analysis, this might not be ideal.
+!!! warning "Deprecated Workflow"
+    Performing group analysis by querying `product.json` records through raw local scripts has been **deprecated and superseded by in-platform Group Analysis**. 
+    
+    To perform statistical analyses, profile averages, and visualizations directly on brainlife.io without downloading data to your local machine, please see our dedicated guide:
+    
+    👉 **[In-Platform Group Analysis Guide](/docs/user/groupanalysis)**
 
-Brainlife allows Apps to generate condensed (textual) version of output data and store them on brailife.io database. Similar to data-object metadata, you can query and/or download this information without having to download the raw data derivatives. This data is called `product.json`. For example, "Tract Profile Analysis" App (https://brainlife.io/app/59ca5c03c27f5b0770add9cf){target=_blank} generates the following `product.json`.
+---
 
-```json
-{
-    "profiles": {
-        "forcepsMinor": {
-            "ad": {
-                "profile": [
-                    1.3266,
-                    1.318,
-                    ...
-                    1.3188,
-                    1.3251
-                ],
-                "mean": 1.4605,
-                "sd": 0.1479
-            },
-            "fa": {
-                "profile": [
-                    0.3648,
-                    0.3619,
-                    ...
-                    0.3291,
-                    0.3347
-                ],
-                "mean": 0.4918,
-                "sd": 0.1284
-            },
-            "md": {
-                "profile": [
-                    0.9368,
-                    0.9326,
-                    ...
-                    0.9588,
-                    0.9582
-                ],
-                "mean": 0.9152,
-                "sd": 0.0676
-            },
-            "rd": {
-                "profile": [
-                    0.742,
-                    0.7399,
-                    ...
-                    0.7788,
-                    0.7747
-                ],
-                "mean": 0.6426,
-                "sd": 0.1203
-            },
-            "icvf": { ... },
-            "isovf": { ...  }
-        },
-        "forcepsMajor": { ...  },
-        "leftTPC": { ...  },
-        "leftOccipitoCerebellar": { ...  }
-    }
-}
+## Overview
+
+Historically, Brainlife allowed users to download condensed textual data derivatives (`product.json`) using the REST API to conduct group analysis locally in Matlab or Python. 
+
+Today, Brainlife provides a **built-in Group Analysis notebook environment** directly within each project on [brainlife.io](https://brainlife.io):
+- **Integrated JupyterLab**: Launch interactive Python 3 (`brainlife/ga-python`) or Octave/Matlab (`brainlife/ga-octave`) notebooks directly from the **Analyses** tab in your project.
+- **Direct Data Access**: Notebooks run directly on connected compute resources with access to all project data objects without requiring manual download scripts.
+- **Reproducibility**: Analysis code and notebooks can be archived alongside project publications.
+
+---
+
+## Programmatic API Access (Legacy / Advanced)
+
+If you are building external automated pipelines or custom services that need to query dataset metadata and `product.json` output summaries directly from the Brainlife warehouse API, you can authenticate using your Brainlife JWT token.
+
+### 1. Authentication
+The Brainlife CLI stores your current authentication token in:
+```bash
+~/.config/brainlife.io/.jwt
+```
+You can generate or refresh this token using:
+```bash
+bl login --ttl 30
 ```
 
-You can download the content of `product.json` with brainlife.io REST API. 
-
-!!! note
-    Please run `bl login` before running this example. You will also have to adjust the project / datatype IDs.
-
-## Matlab Example
-
-The following code downloads data-object records from brainlife so that you can then iterate through each record and examine meta data, or product contents.
-
-```matlab
-
-%define query
-find = struct;
-find.removed = false;
-find.project = '5a74d1e26ed91402ce400cca'; %project id from brainlife.io
-find.datatype = '5965467cb09297d8d81bdbcd'; %tractprofile datatype (find in datatypes page)
-find.tags = {'wNODDI', '21600'};
-
-%you can filter by subject
-find.meta_dot_subject = struct('x_in',["103", "105"]);
-
-%load brainlife access token
-jwt = fileread('~/.config/brainlife.io/.jwt'); %use bl login to generate it
-options = weboptions()
-options.HeaderFields = {'Authorization', ['Bearer ', jwt]};
-options.Timeout = 10; %could take a long time to load with a larger product..
-
-%load data-objects
-disp('Querying brainlife for data product...')
-disp(find)
-url = 'https://brainlife.io/api/warehouse/dataset';
-
-%I have to do some matlab > mongo query conversion
-find_json = strrep(jsonencode(find), 'x_', '$');
-find_json = strrep(find_json, '_dot_', '.');
-data = webread(url, 'find', find_json, 'select', 'product', 'limit', '1000', options);
-
-%TODO ... do things with data.datasets
-disp('loaded! - enjoy with data')
-disp(data)
-
- 
-```
-
-## Python Example
-
-Similarly, you can query data-object records using python. 
+### 2. Python Example (Warehouse API Query)
 
 ```python
-#!/usr/bin/python
-
-import requests
+#!/usr/bin/env python3
 import os
 import json
+import requests
 
-#load the jwt token (run bl login to create this file)
-jwt_file = open(os.environ['HOME']+'/.config/brainlife.io/.jwt', mode='r')
-jwt = jwt_file.read()
+# Load the JWT token generated by 'bl login'
+jwt_path = os.path.expanduser('~/.config/brainlife.io/.jwt')
+with open(jwt_path, 'r') as f:
+    jwt = f.read().strip()
 
-#query datasets records
-find = { 
-	'datatype': '58c33bcee13a50849b25879a', 
-	'project': '5cb8973c71a8630036207a6a',
-	'tags': 'acpc_aligned' }
-params = { 
-	'limit': 100, 
-	'select': 'product meta', #we just want product and meta
-	'find': json.JSONEncoder().encode(find) }
-res = requests.get('https://brainlife.io/api/warehouse/dataset/', params=params, headers={'Authorization': 'Bearer '+jwt})
-if res.status_code != 200:
-	raise Error("failed to download datasets list")
+headers = {
+    'Authorization': f'Bearer {jwt}',
+    'Content-Type': 'application/json'
+}
 
-```
+# Define search parameters for the warehouse API
+# Replace 'YOUR_PROJECT_ID' and 'YOUR_DATATYPE_ID' with valid Brainlife IDs
+find_query = {
+    'project': 'YOUR_PROJECT_ID',
+    'datatype': 'YOUR_DATATYPE_ID',
+    'removed': False
+}
 
-As you can see, you can construct your query and make a request to brainlife API with your access token issued by running `bl login`. Once you obtain the dataset records (`res`) you can iterate through each dataset and do any group analysis, or generate visualization using the content of meta and product objects.
+params = {
+    'limit': 100,
+    'select': 'product meta tags',
+    'find': json.dumps(find_query)
+}
 
-For example, the following code shows how to convert the QC images from ACPC Alignment App into a single HTML page.
+url = 'https://brainlife.io/api/warehouse/dataset'
+res = requests.get(url, params=params, headers=headers)
 
-
-```python
-
-#load product.json for each dataset
-data = res.json()
-for dataset in data["datasets"]:
-    id = dataset["_id"]
-    subject = dataset["meta"]["subject"]
-    print('<div style="float: left; height: 250px; width: 250px;">');
-    print("<b>"+subject+"</b><br>")
-
-    res = requests.get('https://brainlife.io/api/warehouse/dataset/product/'+dataset["_id"], headers={'Authorization': 'Bearer '+jwt})
-    if res.status_code != 200:
-        raise Error("failed to download product.json")
+if res.status_code == 200:
     data = res.json()
-    product = data["product"]
-
-    image64 = None
-
-    #output image if it has one
-    if "brainlife" in product:
-        brainlife = product["brainlife"]
-        if len(brainlife) == 1:
-            brainlife0 = brainlife[0]
-            if "base64" in brainlife0:
-                image64= brainlife0["base64"]
-    if image64:
-        print('<img src="data:image/png;base64,'+image64+'">\n')
-    else:
-        print('<p>no image</p>\n')
-    print('</div>')
-
+    datasets = data.get('datasets', [])
+    print(f"Found {len(datasets)} dataset records.")
+    for d in datasets:
+        subject = d.get('meta', {}).get('subject', 'unknown')
+        print(f"Dataset {d['_id']} - Subject: {subject}")
+else:
+    print(f"Failed to query datasets: {res.status_code} - {res.text}")
 ```
 
-You can run this script and capture the output to generate HTML file. You can then open it with your browser. 
+### 3. Recommended Alternative: Brainlife CLI
 
-```bash
-./script.py > output.html
-```
+To inspect and download datasets locally from the command line, use the native `bl` CLI commands instead of writing custom API queries:
 
+* To query datasets:
+  ```bash
+  bl data query --project <project_id> --subject <subject_id>
+  ```
+* To download datasets in BIDS format:
+  ```bash
+  bl bids download --project <project_id> --output ./bids_output
+  ```
+* To download individual datasets:
+  ```bash
+  bl data download -i <data_object_id>
+  ```
 
-![group](../img/group.png)
-
+For full details on using the CLI, visit [CLI Installation](/docs/cli/install) and [Downloading Data](/docs/cli/download).

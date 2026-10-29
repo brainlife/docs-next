@@ -1,112 +1,140 @@
-!!! warning
-    This is a draft. Comments are welcomed!
+# Running Apps
 
-# Running App
+Brainlife Apps are containerized neuroimaging pipelines and algorithms (packaged as Docker/Singularity containers) that execute reproducibly on high-performance compute resources. Using the Brainlife CLI, you can query available Apps, run them with specific inputs and parameters, monitor their execution, and retrieve their output data objects.
 
-Before submitting an App, you might want to know which Apps are available. The following command shows a list of Apps that takes anat/t1w data-object as an input.
+---
 
-```
+## 1. Finding Apps (`bl app query`)
+
+Before running an App, discover which Apps are available to process your data.
+
+### Query by Input Datatype
+To find Apps that accept a specific input datatype (e.g. `neuro/anat/t1w`):
+
+```bash
 $ bl app query --input-datatype neuro/anat/t1w
-
-...
 
 Id: 5ac01066029f78002be2c481
 Name: ACPC alignment via ART
 Type: (t1: neuro/anat/t1w) -> (t1: neuro/anat/t1w<acpc_aligned>)
-Description: This app uses the Automatic Registration Toolbox (ART) to perform ACPC alignment of the T1 image. See https://www.nitrc.org/projects/art/ for more information.
-
-...
+Description: This app uses the Automatic Registration Toolbox (ART) to perform ACPC alignment of the T1 image.
 
 (Returned 6 results)
 ```
 
-We can run this app to align our t1 image to the ACPC axial plane. It then outputs a new data-object with datatype `neuro/anat/t1w` and a datatype tag `acpc_aligned`, signifying that the data has been acpc aligned.
+Notice the **`Type:`** signature:
+`(t1: neuro/anat/t1w) -> (t1: neuro/anat/t1w<acpc_aligned>)`
+* **Inputs**: It expects an input with key `t1` of datatype `neuro/anat/t1w`.
+* **Outputs**: It produces an output with key `t1` of datatype `neuro/anat/t1w` tagged as `acpc_aligned`.
 
-To run an app, we need the app's id, the ids of the input or inputs we want to supply it with, the id of the project to save it to, and a config JSON string for any additional input parameters required.
-
-```
-$ bl app run                                      \
-    --id 5ac01066029f78002be2c481                 \
-    --input t1:5b031990251f5200274d9cc4           \
-    --project 5afc2c8de68fc50028e90820            \
-    --config '{"reorient" : true, "crop" : true}'
-
-Data Staging Task Created, PROCESS:
-SERVICE: soichih/sca-product-raw
-STATUS: Waiting to be processed by task handler
-(running since 5 seconds ago)
-```
-
-After staging has completed, you should see the following output in the terminal:
-
-```
-Data Staging Task Created, PROCESS:
-SERVICE: soichih/sca-product-raw
-STATUS: Successfully finished
-(538 ms ago)
-ACPC alignment via ART Task for app 'ACPC alignment via ART' has begun.
-```
-
-You can wait for the app to finish by..
-
-```
-$ bl app wait --id 5b031dacc1b8f90044ad6c3b
-```
-
-Then, after the app has finished (and the data-object has been stored), you can download the resulting data-object just by supplying the resulting data-object id. You can get the resulting data-object id by querying the list of data-objects (which will be sorted by date) and then running something like this:
-
-```
-$ bl data download --id 5afddb42251f5200274d9ca1
-
-## Bash Script
-
-Here is a sample bash script to run app-pRF by first uploading a data object and submitting the app itself.
+### Query by Keyword
+You can also search for Apps by name or description:
 
 ```bash
-#!/bin/bash
-
-# login (you only need to run this once every 30 days) 
-bl login --ttl 30
-# change --ttl (time-to-live) value to a desired days you'd like to keep your token alive 
-
-# upload input
-
-# Let's assume you have following files
-# /somewhere/stimulus/stim.nii.gz
-# /somewhere/task/bold.nii.gz
-
-bl data upload --datatype 5afc7c555858d874a40c6dda --project 5afc2c8de68fc50028e90820 --subject "soichi1" --json /somewhere/stimulus 2>> upload.err | jq -r '._id' > stim.id
-bl data upload --datatype 59b685a08e5d38b0b331ddc5 --project 5afc2c8de68fc50028e90820 --subject "soichi1" --datatype_tag "prf" --json /somewhere/task 2>> upload.err | jq -r '._id' > func.id
-
-# For -d (datatype) ID, you can query it by `bl datatype query -q stimulus` or `bl datatype query -q func`
-# For -p (project) ID, you can query project by `bl project query -q "project name"`
-
-# If you have func/task sidecard file, you can store them in a json file (like "metadata.json") and load them with your data by adding `--meta metadata.json` to the upload command.
-
-# Running the App!
-bl app run --id 5b084f4d9f3e2c0028ab45e4 --project 5afc2c8de68fc50028e90820 --input tractogram_static:$(cat func.id) --input stimimage:$(cat stim.id) --config '{"frameperiod": "1.3"}' --json | jq -r '._id' > task.id
-
-# You can query app by `bl app query -q "prf"`
-
-# --config is where you pass JSON object containing config for your App. 
-
-# Waiting for the App to finish (and archive output data)
-bl app wait $(cat task.id)
-if [ ! $? -eq 0 ];
-   echo "app failed"
-   exit 1
-fi
-echo "finished!"
-
-# Download the output data
-bl data download -i  
-for id in $(bl data query --taskid $taskid --json | jq -r ".[]._id"); do
-    echo "downloading data $id"
-    bl data download $id
-done
-
-# Now you should see directories containing each output data with the data-object ID as a directory name.
-
+bl app query --query "freesurfer"
+bl app query --query "tractography"
 ```
 
+---
 
+## 2. Running an App (`bl app run`)
+
+To run an App, you need:
+1. `--id <app_id>`: The ID of the App to run.
+2. `--project <project_id>`: The project where outputs will be stored.
+3. `--input <key>:<data_object_id>`: One or more input mappings matching the App's input keys.
+4. `--config '<json_string>'`: Optional configuration parameters for the App.
+
+### Example: Running ACPC Alignment
+
+```bash
+$ bl app run \
+    --id 5ac01066029f78002be2c481 \
+    --project 5afc2c8de68fc50028e90820 \
+    --input t1:5b031990251f5200274d9cc4 \
+    --config '{"reorient": true, "crop": true}' \
+    --tag "processed_cli"
+```
+
+### Advanced Options
+* `--preferred-resource <resource_id>`: Specify a preferred compute resource or cluster registered on Brainlife (query resources via `bl resource query`).
+* `--branch <branch>`: Execute a specific branch of the App repository (default is the production branch).
+* `--tag <tag>`: Add custom tags to the resulting archived output data objects (repeatable).
+* `--json` (or `-j`): Output the created task metadata in JSON format (useful for capturing the task ID).
+
+---
+
+## 3. Monitoring Execution (`bl app wait`)
+
+When you submit an App, Brainlife creates an asynchronous processing task on Amaretti. You can wait for the task to finish using `bl app wait`:
+
+```bash
+bl app wait --id <task_id>
+```
+
+The CLI displays live progress and notifies you once execution and output archiving are complete:
+
+```
+ACPC alignment via ART Task (5b031dacc1b8f90044ad6c3b): running (1m 12s)
+ACPC alignment via ART Task (5b031dacc1b8f90044ad6c3b): archiving
+ACPC alignment via ART Task (5b031dacc1b8f90044ad6c3b): finished
+```
+
+---
+
+## 4. End-to-End Automation Script
+
+Here is an end-to-end Bash script that uploads raw data, launches an App, waits for completion, and downloads the resulting outputs automatically:
+
+```bash
+#!/usr/bin/env bash
+set -e
+
+# 1. Login (keeps token valid for 30 days)
+bl login --ttl 30
+
+PROJECT_ID="5afc2c8de68fc50028e90820"
+SUBJECT="sub-001"
+
+# 2. Upload raw T1w image
+echo "Uploading raw T1w image..."
+UPLOAD_RES=$(bl data upload \
+    --project "$PROJECT_ID" \
+    --datatype neuro/anat/t1w \
+    --subject "$SUBJECT" \
+    --t1 ./raw_data/sub-001_T1w.nii.gz \
+    --tag "raw" \
+    --json)
+
+INPUT_T1_ID=$(echo "$UPLOAD_RES" | jq -r '._id')
+echo "Raw T1w uploaded with ID: $INPUT_T1_ID"
+
+# 3. Submit ACPC Alignment App
+echo "Submitting ACPC Alignment App..."
+APP_ID="5ac01066029f78002be2c481"
+APP_TASK=$(bl app run \
+    --id "$APP_ID" \
+    --project "$PROJECT_ID" \
+    --input "t1:$INPUT_T1_ID" \
+    --config '{"reorient": true, "crop": true}' \
+    --tag "acpc_cli" \
+    --json)
+
+TASK_ID=$(echo "$APP_TASK" | jq -r '._id')
+echo "App task created: $TASK_ID"
+
+# 4. Wait for completion
+echo "Waiting for task to complete..."
+bl app wait --id "$TASK_ID"
+
+# 5. Query and download the resulting output
+echo "Querying output datasets..."
+OUTPUT_IDS=$(bl data query --taskid "$TASK_ID" --json | jq -r '.[]._id')
+
+for OUT_ID in $OUTPUT_IDS; do
+    echo "Downloading output data object: $OUT_ID"
+    bl data download --id "$OUT_ID" --directory "./outputs/$SUBJECT"
+done
+
+echo "Pipeline execution finished successfully!"
+```

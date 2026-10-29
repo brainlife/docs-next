@@ -47,6 +47,7 @@ export const DOCS_SECTIONS: NavSection[] = [
                     { title: 'Pipelines', href: '/docs/user/pipeline', path: 'user/pipeline.md' },
                     { title: 'Publications', href: '/docs/user/publication', path: 'user/publication.md' },
                     { title: 'Public Datasets', href: '/docs/user/datasets', path: 'user/datasets.md' },
+                    { title: 'Group Analysis', href: '/docs/user/groupanalysis', path: 'user/groupanalysis.md' },
                     { title: 'Troubleshooting & Failure', href: '/docs/user/failure', path: 'user/failure.md' },
                 ],
             },
@@ -74,10 +75,9 @@ export const DOCS_SECTIONS: NavSection[] = [
                 children: [
                     { title: 'Installation', href: '/docs/cli/install', path: 'cli/install.md' },
                     { title: 'Uploading Data', href: '/docs/cli/upload', path: 'cli/upload.md' },
-                    { title: 'Running Apps', href: '/docs/cli/app', path: 'cli/app.md' },
                     { title: 'Downloading Data', href: '/docs/cli/download', path: 'cli/download.md' },
+                    { title: 'Running Apps', href: '/docs/cli/app', path: 'cli/app.md' },
                     { title: 'Update Data', href: '/docs/cli/update', path: 'cli/update.md' },
-                    { title: 'Group Analysis', href: '/docs/cli/group', path: 'cli/group.md' },
                 ],
             },
             {

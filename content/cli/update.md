@@ -1,134 +1,162 @@
-!!! warning
-    This is a draft. Comments are welcomed!
+# Updating & Managing Data Objects
 
-# Updating data objects
+Data objects stored on Brainlife are immutable regarding their actual binary payload (e.g. imaging volume contents cannot be modified in-place to ensure reproducibility and provenance). However, you can update their metadata, descriptions, subject/session tags, and search tags using the `bl data update` command, or remove unwanted objects with `bl data delete`.
 
-Brainlife data-objects are immutable. Although you can not modify the content of the data, you can still update the metadata, tags, and description using `bl data update` CLI.
+---
 
-```bash
+## 1. Updating Data Object Metadata (`bl data update`)
 
-bl data update --id <dataid> --desc "My new description"
-bl data update --id <dataid> --subject sub-reset1
-bl data update --id <dataid> --session ses-reset1
-bl data update --id <dataid> --run run-reset1
-
-```
-
-To find the data object ID, please see the previous tutorials for querying data objects.
-
-You can easily add/remove tags like so.
+To update a data object, provide its ID along with the fields you wish to change:
 
 ```bash
-bl data update --id <dataid> --remove_tag oldtag
-bl data update --id <dataid> --add_tag newtag
+bl data update --id <data_id> --desc "New description for this dataset"
+bl data update --id <data_id> --subject "sub-101"
+bl data update --id <data_id> --session "ses-02"
+bl data update --id <data_id> --run "1"
 ```
 
-You can combine various update requests.
+You can combine multiple updates into a single command:
 
 ```bash
-bl dataest update --id <dataid> --desc "Updating things" --add_tag newtag --subject sub-123
+bl data update \
+    --id 5b031990251f5200274d9cc4 \
+    --desc "Corrected subject identifier" \
+    --subject "101" \
+    --session "01" \
+    --add_tag "verified"
 ```
 
-Some users might be more familiar with the terminology "sidecar". On BIDS, what we call "metadata" is stored in a separate .json file called "sidecar". In sidecar, you can store any number of key/values pairs associated with the actual data (dwi, fmri/bold, eeg/fif, etc). You can upload the whole sidecar information to brainlife by using `-m <filepath to .json>` option like..
+!!! tip "Clearing Fields"
+    To clear an existing subject, session, or run identifier, pass an empty string:
+    ```bash
+    bl data update --id <data_id> --session ""
+    ```
+
+---
+
+## 2. Managing Tags
+
+Brainlife distinguishes between two types of tags:
+
+### Search Tags (`--add_tag` / `--remove_tag`)
+Search tags are general labels used to filter and organize data objects within your project (e.g. `baseline`, `pre-op`, `control`):
 
 ```bash
-bl data update --id <dataid> -m /path/to/sidecar.json
+# Add a tag
+bl data update --id <data_id> --add_tag "cohort-A"
+
+# Remove an old tag
+bl data update --id <data_id> --remove_tag "test"
 ```
 
-
-## Bulk Update Tags
-
-By combining with other CLIs and a bit of bash scripting, you can bulk update tags on multiple data. 
-
-Let's say you have a file with a list of subject names to update.
-
-[S500.txt]
-
-```
-100307
-100408
-101006
-101107
-101309
-101410
-101915
-102008
-102311
-102816
-..
-```
-
-The following script will then iterate through this list and set "S500" tag on all data with matching subjects.
+### Datatype Tags (`--add_dtag` / `--remove_dtag`)
+Datatype tags qualify the specific variant or processing state of the datatype (e.g. `acpc_aligned`, `defaced`, `wNODDI`):
 
 ```bash
-#!/bin/bash
-for subject in $(cat S500.txt)
-do
-    echo "finding subject:$subject"
-    bl data query --project 59a09bbab47c0c0027ad7046 --subject $subject --json > list.json
-    jq -r ".[]._id" list.json > ids.txt
+# Add a datatype tag
+bl data update --id <data_id> --add_dtag "acpc_aligned"
 
-    #iterate each data for this subject and add some tags
-    for id in $(cat ids.txt)
-    do
-        echo "  updating $id"
-        bl data update --id $id --add_tag S500
-    done
-
-    wait
-done
-
+# Remove a datatype tag
+bl data update --id <data_id> --remove_dtag "raw"
 ```
 
-If you want to update tags on specific objects, you can update the `bl data query` parameters (on datatype, existing tags, etc..) to be more selective of which objects to update.
+*(Use datatype tags cautiously, as downstream Apps may rely on specific datatype tags to match valid pipeline inputs.)*
 
-## Bulk Update subject names
+---
 
-Sometimes, you need to "fix" the subject naming for your project. For example, let's say you have subject names set to something like "sub-123" and you want to update this to just "123" (dropping "sub-"). You could start by querying for object from your project just like we did earlier.
+## 3. Updating Sidecar / JSON Metadata (`-m, --meta`)
+
+Brainlife stores detailed acquisition and BIDS metadata as key-value pairs associated with the data object. You can merge new or updated fields from a local JSON file into the existing metadata using `-m` or `--meta`:
 
 ```bash
-#!/bin/bash
-[ ! -f list.json ] && bl dataset query --project 5d64733db29ac960ca2e797f --limit 1000 --json > list.json
-```
-
-Then, you can iterate over each object and use `bl data update --subject` CLI to update the subject name. Since this requires a bit of coding, I will use python.
-
-```python
-import json
-import os
-with open('list.json') as f:
-    objects = json.load(f)
-    for object in objects:
-        id = object["_id"]
-        subject = object["meta"]["subject"]
-        if subject.startswith("sub-"):
-            newname = subject[4:]
-            print("bl data update --id %s --subject %s" % (id, newname))
-            os.system("bl data update --id %s --subject %s" % (id, newname))
-```
-
-```
-$ ./update.py
-bl data update --id 60918d8a8fe49f7f121bfeb3 --subject 86
-bl data update --id 60918d898fe49fa3ea1bfeaf --subject 86
-```
-
-## Updating sidecar/metadata
-
-You can update specific sidecar/medata fields by doing something like the following.
-
-```
-cat > append.json <<EOF
+# Create or edit a JSON patch
+cat > meta_update.json <<EOF
 {
-    "RepetitionTime": 1.970
+    "RepetitionTime": 2.0,
+    "EchoTime": 0.03,
+    "Manufacturer": "Siemens"
 }
 EOF
-bl data update --id 600f50b551942b71ad3d16e7 --meta append.json
+
+# Apply the update
+bl data update --id 5b031990251f5200274d9cc4 -m meta_update.json
 ```
 
-`--meta` option will read specified JSON file and update key/value specified in the append.json in this sample. 
+The CLI merges these fields into the existing object's metadata without erasing other existing keys.
 
-!!!note 
-    At the moment, there is no way to *remove* an existing field. You could set it to `null` value, or you will have to edit it via brainlife UI.
+---
 
+## 4. Deleting Data Objects (`bl data delete`)
 
+If you have test data, failed uploads, or deprecated derivatives you want to remove from your project:
+
+```bash
+bl data delete --id <data_id>
+```
+
+You can also pass the ID with `-i`:
+
+```bash
+bl data delete -i 5b031990251f5200274d9cc4
+```
+
+!!! warning "Deletion is Permanent"
+    Deleting a data object marks it as removed in the Brainlife warehouse. Ensure no downstream pipelines or publications depend on the data object before removing it.
+
+---
+
+## 5. Bulk Updating with Scripts
+
+You can combine `bl data query` with `bl data update` to batch-process objects across an entire study.
+
+### Example: Bulk Adding a Tag to a Cohort
+
+```bash
+#!/usr/bin/env bash
+set -e
+
+PROJECT_ID="5afc2c8de68fc50028e90820"
+TAG_TO_ADD="Cohort-2026"
+
+# Query all datasets matching project in JSON format
+echo "Fetching datasets from project..."
+DATASETS=$(bl data query --project "$PROJECT_ID" --json)
+
+# Extract IDs and apply update
+echo "$DATASETS" | jq -r '.[]._id' | while read -r ID; do
+    echo "Updating object: $ID"
+    bl data update --id "$ID" --add_tag "$TAG_TO_ADD"
+done
+
+echo "Bulk update complete!"
+```
+
+### Example: Normalizing Subject IDs (Python)
+
+If subject identifiers were uploaded with inconsistent prefixes (e.g. `sub-001` vs `001`) and you want to standardize them:
+
+```python
+#!/usr/bin/env python3
+import json
+import subprocess
+
+project_id = "5afc2c8de68fc50028e90820"
+
+# Fetch objects
+raw_json = subprocess.check_output([
+    "bl", "data", "query", "--project", project_id, "--json"
+])
+objects = json.loads(raw_json)
+
+for obj in objects:
+    obj_id = obj["_id"]
+    subject = obj.get("meta", {}).get("subject", "")
+    
+    # Strip 'sub-' prefix if present
+    if subject.startswith("sub-"):
+        new_subject = subject.replace("sub-", "", 1)
+        print(f"Updating {obj_id}: '{subject}' -> '{new_subject}'")
+        subprocess.run([
+            "bl", "data", "update", "--id", obj_id, "--subject", new_subject
+        ], check=True)
+```

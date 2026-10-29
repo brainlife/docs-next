@@ -840,260 +840,308 @@
     "content": "Work with App Engineers to troubleshoot Apps that are failing. Build and administer slurm clusters on public and private cloud infrastructures. Monitor and operate clusters and troubleshoot problems / optimize ineffiency. Assist other engineers to identify security issues and ways to solve those issues. * Monitor and identify computing bottlenecks and adjust / create new clusters to alleviate the problems. Apply Now"
   },
   {
-    "id": "/docs/cli/app/",
-    "url": "/docs/cli/app/",
-    "pageTitle": "Running App",
-    "section": "Running App",
+    "id": "/docs/cli/app/#running-apps",
+    "url": "/docs/cli/app/#running-apps",
+    "pageTitle": "Running Apps",
+    "section": "Running Apps",
     "category": "Using CLI",
-    "content": "This is a draft. Comments are welcomed!"
+    "content": "Brainlife Apps are containerized neuroimaging pipelines and algorithms (packaged as Docker/Singularity containers) that execute reproducibly on high-performance compute resources. Using the Brainlife CLI, you can query available Apps, run them with specific inputs and parameters, monitor their execution, and retrieve their output data objects. ---"
   },
   {
-    "id": "/docs/cli/app/#running-app",
-    "url": "/docs/cli/app/#running-app",
-    "pageTitle": "Running App",
-    "section": "Running App",
+    "id": "/docs/cli/app/#1-finding-apps-bl-app-query",
+    "url": "/docs/cli/app/#1-finding-apps-bl-app-query",
+    "pageTitle": "Running Apps",
+    "section": "1. Finding Apps (`bl app query`)",
     "category": "Using CLI",
-    "content": "Before submitting an App, you might want to know which Apps are available. The following command shows a list of Apps that takes anat/t1w data-object as an input. We can run this app to align our t1 image to the ACPC axial plane. It then outputs a new data-object with datatype neuro/anat/t1w and a datatype tag acpc_aligned, signifying that the data has been acpc aligned. To run an app, we need the app's id, the ids of the input or inputs we want to supply it with, the id of the project to save it to, and a config JSON string for any additional input parameters required. After staging has completed, you should see the following output in the terminal: You can wait for the app to finish by.. Then, after the app has finished (and the data-object has been stored), you can download the resulting data-object just by supplying the resulting data-object id. You can get the resulting data-object id by querying the list of data-objects (which will be sorted by date) and then running something like this: ``` $ bl data download --id 5afddb42251f5200274d9ca1"
+    "content": "Before running an App, discover which Apps are available to process your data."
   },
   {
-    "id": "/docs/cli/app/#bash-script",
-    "url": "/docs/cli/app/#bash-script",
-    "pageTitle": "Running App",
-    "section": "Bash Script",
+    "id": "/docs/cli/app/#query-by-input-datatype",
+    "url": "/docs/cli/app/#query-by-input-datatype",
+    "pageTitle": "Running Apps",
+    "section": "Query by Input Datatype",
     "category": "Using CLI",
-    "content": "Here is a sample bash script to run app-pRF by first uploading a data object and submitting the app itself. ```bash #!/bin/bash"
+    "content": "To find Apps that accept a specific input datatype (e.g. neuro/anat/t1w): Notice the Type: signature: (t1: neuro/anat/t1w) -> (t1: neuro/anat/t1w ) Inputs: It expects an input with key t1 of datatype neuro/anat/t1w. Outputs: It produces an output with key t1 of datatype neuro/anat/t1w tagged as acpc_aligned."
   },
   {
-    "id": "/docs/cli/app/#login-you-only-need-to-run-this-once-every-30-days",
-    "url": "/docs/cli/app/#login-you-only-need-to-run-this-once-every-30-days",
-    "pageTitle": "Running App",
-    "section": "login (you only need to run this once every 30 days)",
+    "id": "/docs/cli/app/#query-by-keyword",
+    "url": "/docs/cli/app/#query-by-keyword",
+    "pageTitle": "Running Apps",
+    "section": "Query by Keyword",
     "category": "Using CLI",
-    "content": "bl login --ttl 30"
+    "content": "You can also search for Apps by name or description: ---"
   },
   {
-    "id": "/docs/cli/app/#change---ttl-time-to-live-value-to-a-desired-days-youd-like-to-keep-your-token-alive",
-    "url": "/docs/cli/app/#change---ttl-time-to-live-value-to-a-desired-days-youd-like-to-keep-your-token-alive",
-    "pageTitle": "Running App",
-    "section": "change --ttl (time-to-live) value to a desired days you'd like to keep your token alive",
+    "id": "/docs/cli/app/#2-running-an-app-bl-app-run",
+    "url": "/docs/cli/app/#2-running-an-app-bl-app-run",
+    "pageTitle": "Running Apps",
+    "section": "2. Running an App (`bl app run`)",
     "category": "Using CLI",
-    "content": ""
+    "content": "To run an App, you need: 1. --id : The ID of the App to run. 2. --project : The project where outputs will be stored. 3. --input : : One or more input mappings matching the App's input keys. 4. --config ' ': Optional configuration parameters for the App."
   },
   {
-    "id": "/docs/cli/app/#upload-input",
-    "url": "/docs/cli/app/#upload-input",
-    "pageTitle": "Running App",
-    "section": "upload input",
-    "category": "Using CLI",
-    "content": ""
-  },
-  {
-    "id": "/docs/cli/app/#lets-assume-you-have-following-files",
-    "url": "/docs/cli/app/#lets-assume-you-have-following-files",
-    "pageTitle": "Running App",
-    "section": "Let's assume you have following files",
+    "id": "/docs/cli/app/#example-running-acpc-alignment",
+    "url": "/docs/cli/app/#example-running-acpc-alignment",
+    "pageTitle": "Running Apps",
+    "section": "Example: Running ACPC Alignment",
     "category": "Using CLI",
     "content": ""
   },
   {
-    "id": "/docs/cli/app/#somewherestimulusstimniigz",
-    "url": "/docs/cli/app/#somewherestimulusstimniigz",
-    "pageTitle": "Running App",
-    "section": "/somewhere/stimulus/stim.nii.gz",
+    "id": "/docs/cli/app/#advanced-options",
+    "url": "/docs/cli/app/#advanced-options",
+    "pageTitle": "Running Apps",
+    "section": "Advanced Options",
     "category": "Using CLI",
-    "content": ""
+    "content": "--preferred-resource : Specify a preferred compute resource or cluster registered on Brainlife (query resources via bl resource query). --branch : Execute a specific branch of the App repository (default is the production branch). --tag : Add custom tags to the resulting archived output data objects (repeatable). --json (or -j): Output the created task metadata in JSON format (useful for capturing the task ID). ---"
   },
   {
-    "id": "/docs/cli/app/#somewheretaskboldniigz",
-    "url": "/docs/cli/app/#somewheretaskboldniigz",
-    "pageTitle": "Running App",
-    "section": "/somewhere/task/bold.nii.gz",
+    "id": "/docs/cli/app/#3-monitoring-execution-bl-app-wait",
+    "url": "/docs/cli/app/#3-monitoring-execution-bl-app-wait",
+    "pageTitle": "Running Apps",
+    "section": "3. Monitoring Execution (`bl app wait`)",
     "category": "Using CLI",
-    "content": "bl data upload --datatype 5afc7c555858d874a40c6dda --project 5afc2c8de68fc50028e90820 --subject \"soichi1\" --json /somewhere/stimulus 2>> upload.err | jq -r '.id' > stim.id bl data upload --datatype 59b685a08e5d38b0b331ddc5 --project 5afc2c8de68fc50028e90820 --subject \"soichi1\" --datatypetag \"prf\" --json /somewhere/task 2>> upload.err | jq -r '._id' > func.id"
+    "content": "When you submit an App, Brainlife creates an asynchronous processing task on Amaretti. You can wait for the task to finish using bl app wait: The CLI displays live progress and notifies you once execution and output archiving are complete: ---"
   },
   {
-    "id": "/docs/cli/app/#for--d-datatype-id-you-can-query-it-by-bl-datatype-query--q-stimulus-or-bl-datatype-query--q-func",
-    "url": "/docs/cli/app/#for--d-datatype-id-you-can-query-it-by-bl-datatype-query--q-stimulus-or-bl-datatype-query--q-func",
-    "pageTitle": "Running App",
-    "section": "For -d (datatype) ID, you can query it by `bl datatype query -q stimulus` or `bl datatype query -q func`",
+    "id": "/docs/cli/app/#4-end-to-end-automation-script",
+    "url": "/docs/cli/app/#4-end-to-end-automation-script",
+    "pageTitle": "Running Apps",
+    "section": "4. End-to-End Automation Script",
     "category": "Using CLI",
-    "content": ""
+    "content": "Here is an end-to-end Bash script that uploads raw data, launches an App, waits for completion, and downloads the resulting outputs automatically: ```bash #!/usr/bin/env bash set -e"
   },
   {
-    "id": "/docs/cli/app/#for--p-project-id-you-can-query-project-by-bl-project-query--q-project-name",
-    "url": "/docs/cli/app/#for--p-project-id-you-can-query-project-by-bl-project-query--q-project-name",
-    "pageTitle": "Running App",
-    "section": "For -p (project) ID, you can query project by `bl project query -q \"project name\"`",
+    "id": "/docs/cli/app/#1-login-keeps-token-valid-for-30-days",
+    "url": "/docs/cli/app/#1-login-keeps-token-valid-for-30-days",
+    "pageTitle": "Running Apps",
+    "section": "1. Login (keeps token valid for 30 days)",
     "category": "Using CLI",
-    "content": ""
+    "content": "bl login --ttl 30 PROJECT_ID=\"5afc2c8de68fc50028e90820\" SUBJECT=\"sub-001\""
   },
   {
-    "id": "/docs/cli/app/#if-you-have-functask-sidecard-file-you-can-store-them-in-a-json-file-like-metadatajson-and-load-them-with-your-data-by-adding---meta-metadatajson-to-the-upload-command",
-    "url": "/docs/cli/app/#if-you-have-functask-sidecard-file-you-can-store-them-in-a-json-file-like-metadatajson-and-load-them-with-your-data-by-adding---meta-metadatajson-to-the-upload-command",
-    "pageTitle": "Running App",
-    "section": "If you have func/task sidecard file, you can store them in a json file (like \"metadata.json\") and load them with your data by adding `--meta metadata.json` to the upload command.",
+    "id": "/docs/cli/app/#2-upload-raw-t1w-image",
+    "url": "/docs/cli/app/#2-upload-raw-t1w-image",
+    "pageTitle": "Running Apps",
+    "section": "2. Upload raw T1w image",
     "category": "Using CLI",
-    "content": ""
+    "content": "echo \"Uploading raw T1w image...\" UPLOADRES=$(bl data upload \\ --project \"$PROJECTID\" \\ --datatype neuro/anat/t1w \\ --subject \"$SUBJECT\" \\ --t1 ./rawdata/sub-001T1w.nii.gz \\ --tag \"raw\" \\ --json) INPUTT1ID=$(echo \"$UPLOADRES\" | jq -r '.id') echo \"Raw T1w uploaded with ID: $INPUTT1ID\""
   },
   {
-    "id": "/docs/cli/app/#running-the-app",
-    "url": "/docs/cli/app/#running-the-app",
-    "pageTitle": "Running App",
-    "section": "Running the App!",
+    "id": "/docs/cli/app/#3-submit-acpc-alignment-app",
+    "url": "/docs/cli/app/#3-submit-acpc-alignment-app",
+    "pageTitle": "Running Apps",
+    "section": "3. Submit ACPC Alignment App",
     "category": "Using CLI",
-    "content": "bl app run --id 5b084f4d9f3e2c0028ab45e4 --project 5afc2c8de68fc50028e90820 --input tractogramstatic:$(cat func.id) --input stimimage:$(cat stim.id) --config ' ' --json | jq -r '.id' > task.id"
+    "content": "echo \"Submitting ACPC Alignment App...\" APPID=\"5ac01066029f78002be2c481\" APPTASK=$(bl app run \\ --id \"$APPID\" \\ --project \"$PROJECTID\" \\ --input \"t1:$INPUTT1ID\" \\ --config ' ' \\ --tag \"acpccli\" \\ --json) TASKID=$(echo \"$APPTASK\" | jq -r '.id') echo \"App task created: $TASK_ID\""
   },
   {
-    "id": "/docs/cli/app/#you-can-query-app-by-bl-app-query--q-prf",
-    "url": "/docs/cli/app/#you-can-query-app-by-bl-app-query--q-prf",
-    "pageTitle": "Running App",
-    "section": "You can query app by `bl app query -q \"prf\"`",
+    "id": "/docs/cli/app/#4-wait-for-completion",
+    "url": "/docs/cli/app/#4-wait-for-completion",
+    "pageTitle": "Running Apps",
+    "section": "4. Wait for completion",
     "category": "Using CLI",
-    "content": ""
+    "content": "echo \"Waiting for task to complete...\" bl app wait --id \"$TASK_ID\""
   },
   {
-    "id": "/docs/cli/app/#--config-is-where-you-pass-json-object-containing-config-for-your-app",
-    "url": "/docs/cli/app/#--config-is-where-you-pass-json-object-containing-config-for-your-app",
-    "pageTitle": "Running App",
-    "section": "--config is where you pass JSON object containing config for your App.",
+    "id": "/docs/cli/app/#5-query-and-download-the-resulting-output",
+    "url": "/docs/cli/app/#5-query-and-download-the-resulting-output",
+    "pageTitle": "Running Apps",
+    "section": "5. Query and download the resulting output",
     "category": "Using CLI",
-    "content": ""
+    "content": "echo \"Querying output datasets...\" OUTPUTIDS=$(bl data query --taskid \"$TASKID\" --json | jq -r '.[].id') for OUTID in $OUTPUTIDS; do echo \"Downloading output data object: $OUTID\" bl data download --id \"$OUT_ID\" --directory \"./outputs/$SUBJECT\" done echo \"Pipeline execution finished successfully!\" ```"
   },
   {
-    "id": "/docs/cli/app/#waiting-for-the-app-to-finish-and-archive-output-data",
-    "url": "/docs/cli/app/#waiting-for-the-app-to-finish-and-archive-output-data",
-    "pageTitle": "Running App",
-    "section": "Waiting for the App to finish (and archive output data)",
+    "id": "/docs/cli/download/#downloading-data",
+    "url": "/docs/cli/download/#downloading-data",
+    "pageTitle": "Downloading Data",
+    "section": "Downloading Data",
     "category": "Using CLI",
-    "content": "bl app wait $(cat task.id) if [ ! $? -eq 0 ]; echo \"app failed\" exit 1 fi echo \"finished!\""
+    "content": "Brainlife CLI provides several flexible ways to download your data objects, entire BIDS-structured datasets, publication releases, and raw files stored in project S3 buckets. ---"
   },
   {
-    "id": "/docs/cli/app/#download-the-output-data",
-    "url": "/docs/cli/app/#download-the-output-data",
-    "pageTitle": "Running App",
-    "section": "Download the output data",
+    "id": "/docs/cli/download/#1-querying-data-objects",
+    "url": "/docs/cli/download/#1-querying-data-objects",
+    "pageTitle": "Downloading Data",
+    "section": "1. Querying Data Objects",
     "category": "Using CLI",
-    "content": "bl data download -i for id in $(bl data query --taskid $taskid --json | jq -r \".[]._id\"); do echo \"downloading data $id\" bl data download $id done"
+    "content": "Before downloading, locate the project and data objects you wish to retrieve."
   },
   {
-    "id": "/docs/cli/app/#now-you-should-see-directories-containing-each-output-data-with-the-data-object-id-as-a-directory-name",
-    "url": "/docs/cli/app/#now-you-should-see-directories-containing-each-output-data-with-the-data-object-id-as-a-directory-name",
-    "pageTitle": "Running App",
-    "section": "Now you should see directories containing each output data with the data-object ID as a directory name.",
+    "id": "/docs/cli/download/#find-project-id",
+    "url": "/docs/cli/download/#find-project-id",
+    "pageTitle": "Downloading Data",
+    "section": "Find Project ID",
     "category": "Using CLI",
-    "content": "```"
+    "content": "Search for a project by name or keyword using bl project query:"
   },
   {
-    "id": "/docs/cli/download/",
-    "url": "/docs/cli/download/",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Downloading Data-Object",
+    "id": "/docs/cli/download/#find-data-objects-within-a-project",
+    "url": "/docs/cli/download/#find-data-objects-within-a-project",
+    "pageTitle": "Downloading Data",
+    "section": "Find Data Objects within a Project",
     "category": "Using CLI",
-    "content": "This is a draft. Comments are welcomed!"
+    "content": "List data objects in that project using bl data query: You can filter results using: --datatype : Filter by datatype (e.g. neuro/anat/t1w). --subject : Filter by subject identifier. --session : Filter by session. --tag : Filter by search tag. --datatype_tag : Filter by datatype tag. --skip and --limit : Paginate through query results. * --json: Output full raw records in JSON format. ---"
   },
   {
-    "id": "/docs/cli/download/#downloading-data-object",
-    "url": "/docs/cli/download/#downloading-data-object",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Downloading Data-Object",
+    "id": "/docs/cli/download/#2-downloading-individual-data-objects-bl-data-download",
+    "url": "/docs/cli/download/#2-downloading-individual-data-objects-bl-data-download",
+    "pageTitle": "Downloading Data",
+    "section": "2. Downloading Individual Data Objects (`bl data download`)",
     "category": "Using CLI",
-    "content": "Before downloading a data-object, let's see what data-objects are available for you to download."
+    "content": "Once you know the ID of a data object, download it using bl data download: --id (or -i): The MongoDB ID of the data object. (Can also be passed as a positional argument: bl data download 5a050ad5d76a2a002737e572). --directory (or -d): Local directory where files will be unpacked. If omitted, a folder named after the object ID is created. * --json (or -j): Suppress progress output and print output details as JSON. Once finished, the folder contains the individual files corresponding to that datatype: ---"
   },
   {
-    "id": "/docs/cli/download/#querying-project-id",
-    "url": "/docs/cli/download/#querying-project-id",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Querying project ID",
+    "id": "/docs/cli/download/#3-downloading-datasets-in-bids-format-bl-bids-download",
+    "url": "/docs/cli/download/#3-downloading-datasets-in-bids-format-bl-bids-download",
+    "pageTitle": "Downloading Data",
+    "section": "3. Downloading Datasets in BIDS Format (`bl bids download`)",
     "category": "Using CLI",
-    "content": ""
+    "content": "Instead of downloading files one by one and manually reconstructing folders, bl bids download automatically queries the warehouse, generates a BIDS-compliant directory tree, and streams all files locally:"
   },
   {
-    "id": "/docs/cli/download/#querying-data-object",
-    "url": "/docs/cli/download/#querying-data-object",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Querying Data-Object",
+    "id": "/docs/cli/download/#advanced-bids-filtering",
+    "url": "/docs/cli/download/#advanced-bids-filtering",
+    "pageTitle": "Downloading Data",
+    "section": "Advanced BIDS Filtering",
     "category": "Using CLI",
-    "content": ""
+    "content": "You can filter what to download so you only retrieve the subjects or modalities you need: --project : Target project ID. --subject : Filter to specific subjects (repeatable). --datatype : Filter to specific datatypes (repeatable). --tag : Filter by data tag (repeatable; prepend ! to exclude, e.g. !bad). --datatype_tag : Filter by datatype tag. --pub : Download datasets associated with a specific Brainlife publication release. * --output : Local destination directory. ---"
   },
   {
-    "id": "/docs/cli/download/#downloading-a-single-data-object",
-    "url": "/docs/cli/download/#downloading-a-single-data-object",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Downloading a single data-object",
+    "id": "/docs/cli/download/#4-downloading-project-files-from-s3-storage",
+    "url": "/docs/cli/download/#4-downloading-project-files-from-s3-storage",
+    "pageTitle": "Downloading Data",
+    "section": "4. Downloading Project Files from S3 Storage",
     "category": "Using CLI",
-    "content": "Finally, now that you know the data-object ID to download, you can .."
+    "content": "Brainlife projects support raw S3 storage for files and folders that may not be registered as discrete datatypes (e.g. project documentation, raw DICOM archives, custom scripts)."
   },
   {
-    "id": "/docs/cli/download/#bulk-downloading",
-    "url": "/docs/cli/download/#bulk-downloading",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Bulk Downloading",
+    "id": "/docs/cli/download/#listing-s3-files-in-a-project",
+    "url": "/docs/cli/download/#listing-s3-files-in-a-project",
+    "pageTitle": "Downloading Data",
+    "section": "Listing S3 Files in a Project",
     "category": "Using CLI",
-    "content": "You can bulk download a certain datatype from a selected project with something like a following bash script."
+    "content": "Use bl data query --s3 to inspect files stored in a project's S3 storage: To list a specific subdirectory:"
   },
   {
-    "id": "/docs/cli/download/#download-published-data-objects",
-    "url": "/docs/cli/download/#download-published-data-objects",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Download published data-objects",
+    "id": "/docs/cli/download/#downloading-a-single-s3-file",
+    "url": "/docs/cli/download/#downloading-a-single-s3-file",
+    "pageTitle": "Downloading Data",
+    "section": "Downloading a Single S3 File",
     "category": "Using CLI",
-    "content": "Brainlife allows users to permanently publish data-objects from a project. You can query published data-objects by first querying the publication ID. You can then use the publication release ID to query all data-objects that belongs to this release (and filter by subject) and download each data-objects."
+    "content": "Specify --project and --path together:"
   },
   {
-    "id": "/docs/cli/download/#downloading-from-existing-processes",
-    "url": "/docs/cli/download/#downloading-from-existing-processes",
-    "pageTitle": "Downloading Data-Object",
-    "section": "Downloading from existing processes.",
+    "id": "/docs/cli/download/#downloading-an-s3-folder",
+    "url": "/docs/cli/download/#downloading-an-s3-folder",
+    "pageTitle": "Downloading Data",
+    "section": "Downloading an S3 Folder",
     "category": "Using CLI",
-    "content": "So far we have described how you can upload / download data from brainlife.io which is stored in Brainlife's project archive. On brainlife.io, you run Apps inside \"process\" and data generated there can be \"archived\" to the brainlife.io's project archive. Sometimes, you want to download files generated inside a process, which may contain extra files that are not archived in project archive. You might also want to access process data as you can specify which files / directory to download - rather than the entire .tar.gz content from project archive. The following python script demonstrates how you can query for existing processes / tasks, and download content stored under each tasks. ```python #!/usr/bin/python3 import requests import os import json"
+    "content": "To download an entire folder from S3, end the path with a trailing slash (/). The Brainlife warehouse automatically streams the folder as an uncompressed tar archive and the CLI extracts it into your target directory: ---"
   },
   {
-    "id": "/docs/cli/download/#load-the-jwt-token-run-bl-login-to-create-this-file",
-    "url": "/docs/cli/download/#load-the-jwt-token-run-bl-login-to-create-this-file",
-    "pageTitle": "Downloading Data-Object",
-    "section": "load the jwt token (run bl login to create this file)",
+    "id": "/docs/cli/download/#5-downloading-published-datasets",
+    "url": "/docs/cli/download/#5-downloading-published-datasets",
+    "pageTitle": "Downloading Data",
+    "section": "5. Downloading Published Datasets",
     "category": "Using CLI",
-    "content": "jwtfile = open(os.environ['HOME']+'/.config/brainlife.io/.jwt', mode='r') jwt = jwtfile.read()"
+    "content": "Brainlife allows researchers to permanently publish open datasets with DOIs. You can discover publications using bl pub query: You can then download all data objects attached to a publication release using bl bids download --pub: ---"
   },
   {
-    "id": "/docs/cli/download/#query-datasets-records",
-    "url": "/docs/cli/download/#query-datasets-records",
-    "pageTitle": "Downloading Data-Object",
-    "section": "query datasets records",
+    "id": "/docs/cli/download/#6-downloading-files-from-active-completed-processes-amaretti-api",
+    "url": "/docs/cli/download/#6-downloading-files-from-active-completed-processes-amaretti-api",
+    "pageTitle": "Downloading Data",
+    "section": "6. Downloading Files from Active / Completed Processes (Amaretti API)",
     "category": "Using CLI",
-    "content": "find = params = res = requests.get('https://brainlife.io/api/amaretti/task', params=params, headers= ) if res.statuscode != 200: raise Exception(\"failed to download datasets list:\"+res.statuscode)"
+    "content": "When Brainlife runs an App, intermediate and unarchived task files exist inside the computing task directory on the compute cluster. You can download specific files or folders directly from a task using the Amaretti task download API: ```python #!/usr/bin/env python3 import os import requests"
   },
   {
-    "id": "/docs/cli/download/#loop-over-each-task-and-download-outputstats-directories",
-    "url": "/docs/cli/download/#loop-over-each-task-and-download-outputstats-directories",
-    "pageTitle": "Downloading Data-Object",
-    "section": "loop over each task and download \"output/stats\" directories.",
+    "id": "/docs/cli/download/#load-authentication-token",
+    "url": "/docs/cli/download/#load-authentication-token",
+    "pageTitle": "Downloading Data",
+    "section": "Load authentication token",
     "category": "Using CLI",
-    "content": "tasks = res.json()[\"tasks\"] for task in tasks: taskid=task[\"id\"] subject=task[\"config\"][\"inputs\"][0][\"meta\"][\"subject\"] print(taskid, subject) url = 'https://brainlife.io/api/amaretti/task/download/'+taskid+'/freesurfer/output/stats?at='+jwt res = requests.get(url, allow_redirects=True) open(subject+'.tar.gz', 'wb').write(res.content) ```"
+    "content": "jwtpath = os.path.expanduser('~/.config/brainlife.io/.jwt') with open(jwtpath) as f: jwt = f.read().strip() task_id = \"60a7e1f48c089a1b023e10ab\""
   },
   {
-    "id": "/docs/cli/group/",
-    "url": "/docs/cli/group/",
-    "pageTitle": "Documentation",
+    "id": "/docs/cli/download/#specify-relative-path-inside-the-task-directory-eg-outputstats",
+    "url": "/docs/cli/download/#specify-relative-path-inside-the-task-directory-eg-outputstats",
+    "pageTitle": "Downloading Data",
+    "section": "Specify relative path inside the task directory (e.g. output/stats)",
+    "category": "Using CLI",
+    "content": "pathintask = \"output/stats\" url = f\"https://brainlife.io/api/amaretti/task/download/ / ?at= \" res = requests.get(url, stream=True) if res.statuscode == 200: with open(\"taskstats.tar.gz\", \"wb\") as f: for chunk in res.itercontent(chunksize=8192): f.write(chunk) print(\"Downloaded task output successfully.\") else: print(f\"Failed to download task files: \") ```"
+  },
+  {
+    "id": "/docs/cli/group/#group-analysis",
+    "url": "/docs/cli/group/#group-analysis",
+    "pageTitle": "Group Analysis",
+    "section": "Group Analysis",
+    "category": "Using CLI",
+    "content": "Performing group analysis by querying product.json records through raw local scripts has been deprecated and superseded by in-platform Group Analysis. To perform statistical analyses, profile averages, and visualizations directly on brainlife.io without downloading data to your local machine, please see our dedicated guide: 👉 In-Platform Group Analysis Guide ---"
+  },
+  {
+    "id": "/docs/cli/group/#overview",
+    "url": "/docs/cli/group/#overview",
+    "pageTitle": "Group Analysis",
     "section": "Overview",
     "category": "Using CLI",
-    "content": "This page has been deprecated. The information contained here would not work. Once you are able to generate large amount of data derivatives on brainlife.io, your next step might involve performing data aggregation for group or statistical analysis. You can download all data derivatives to your computer and conduct any post-processing on your own computer, however, downloading all derivatives might take a long time, and consume a lot of disk space. If you are wanting to quickly explore results of your analysis, this might not be ideal. Brainlife allows Apps to generate condensed (textual) version of output data and store them on brailife.io database. Similar to data-object metadata, you can query and/or download this information without having to download the raw data derivatives. This data is called product.json. For example, \"Tract Profile Analysis\" App (https://brainlife.io/app/59ca5c03c27f5b0770add9cf) generates the following product.json. You can download the content of product.json with brainlife.io REST API. Please run bl login before running this example. You will also have to adjust the project / datatype IDs."
+    "content": "Historically, Brainlife allowed users to download condensed textual data derivatives (product.json) using the REST API to conduct group analysis locally in Matlab or Python. Today, Brainlife provides a built-in Group Analysis notebook environment directly within each project on brainlife.io: - Integrated JupyterLab: Launch interactive Python 3 (brainlife/ga-python) or Octave/Matlab (brainlife/ga-octave) notebooks directly from the Analyses tab in your project. - Direct Data Access: Notebooks run directly on connected compute resources with access to all project data objects without requiring manual download scripts. - Reproducibility: Analysis code and notebooks can be archived alongside project publications. ---"
   },
   {
-    "id": "/docs/cli/group/#matlab-example",
-    "url": "/docs/cli/group/#matlab-example",
-    "pageTitle": "Documentation",
-    "section": "Matlab Example",
+    "id": "/docs/cli/group/#programmatic-api-access-legacy-advanced",
+    "url": "/docs/cli/group/#programmatic-api-access-legacy-advanced",
+    "pageTitle": "Group Analysis",
+    "section": "Programmatic API Access (Legacy / Advanced)",
     "category": "Using CLI",
-    "content": "The following code downloads data-object records from brainlife so that you can then iterate through each record and examine meta data, or product contents."
+    "content": "If you are building external automated pipelines or custom services that need to query dataset metadata and product.json output summaries directly from the Brainlife warehouse API, you can authenticate using your Brainlife JWT token."
   },
   {
-    "id": "/docs/cli/group/#python-example",
-    "url": "/docs/cli/group/#python-example",
-    "pageTitle": "Documentation",
-    "section": "Python Example",
+    "id": "/docs/cli/group/#1-authentication",
+    "url": "/docs/cli/group/#1-authentication",
+    "pageTitle": "Group Analysis",
+    "section": "1. Authentication",
     "category": "Using CLI",
-    "content": "Similarly, you can query data-object records using python. As you can see, you can construct your query and make a request to brainlife API with your access token issued by running bl login. Once you obtain the dataset records (res) you can iterate through each dataset and do any group analysis, or generate visualization using the content of meta and product objects. For example, the following code shows how to convert the QC images from ACPC Alignment App into a single HTML page. You can run this script and capture the output to generate HTML file. You can then open it with your browser."
+    "content": "The Brainlife CLI stores your current authentication token in: You can generate or refresh this token using:"
+  },
+  {
+    "id": "/docs/cli/group/#2-python-example-warehouse-api-query",
+    "url": "/docs/cli/group/#2-python-example-warehouse-api-query",
+    "pageTitle": "Group Analysis",
+    "section": "2. Python Example (Warehouse API Query)",
+    "category": "Using CLI",
+    "content": "```python #!/usr/bin/env python3 import os import json import requests"
+  },
+  {
+    "id": "/docs/cli/group/#load-the-jwt-token-generated-by-bl-login",
+    "url": "/docs/cli/group/#load-the-jwt-token-generated-by-bl-login",
+    "pageTitle": "Group Analysis",
+    "section": "Load the JWT token generated by 'bl login'",
+    "category": "Using CLI",
+    "content": "jwtpath = os.path.expanduser('~/.config/brainlife.io/.jwt') with open(jwtpath, 'r') as f: jwt = f.read().strip() headers = ', 'Content-Type': 'application/json' }"
+  },
+  {
+    "id": "/docs/cli/group/#define-search-parameters-for-the-warehouse-api",
+    "url": "/docs/cli/group/#define-search-parameters-for-the-warehouse-api",
+    "pageTitle": "Group Analysis",
+    "section": "Define search parameters for the warehouse API",
+    "category": "Using CLI",
+    "content": ""
+  },
+  {
+    "id": "/docs/cli/group/#replace-yourprojectid-and-yourdatatypeid-with-valid-brainlife-ids",
+    "url": "/docs/cli/group/#replace-yourprojectid-and-yourdatatypeid-with-valid-brainlife-ids",
+    "pageTitle": "Group Analysis",
+    "section": "Replace 'YOURPROJECTID' and 'YOURDATATYPEID' with valid Brainlife IDs",
+    "category": "Using CLI",
+    "content": "findquery = params = url = 'https://brainlife.io/api/warehouse/dataset' res = requests.get(url, params=params, headers=headers) if res.statuscode == 200: data = res.json() datasets = data.get('datasets', []) print(f\"Found dataset records.\") for d in datasets: subject = d.get('meta', {}).get('subject', 'unknown') print(f\"Dataset - Subject: \") else: print(f\"Failed to query datasets: - \") ```"
+  },
+  {
+    "id": "/docs/cli/group/#3-recommended-alternative-brainlife-cli",
+    "url": "/docs/cli/group/#3-recommended-alternative-brainlife-cli",
+    "pageTitle": "Group Analysis",
+    "section": "3. Recommended Alternative: Brainlife CLI",
+    "category": "Using CLI",
+    "content": "To inspect and download datasets locally from the command line, use the native bl CLI commands instead of writing custom API queries: To query datasets: To download datasets in BIDS format: * To download individual datasets: For full details on using the CLI, visit CLI Installation and Downloading Data."
   },
   {
     "id": "/docs/cli/install/#cli-installation",
@@ -1101,7 +1149,39 @@
     "pageTitle": "CLI Installation",
     "section": "CLI Installation",
     "category": "Using CLI",
-    "content": "With brainlife CLI, you can .. Upload/download data from your computer. Upload data stored in BIDS format. Submit Apps, and monitor (you can fully script data processing through brainlife) Query projects, data, datatypes, etc. Brainlife CLI is distributed through npm (node package manager) which is a part of nodejs. You will need to have nodejs/npm installed on your machine before you can install brainlife CLI command. Most operation systems support nodejs through their software distribution systems. You can find the nodejs installation document here . On ubuntu/debian machines, you can run the following command to install nodejs 14 (current LTS). For \"Mac OSX users\" The following command can install node.js if you have homebrew set up: other OSs Please see Installing node.js page. In order to use brainlife CLI on Windows, you will first need to install WSL (Windows Subsyste for Linux) and run all commands inside the Ubuntu terminal. Apart from WSL, we recommend the following software packages installed on Windows systems. 7-zip for uncompressing downloaded data (.tar.gz) MRIcron for visualizing brainimaging data On IU Karst / Carbonate / RED, brainlife CLI is already installed as part of nodejs module. Please run module load nodejs and skip this installation step. Once you have nodejs/npm installed, you can then run the following command to install brainlife CLI on your environment. You can then check the installation by"
+    "content": "With the Brainlife CLI (bl), you can: Upload and download data objects directly to and from your computer or HPC storage. Upload and download complete datasets formatted according to the BIDS standard (bl bids). Query projects, datatypes, resources, and publications. Submit and monitor Brainlife Apps to fully script and automate processing pipelines. * Access and download raw project files stored in Brainlife's S3 storage. ---"
+  },
+  {
+    "id": "/docs/cli/install/#prerequisites-nodejs-npm",
+    "url": "/docs/cli/install/#prerequisites-nodejs-npm",
+    "pageTitle": "CLI Installation",
+    "section": "Prerequisites: Node.js & npm",
+    "category": "Using CLI",
+    "content": "Brainlife CLI is distributed as an npm package via npmjs.com/package/brainlife . You must have Node.js and npm installed on your machine."
+  },
+  {
+    "id": "/docs/cli/install/#ubuntu-debian-nodejs-lts",
+    "url": "/docs/cli/install/#ubuntu-debian-nodejs-lts",
+    "pageTitle": "CLI Installation",
+    "section": "Ubuntu / Debian (Node.js LTS)",
+    "category": "Using CLI",
+    "content": "Run the following commands to install Node.js (Node 20 LTS): If you have Homebrew installed, run: To use the Brainlife CLI on Windows, install WSL (Windows Subsystem for Linux) and run the installation inside the Ubuntu terminal. Useful companion tools on Windows: 7-Zip for uncompressing .tar.gz downloads. MRIcron or Freeview for local neuroimaging visualization. On shared academic computing clusters (e.g. IU Karst, Carbonate, Big Red, or TACC Stampede), Node.js is often available as a module: ---"
+  },
+  {
+    "id": "/docs/cli/install/#installing-the-cli",
+    "url": "/docs/cli/install/#installing-the-cli",
+    "pageTitle": "CLI Installation",
+    "section": "Installing the CLI",
+    "category": "Using CLI",
+    "content": "Once Node.js and npm are installed, install the Brainlife CLI globally: (If you have configured npm to install packages in your user home directory without root, you can omit sudo.)"
+  },
+  {
+    "id": "/docs/cli/install/#verifying-installation",
+    "url": "/docs/cli/install/#verifying-installation",
+    "pageTitle": "CLI Installation",
+    "section": "Verifying Installation",
+    "category": "Using CLI",
+    "content": "Verify that the CLI is installed correctly: bl dataset is a recognized alias for bl data. You can use either command interchangeably."
   },
   {
     "id": "/docs/cli/install/#updating-the-cli",
@@ -1109,31 +1189,55 @@
     "pageTitle": "CLI Installation",
     "section": "Updating the CLI",
     "category": "Using CLI",
-    "content": "We are making a lot of bug fixes/updates. If you run into any problem, please try updating the CLI by running the following."
+    "content": "To ensure you have the latest bug fixes, features, and API compatibility, update regularly: ---"
   },
   {
-    "id": "/docs/cli/install/#login",
-    "url": "/docs/cli/install/#login",
+    "id": "/docs/cli/install/#authentication-login",
+    "url": "/docs/cli/install/#authentication-login",
     "pageTitle": "CLI Installation",
-    "section": "Login",
+    "section": "Authentication & Login",
     "category": "Using CLI",
-    "content": "Before you can start using bl tool, you should login to brainlife by running the following command. If you don't have a brainlife account, please Sign Up before proceeding. The --ttl 7 will request brainlife to keep you logged in for 7 days. Please adjust this number if necessary."
+    "content": "Before running CLI commands that interact with your private data or projects, log in to Brainlife to issue an access token:"
   },
   {
-    "id": "/docs/cli/install/#signout",
-    "url": "/docs/cli/install/#signout",
+    "id": "/docs/cli/install/#options",
+    "url": "/docs/cli/install/#options",
     "pageTitle": "CLI Installation",
-    "section": "Signout",
+    "section": "Options:",
     "category": "Using CLI",
-    "content": "bl login command will store your access token under the following path brainlife CLI itself does not provide a capability to sign out natively, but you can remove this file if you wish to sign out before your token expires."
+    "content": "--ttl : Set how many days your access token remains valid (default is 7). --username : Pass your username directly. --password : Pass your password directly (e.g. for non-interactive scripts). --ldap: Log in using university LDAP credentials if your institution is configured."
   },
   {
-    "id": "/docs/cli/install/#docker-container",
-    "url": "/docs/cli/install/#docker-container",
+    "id": "/docs/cli/install/#token-storage-signout",
+    "url": "/docs/cli/install/#token-storage-signout",
     "pageTitle": "CLI Installation",
-    "section": "Docker container",
+    "section": "Token Storage & Signout",
     "category": "Using CLI",
-    "content": "You can use brainlife CLI hosted as a docker container via Singularity by running the following command. You can then use any of the functionality of the CLI without needing to install all of the dependencies on your local machine! If you don't want to type singularity run docker://brainlife/cli every time you run brainlife CLI, you could add something like this to your ~/.bashrc depending on how your environment is configured, you might need to add this on each bash script you are executing (or do source ~/.bashrc in your script)"
+    "content": "bl login securely stores your JWT access token on your machine at: File permissions are automatically set to 600 (readable only by your user account). To sign out, simply remove this file:"
+  },
+  {
+    "id": "/docs/cli/install/#refreshing-tokens",
+    "url": "/docs/cli/install/#refreshing-tokens",
+    "pageTitle": "CLI Installation",
+    "section": "Refreshing Tokens",
+    "category": "Using CLI",
+    "content": "You can refresh an existing, unexpired token without re-entering your credentials: If you created your Brainlife account via Google, GitHub, or ORCID and do not have a local password, you can set a password in your Brainlife Account Settings on brainlife.io, or issue a long-lived CLI token via the Brainlife profile settings. ---"
+  },
+  {
+    "id": "/docs/cli/install/#alternative-environments",
+    "url": "/docs/cli/install/#alternative-environments",
+    "pageTitle": "CLI Installation",
+    "section": "Alternative Environments",
+    "category": "Using CLI",
+    "content": ""
+  },
+  {
+    "id": "/docs/cli/install/#singularity-docker-container",
+    "url": "/docs/cli/install/#singularity-docker-container",
+    "pageTitle": "CLI Installation",
+    "section": "Singularity / Docker Container",
+    "category": "Using CLI",
+    "content": "You can run the Brainlife CLI hosted inside a Singularity/Docker container on HPC clusters without installing local npm packages: To make bl available as a shortcut command in your shell, add an alias or function to your ~/.bashrc:"
   },
   {
     "id": "/docs/cli/install/#google-colab",
@@ -1141,55 +1245,167 @@
     "pageTitle": "CLI Installation",
     "section": "Google Colab",
     "category": "Using CLI",
-    "content": "You can install brainlife CLI on Google Colab by running !npm install brainlife -g with a code block. All brainlife CLI should work, except for thebl login command. The login command will not work as it requires TTY to prompt for password and Colab does not support it. For now, please copy and paste the following python snippet to perform the login operation and issue JWT token used by other bl CLI. The issued token will be stored on /root/.config/brainlife.io/.jwt. This directory is no persisted, so each user will need to run the code above to login, or each time the VM used to host your notebook is initialized."
+    "content": "To use the Brainlife CLI inside Google Colab: 1. Install the CLI in a notebook cell: 2. Because Google Colab does not support an interactive TTY password prompt for bl login, authenticate by generating your token with this Python snippet: ```python import getpass import requests import os username = input(\"Enter brainlife username: \") password = getpass.getpass(\"Enter brainlife password: \")"
   },
   {
-    "id": "/docs/cli/update/",
-    "url": "/docs/cli/update/",
-    "pageTitle": "Updating data objects",
-    "section": "Updating data objects",
+    "id": "/docs/cli/install/#authenticate-against-brainlife-auth-service",
+    "url": "/docs/cli/install/#authenticate-against-brainlife-auth-service",
+    "pageTitle": "CLI Installation",
+    "section": "Authenticate against Brainlife auth service",
     "category": "Using CLI",
-    "content": "This is a draft. Comments are welcomed!"
+    "content": "res = requests.post( 'https://brainlife.io/api/auth/local/auth', json= ) if res.statuscode == 200: jwttoken = res.json()[\"jwt\"] configdir = os.path.expanduser('~/.config/brainlife.io') os.makedirs(configdir, existok=True) with open(os.path.join(configdir, '.jwt'), 'w') as f: f.write(jwt_token) print(\"Authentication successful. JWT token saved to ~/.config/brainlife.io/.jwt\") else: print(f\"Login failed: - \") ```"
   },
   {
-    "id": "/docs/cli/update/#updating-data-objects",
-    "url": "/docs/cli/update/#updating-data-objects",
-    "pageTitle": "Updating data objects",
-    "section": "Updating data objects",
+    "id": "/docs/cli/update/#updating-managing-data-objects",
+    "url": "/docs/cli/update/#updating-managing-data-objects",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Updating & Managing Data Objects",
     "category": "Using CLI",
-    "content": "Brainlife data-objects are immutable. Although you can not modify the content of the data, you can still update the metadata, tags, and description using bl data update CLI. To find the data object ID, please see the previous tutorials for querying data objects. You can easily add/remove tags like so. You can combine various update requests. Some users might be more familiar with the terminology \"sidecar\". On BIDS, what we call \"metadata\" is stored in a separate .json file called \"sidecar\". In sidecar, you can store any number of key/values pairs associated with the actual data (dwi, fmri/bold, eeg/fif, etc). You can upload the whole sidecar information to brainlife by using -m option like.."
+    "content": "Data objects stored on Brainlife are immutable regarding their actual binary payload (e.g. imaging volume contents cannot be modified in-place to ensure reproducibility and provenance). However, you can update their metadata, descriptions, subject/session tags, and search tags using the bl data update command, or remove unwanted objects with bl data delete. ---"
   },
   {
-    "id": "/docs/cli/update/#bulk-update-tags",
-    "url": "/docs/cli/update/#bulk-update-tags",
-    "pageTitle": "Updating data objects",
-    "section": "Bulk Update Tags",
+    "id": "/docs/cli/update/#1-updating-data-object-metadata-bl-data-update",
+    "url": "/docs/cli/update/#1-updating-data-object-metadata-bl-data-update",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "1. Updating Data Object Metadata (`bl data update`)",
     "category": "Using CLI",
-    "content": "By combining with other CLIs and a bit of bash scripting, you can bulk update tags on multiple data. Let's say you have a file with a list of subject names to update. [S500.txt] The following script will then iterate through this list and set \"S500\" tag on all data with matching subjects. If you want to update tags on specific objects, you can update the bl data query parameters (on datatype, existing tags, etc..) to be more selective of which objects to update."
+    "content": "To update a data object, provide its ID along with the fields you wish to change: You can combine multiple updates into a single command: To clear an existing subject, session, or run identifier, pass an empty string: ---"
   },
   {
-    "id": "/docs/cli/update/#bulk-update-subject-names",
-    "url": "/docs/cli/update/#bulk-update-subject-names",
-    "pageTitle": "Updating data objects",
-    "section": "Bulk Update subject names",
+    "id": "/docs/cli/update/#2-managing-tags",
+    "url": "/docs/cli/update/#2-managing-tags",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "2. Managing Tags",
     "category": "Using CLI",
-    "content": "Sometimes, you need to \"fix\" the subject naming for your project. For example, let's say you have subject names set to something like \"sub-123\" and you want to update this to just \"123\" (dropping \"sub-\"). You could start by querying for object from your project just like we did earlier. Then, you can iterate over each object and use bl data update --subject CLI to update the subject name. Since this requires a bit of coding, I will use python."
+    "content": "Brainlife distinguishes between two types of tags:"
   },
   {
-    "id": "/docs/cli/update/#updating-sidecarmetadata",
-    "url": "/docs/cli/update/#updating-sidecarmetadata",
-    "pageTitle": "Updating data objects",
-    "section": "Updating sidecar/metadata",
+    "id": "/docs/cli/update/#search-tags---addtag---removetag",
+    "url": "/docs/cli/update/#search-tags---addtag---removetag",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Search Tags (`--addtag` / `--removetag`)",
     "category": "Using CLI",
-    "content": "You can update specific sidecar/medata fields by doing something like the following. --meta option will read specified JSON file and update key/value specified in the append.json in this sample. At the moment, there is no way to remove an existing field. You could set it to null value, or you will have to edit it via brainlife UI."
+    "content": "Search tags are general labels used to filter and organize data objects within your project (e.g. baseline, pre-op, control): ```bash"
   },
   {
-    "id": "/docs/cli/upload/",
-    "url": "/docs/cli/upload/",
-    "pageTitle": "Uploading Data",
-    "section": "Uploading Data",
+    "id": "/docs/cli/update/#add-a-tag",
+    "url": "/docs/cli/update/#add-a-tag",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Add a tag",
     "category": "Using CLI",
-    "content": "This is a draft. Comments are welcomed!"
+    "content": "bl data update --id --add_tag \"cohort-A\""
+  },
+  {
+    "id": "/docs/cli/update/#remove-an-old-tag",
+    "url": "/docs/cli/update/#remove-an-old-tag",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Remove an old tag",
+    "category": "Using CLI",
+    "content": "bl data update --id --remove_tag \"test\" ```"
+  },
+  {
+    "id": "/docs/cli/update/#datatype-tags---adddtag---removedtag",
+    "url": "/docs/cli/update/#datatype-tags---adddtag---removedtag",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Datatype Tags (`--adddtag` / `--removedtag`)",
+    "category": "Using CLI",
+    "content": "Datatype tags qualify the specific variant or processing state of the datatype (e.g. acpc_aligned, defaced, wNODDI): ```bash"
+  },
+  {
+    "id": "/docs/cli/update/#add-a-datatype-tag",
+    "url": "/docs/cli/update/#add-a-datatype-tag",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Add a datatype tag",
+    "category": "Using CLI",
+    "content": "bl data update --id --adddtag \"acpcaligned\""
+  },
+  {
+    "id": "/docs/cli/update/#remove-a-datatype-tag",
+    "url": "/docs/cli/update/#remove-a-datatype-tag",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Remove a datatype tag",
+    "category": "Using CLI",
+    "content": "bl data update --id --remove_dtag \"raw\" ``` (Use datatype tags cautiously, as downstream Apps may rely on specific datatype tags to match valid pipeline inputs.) ---"
+  },
+  {
+    "id": "/docs/cli/update/#3-updating-sidecar-json-metadata--m---meta",
+    "url": "/docs/cli/update/#3-updating-sidecar-json-metadata--m---meta",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "3. Updating Sidecar / JSON Metadata (`-m, --meta`)",
+    "category": "Using CLI",
+    "content": "Brainlife stores detailed acquisition and BIDS metadata as key-value pairs associated with the data object. You can merge new or updated fields from a local JSON file into the existing metadata using -m or --meta: ```bash"
+  },
+  {
+    "id": "/docs/cli/update/#create-or-edit-a-json-patch",
+    "url": "/docs/cli/update/#create-or-edit-a-json-patch",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Create or edit a JSON patch",
+    "category": "Using CLI",
+    "content": "cat > meta_update.json <<EOF EOF"
+  },
+  {
+    "id": "/docs/cli/update/#apply-the-update",
+    "url": "/docs/cli/update/#apply-the-update",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Apply the update",
+    "category": "Using CLI",
+    "content": "bl data update --id 5b031990251f5200274d9cc4 -m meta_update.json ``` The CLI merges these fields into the existing object's metadata without erasing other existing keys. ---"
+  },
+  {
+    "id": "/docs/cli/update/#4-deleting-data-objects-bl-data-delete",
+    "url": "/docs/cli/update/#4-deleting-data-objects-bl-data-delete",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "4. Deleting Data Objects (`bl data delete`)",
+    "category": "Using CLI",
+    "content": "If you have test data, failed uploads, or deprecated derivatives you want to remove from your project: You can also pass the ID with -i: Deleting a data object marks it as removed in the Brainlife warehouse. Ensure no downstream pipelines or publications depend on the data object before removing it. ---"
+  },
+  {
+    "id": "/docs/cli/update/#5-bulk-updating-with-scripts",
+    "url": "/docs/cli/update/#5-bulk-updating-with-scripts",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "5. Bulk Updating with Scripts",
+    "category": "Using CLI",
+    "content": "You can combine bl data query with bl data update to batch-process objects across an entire study."
+  },
+  {
+    "id": "/docs/cli/update/#example-bulk-adding-a-tag-to-a-cohort",
+    "url": "/docs/cli/update/#example-bulk-adding-a-tag-to-a-cohort",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Example: Bulk Adding a Tag to a Cohort",
+    "category": "Using CLI",
+    "content": "```bash #!/usr/bin/env bash set -e PROJECTID=\"5afc2c8de68fc50028e90820\" TAGTO_ADD=\"Cohort-2026\""
+  },
+  {
+    "id": "/docs/cli/update/#query-all-datasets-matching-project-in-json-format",
+    "url": "/docs/cli/update/#query-all-datasets-matching-project-in-json-format",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Query all datasets matching project in JSON format",
+    "category": "Using CLI",
+    "content": "echo \"Fetching datasets from project...\" DATASETS=$(bl data query --project \"$PROJECT_ID\" --json)"
+  },
+  {
+    "id": "/docs/cli/update/#extract-ids-and-apply-update",
+    "url": "/docs/cli/update/#extract-ids-and-apply-update",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Extract IDs and apply update",
+    "category": "Using CLI",
+    "content": "echo \"$DATASETS\" | jq -r '.[].id' | while read -r ID; do echo \"Updating object: $ID\" bl data update --id \"$ID\" --addtag \"$TAGTOADD\" done echo \"Bulk update complete!\" ```"
+  },
+  {
+    "id": "/docs/cli/update/#example-normalizing-subject-ids-python",
+    "url": "/docs/cli/update/#example-normalizing-subject-ids-python",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Example: Normalizing Subject IDs (Python)",
+    "category": "Using CLI",
+    "content": "If subject identifiers were uploaded with inconsistent prefixes (e.g. sub-001 vs 001) and you want to standardize them: ```python #!/usr/bin/env python3 import json import subprocess project_id = \"5afc2c8de68fc50028e90820\""
+  },
+  {
+    "id": "/docs/cli/update/#fetch-objects",
+    "url": "/docs/cli/update/#fetch-objects",
+    "pageTitle": "Updating & Managing Data Objects",
+    "section": "Fetch objects",
+    "category": "Using CLI",
+    "content": "rawjson = subprocess.checkoutput([ \"bl\", \"data\", \"query\", \"--project\", projectid, \"--json\" ]) objects = json.loads(rawjson) for obj in objects: objid = obj[\"id\"] subject = obj.get(\"meta\", {}).get(\"subject\", \"\") Strip 'sub-' prefix if present if subject.startswith(\"sub-\"): newsubject = subject.replace(\"sub-\", \"\", 1) print(f\"Updating : ' ' -> ' '\") subprocess.run([ \"bl\", \"data\", \"update\", \"--id\", objid, \"--subject\", new_subject ], check=True) ```"
   },
   {
     "id": "/docs/cli/upload/#uploading-data",
@@ -1197,55 +1413,127 @@
     "pageTitle": "Uploading Data",
     "section": "Uploading Data",
     "category": "Using CLI",
-    "content": "In order to upload a data object, brainlife requires that you supply a project and datatype associated with it. For example, the data we will be uploading–a t1 weighted image–must contain a file called 't1.nii.gz' in order to be successfully stored. Before following along with this readme, you will need to make your own project on brainlife.io. Have you made one? Then let's begin:"
+    "content": "Brainlife CLI allows you to upload neuroimaging data objects directly from your local computer or cluster. You can upload individual data objects with bl data upload, or upload an entire structured dataset at once with bl bids upload. ---"
   },
   {
-    "id": "/docs/cli/upload/#querying-the-project",
-    "url": "/docs/cli/upload/#querying-the-project",
+    "id": "/docs/cli/upload/#prerequisites-projects-datatypes",
+    "url": "/docs/cli/upload/#prerequisites-projects-datatypes",
     "pageTitle": "Uploading Data",
-    "section": "Querying the Project",
+    "section": "Prerequisites: Projects & Datatypes",
     "category": "Using CLI",
-    "content": "To search through the list of projects, we can use bl project query My username is stevengeeky, so I'll query all of the projects I'm the admin of: Keep the id in mind for later. To specifically extrapolate the id from the query, install jq and run something similar to the following (using the previous query as an example): Which returns 5afc2c8de68fc50028e90820. --json instructs the CLI to output results in JSON format so that jq can parse the output. Also, if you don't know what to run or how to run something, simply attach --help to the end of any command:"
+    "content": "Every data object uploaded to Brainlife must be associated with: 1. A Project ID: The destination project where data will be stored. 2. A Datatype: The data structure specification defining which files are required (e.g. neuro/anat/t1w requires a t1.nii.gz file). 3. A Subject Name: A subject identifier (e.g. sub-01 or 101)."
   },
   {
-    "id": "/docs/cli/upload/#querying-datatype",
-    "url": "/docs/cli/upload/#querying-datatype",
+    "id": "/docs/cli/upload/#1-finding-your-project-id",
+    "url": "/docs/cli/upload/#1-finding-your-project-id",
     "pageTitle": "Uploading Data",
-    "section": "Querying Datatype",
+    "section": "1. Finding Your Project ID",
     "category": "Using CLI",
-    "content": "Now, we need a datatype for our data. Since I will be uploading a t1 weighted image, I'll query for the list of datatypes which might match what I want: The single result returned happens to be exactly what we want. This will be the datatype for our uploaded data."
+    "content": "To find your project's ID, search using bl project query: You can also filter by administrator or member: To extract just the project ID in scripts, pass --json and use jq:"
   },
   {
-    "id": "/docs/cli/upload/#uploading-dataset",
-    "url": "/docs/cli/upload/#uploading-dataset",
+    "id": "/docs/cli/upload/#2-finding-the-right-datatype",
+    "url": "/docs/cli/upload/#2-finding-the-right-datatype",
     "pageTitle": "Uploading Data",
-    "section": "Uploading Dataset",
+    "section": "2. Finding the Right Datatype",
     "category": "Using CLI",
-    "content": "Now, it's time to actually upload our data. I have a file named t1.nii.gz in a directory called t1/, and to upload it I need to supply a few things. Let's run bl data upload --help to figure out what those things are: All that is required to upload a data is a directory to upload, a project id, and a datatype id. But you can also supply other options to provide additional information about it, such as applicable datatype tags, search tags, and which session and subject the data is from. I will upload my data by using the following command, given the id of my project and datatype of my data: Notice that I supplied --tag twice to add more than one search tag to my data. This works the same way with datatype_tags. --meta is optional but you should point to any \"sidecar\" json if you have one. You must specify paths to each files/directory for the datatype that you are uploading. For example, for --datatype neuro/anat/t1w, you must specify --t1 with the file path for your .nii.gz file containing the t1w anatomy. Please refer to the README section for various datatypes on brainlife under datatypes. You can see the process update in real time. When it has finally finished it should output:"
+    "content": "Brainlife datatypes specify the file format and required files for each modality. Search for matching datatypes with bl datatype query: Notice the Files: section. The identifier before the colon (t1) is the file flag name you will pass to the upload command (i.e. --t1 ). For diffusion MRI (neuro/dwi), multiple files are required: Here you must provide --dwi , --bvecs , and --bvals . ---"
   },
   {
-    "id": "/docs/cli/upload/#querying-datasets",
-    "url": "/docs/cli/upload/#querying-datasets",
+    "id": "/docs/cli/upload/#method-1-uploading-individual-data-objects-bl-data-upload",
+    "url": "/docs/cli/upload/#method-1-uploading-individual-data-objects-bl-data-upload",
     "pageTitle": "Uploading Data",
-    "section": "Querying Datasets",
+    "section": "Method 1: Uploading Individual Data Objects (`bl data upload`)",
     "category": "Using CLI",
-    "content": "Now that we've uploaded a data, we can view it by querying the list of data:"
+    "content": "To upload an individual data object, run bl data upload."
   },
   {
-    "id": "/docs/cli/upload/#bulk-upload",
-    "url": "/docs/cli/upload/#bulk-upload",
+    "id": "/docs/cli/upload/#required-parameters",
+    "url": "/docs/cli/upload/#required-parameters",
     "pageTitle": "Uploading Data",
-    "section": "Bulk Upload",
+    "section": "Required Parameters",
     "category": "Using CLI",
-    "content": "Say we have all files from several subejcts in a single folder (the current folder) with two datafiles, DWI (dffusion-weighted MRI data files) and T1W (t1 weighted MRI, anatomical data files). Say that each subject is either a control (CNTR) or a patient (PTNT). We will first login on brainlife. Then set the current project variable (project IDs are the hash-numbers indicated on each project web-address on brainlife.io) We will match the DWI files to the correspondign brainlife.io datatype, which is neuro/dwi. We will also match the T1W files to the corresponding brainlife.io datatype which is neuro/anat/t1w. We will automatically find the total number of subejcts and for each subject we will push on the brainlife.io platform the T1W and the DWI and match them with the corresponding datatype. The CLI command will run the brainlife.io datatype validator and upload the file, which will magically populate the project online. A bash script would would look like the following: You should add --meta if you have any sidecard to go with each dwi/t1"
+    "content": "-p, --project : Target Brainlife project ID. -d, --datatype : Name or ID of the datatype (e.g. neuro/anat/t1w). -s, --subject : Subject identifier (e.g. sub-01). -- : Path to each file required by the datatype (e.g. --t1 path/to/t1.nii.gz)."
   },
   {
-    "id": "/docs/cli/upload/#bids-upload",
-    "url": "/docs/cli/upload/#bids-upload",
+    "id": "/docs/cli/upload/#optional-parameters",
+    "url": "/docs/cli/upload/#optional-parameters",
     "pageTitle": "Uploading Data",
-    "section": "BIDS Upload",
+    "section": "Optional Parameters",
     "category": "Using CLI",
-    "content": "If you have data organized in a BIDS format, you can upload the entire dataset with a single command."
+    "content": "-e, --session : Session label (e.g. ses-01). -r, --run : Run label (e.g. 1). -n, --desc : Text description for this data object. -t, --tag : Custom tag for searching (can be specified multiple times). --datatype_tag : Datatype tag (e.g. defaced, acpc_aligned). -m, --meta : Path to a JSON sidecar file containing BIDS-compliant or custom metadata. * -j, --json: Output uploaded dataset details in JSON format."
+  },
+  {
+    "id": "/docs/cli/upload/#example-uploading-an-anatomical-t1w-image",
+    "url": "/docs/cli/upload/#example-uploading-an-anatomical-t1w-image",
+    "pageTitle": "Uploading Data",
+    "section": "Example: Uploading an Anatomical T1w Image",
+    "category": "Using CLI",
+    "content": ""
+  },
+  {
+    "id": "/docs/cli/upload/#example-uploading-a-diffusion-mri-dataset",
+    "url": "/docs/cli/upload/#example-uploading-a-diffusion-mri-dataset",
+    "pageTitle": "Uploading Data",
+    "section": "Example: Uploading a Diffusion MRI Dataset",
+    "category": "Using CLI",
+    "content": ""
+  },
+  {
+    "id": "/docs/cli/upload/#the-upload-process",
+    "url": "/docs/cli/upload/#the-upload-process",
+    "pageTitle": "Uploading Data",
+    "section": "The Upload Process",
+    "category": "Using CLI",
+    "content": "When you run bl data upload: 1. The CLI bundles the files into an archive. 2. It submits a temporary staging task (app-noop) on Brainlife compute services. 3. The data is uploaded and untarred on the staging resource. 4. If a validator is registered for that datatype (e.g. BIDS / neuroimaging validation), it validates the dataset before archiving. 5. The object is registered and becomes visible in your project's Archive / Data view. ---"
+  },
+  {
+    "id": "/docs/cli/upload/#method-2-uploading-complete-bids-datasets-bl-bids-upload",
+    "url": "/docs/cli/upload/#method-2-uploading-complete-bids-datasets-bl-bids-upload",
+    "pageTitle": "Uploading Data",
+    "section": "Method 2: Uploading Complete BIDS Datasets (`bl bids upload`)",
+    "category": "Using CLI",
+    "content": "If your data is already organized following the BIDS (Brain Imaging Data Structure) standard (containing dataset_description.json, sub- / folders, etc.), you can upload your entire dataset with a single command:"
+  },
+  {
+    "id": "/docs/cli/upload/#what-bl-bids-upload-does",
+    "url": "/docs/cli/upload/#what-bl-bids-upload-does",
+    "pageTitle": "Uploading Data",
+    "section": "What `bl bids upload` does:",
+    "category": "Using CLI",
+    "content": "1. Validates BIDS: Runs the BIDS validator to ensure folder and filename specifications are compliant. 2. Parses Metadata: Automatically ingests datasetdescription.json, participants.tsv, and participants.json, updating participant demographics in your project. 3. Automatic Datatype Mapping: Detects anat, dwi, func, fmap, and other modalities, mapping them to the proper Brainlife datatypes and sidecar metadata. 4. Batch Staging: Iterates over all subjects, sessions, and runs, uploading and registering each data object automatically. 5. Auto-Project Creation: If you omit --project, the CLI will automatically create a new project using the name and description from datasetdescription.json."
+  },
+  {
+    "id": "/docs/cli/upload/#adding-tags-to-bids-uploads",
+    "url": "/docs/cli/upload/#adding-tags-to-bids-uploads",
+    "pageTitle": "Uploading Data",
+    "section": "Adding Tags to BIDS Uploads",
+    "category": "Using CLI",
+    "content": "You can attach tags to all data objects uploaded from the BIDS folder: ---"
+  },
+  {
+    "id": "/docs/cli/upload/#verifying-uploaded-data",
+    "url": "/docs/cli/upload/#verifying-uploaded-data",
+    "pageTitle": "Uploading Data",
+    "section": "Verifying Uploaded Data",
+    "category": "Using CLI",
+    "content": "After uploading, you can verify your data objects using bl data query: ---"
+  },
+  {
+    "id": "/docs/cli/upload/#scripting-bulk-uploads",
+    "url": "/docs/cli/upload/#scripting-bulk-uploads",
+    "pageTitle": "Uploading Data",
+    "section": "Scripting Bulk Uploads",
+    "category": "Using CLI",
+    "content": "If you have raw data files organized in custom directories (not in BIDS format), you can automate uploads with a bash loop: ```bash #!/usr/bin/env bash set -e"
+  },
+  {
+    "id": "/docs/cli/upload/#ensure-logged-in",
+    "url": "/docs/cli/upload/#ensure-logged-in",
+    "pageTitle": "Uploading Data",
+    "section": "Ensure logged in",
+    "category": "Using CLI",
+    "content": "bl login --ttl 30 PROJECTID=\"5afc2c8de68fc50028e90820\" for T1FILE in rawdata/*T1w.nii.gz; do Extract subject ID from filename (e.g. sub-101T1w.nii.gz -> sub-101) FILENAME=$(basename \"$T1FILE\") SUBJECT=\"$ \" echo \"Uploading T1w for subject: $SUBJECT\" bl data upload \\ --project \"$PROJECTID\" \\ --datatype neuro/anat/t1w \\ --subject \"$SUBJECT\" \\ --t1 \"$T1FILE\" \\ --tag \"raw\" done ```"
   },
   {
     "id": "/docs/contact/#contact",
