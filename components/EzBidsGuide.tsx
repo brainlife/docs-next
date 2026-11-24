@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import DocLayout from '@/components/DocLayout';
 import { TocHeading } from '@/components/TableOfContents';
+import { getAssetPath } from '@/lib/basePath';
 
 interface EzBidsGuideProps {
     markdownHtml: string;
@@ -58,16 +59,16 @@ export default function EzBidsGuide({
 
                 {/* Breadcrumbs */}
                 <nav
-                    className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-400 mb-4"
+                    className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4"
                     aria-label="Breadcrumb"
                 >
-                    <Link href="/" className="hover:text-gray-200 transition-colors">
+                    <Link href="/" className="hover:text-gray-900 dark:hover:text-gray-200 transition-colors">
                         Documentation
                     </Link>
                     <ChevronRight size={13} className="text-gray-500" />
                     <Link
                         href="/docs/user/started"
-                        className="hover:text-gray-200 transition-colors"
+                        className="hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
                     >
                         Using brainlife
                     </Link>
@@ -78,19 +79,24 @@ export default function EzBidsGuide({
                 {/* Real ezBIDS Logo */}
                 <div className="flex items-center gap-3 mb-2">
                     <img
-                        src="/ezbids-logo.svg"
+                        src={getAssetPath('/ezbids-logo.svg')}
                         alt="ezBIDS Logo"
                         className="h-10 sm:h-12 w-auto object-contain"
                     />
                 </div>
 
                 {/* Title & Subtitle */}
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 mb-2 font-['Work_Sans',sans-serif]">
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-1 mb-2 font-['Work_Sans',sans-serif]">
                     ezBIDS User Documentation
                 </h1>
-                <p className="text-base text-gray-400 mb-6 font-normal max-w-3xl leading-relaxed">
-                    Learn how to convert neuroimaging data to BIDS using ezBIDS, a web-based
-                    tool on brainlife.io.
+                <p className="text-base text-gray-600 dark:text-gray-400 mb-6 font-normal max-w-3xl leading-relaxed">
+                    Convert neuroscience data (neurophysiology, neuroimaging and microscopy) to
+                    BIDS with ezBIDS on brainlife.io: MRI, PET and MEG on the web; EEG, iEEG,
+                    NIRS, EMG and microscopy on your own computer with{' '}
+                    <Link href="/docs/using_aimport" className="text-[#50bfff] hover:underline">
+                        aimport
+                    </Link>
+                    .
                 </p>
 
                 {/* Tabs Switcher: Written Guide vs Video Guide */}
@@ -125,7 +131,7 @@ export default function EzBidsGuide({
                 {activeTab === 'written' ? (
                     <div>
                         {/* Introduction Lead Paragraph */}
-                        <p className="text-base text-gray-300 leading-relaxed mb-6">
+                        <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
                             <a
                                 href="https://brainlife.io/ezbids"
                                 target="_blank"
@@ -198,11 +204,11 @@ export default function EzBidsGuide({
                         <section className="mb-6">
                             <h2
                                 id="a-primer-to-ezbids"
-                                className="text-2xl font-bold text-white tracking-tight mb-3 font-['Work_Sans',sans-serif]"
+                                className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-3 font-['Work_Sans',sans-serif]"
                             >
                                 A Primer to ezBIDS
                             </h2>
-                            <p className="text-base text-gray-300 leading-relaxed mb-6">
+                            <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
                                 The process of converting raw imaging data to BIDS is often
                                 time-consuming and can require substantial technical expertise.
                                 ezBIDS provides a simplified, web-based interface to help you
