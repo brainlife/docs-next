@@ -8,6 +8,7 @@ import DocLayout from '@/components/DocLayout';
 import EzBidsGuide from '@/components/EzBidsGuide';
 import { processMarkdown } from '@/lib/markdown';
 import { getGithubEditUrl } from '@/lib/docsNavigation';
+import { getAssetPath } from '@/lib/basePath';
 
 interface PageProps {
     params: Promise<{
@@ -130,7 +131,7 @@ export default async function DocPage({ params }: PageProps) {
                 {doc.relativePath.toLowerCase().includes('ezbids') && (
                     <div className="mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
                         <img
-                            src="/ezbids-logo.svg"
+                            src={getAssetPath('/ezbids-logo.svg')}
                             alt="ezBIDS Logo"
                             className="h-11 w-auto object-contain"
                         />

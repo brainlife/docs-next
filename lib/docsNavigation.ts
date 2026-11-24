@@ -30,6 +30,12 @@ export const DOCS_SECTIONS: NavSection[] = [
                 path: 'using_ezBIDS.md',
                 icon: 'EzBids',
             },
+            {
+                title: 'aimport',
+                href: '/docs/using_aimport',
+                path: 'using_aimport.md',
+                icon: 'Sparkles',
+            },
         ],
     },
     {
