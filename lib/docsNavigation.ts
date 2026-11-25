@@ -42,7 +42,7 @@ export const DOCS_SECTIONS: NavSection[] = [
         title: 'USER GUIDE',
         items: [
             {
-                title: 'Using brainlife',
+                title: 'Using brainlife.io',
                 icon: 'Compass',
                 children: [
                     { title: 'Getting Started', href: '/docs/user/started', path: 'user/started.md' },
