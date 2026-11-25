@@ -74,7 +74,19 @@ The act of infringing on a copyright is a very serious business and is punishabl
 
 The brainlife.io mark and wordmark used in the brainlife.io app (brainlife-lite), the website and the documentation. Use the **light** versions on white or light backgrounds and the **dark** versions on dark backgrounds. The wordmark text is DM Sans, converted to outlines, so the SVG files need no fonts. Please use the SVG files where possible.
 
-#### Wordmark
+#### Logo and name
+
+The mark with **brainlife** in DM Sans semibold and **.io** in grey, as in the website and documentation header. This is the preferred lockup.
+
+**Light**: [SVG](img/media/2026/brainlife.io-header-light.svg) · [PNG](img/media/2026/brainlife.io-header-light.png)
+
+![brainlife.io logo and name, light](img/media/2026/brainlife.io-header-light.svg)
+
+**Dark**: [SVG](img/media/2026/brainlife.io-header-dark.svg) · [PNG](img/media/2026/brainlife.io-header-dark.png)
+
+<div style="background:#07131c;padding:32px;border-radius:12px"><img src="https://raw.githubusercontent.com/brainlife/docs-next/main/public/img/media/2026/brainlife.io-header-dark.png" alt="brainlife.io logo and name, dark" style="display:block;margin:0 auto;width:100%;height:auto;max-height:650px;object-fit:contain"></div>
+
+#### Wordmark (app sidebar style)
 
 **Light**: [SVG](img/media/2026/brainlife.io-wordmark-light.svg) · [PNG](img/media/2026/brainlife.io-wordmark-light.png)
 
