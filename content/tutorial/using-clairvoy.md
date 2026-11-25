@@ -13,7 +13,7 @@ The underlying machine learning model evaluates diffusion-weighted (dMRI) and T1
 
 ## Workflow Overview
 
-Clairvoy couples the browser-based **ezBIDS** conversion service with high-performance automated pipelines on Brainlife:
+Clairvoy couples the browser-based **ezBIDS** conversion service with automated pipelines on brainlife.io:
 1. **ezBIDS**: Ingests raw DICOM or NIfTI series, automatically identifies imaging sequences, defaces anatomical images for participant privacy, and generates a valid BIDS-compliant dataset.
 2. **DWI Pipeline**: Automated preprocessing, fiber orientation modeling, tractography, white matter anatomy segmentation, and tract profiling (microstructural metrics along major white matter tracts).
 3. **Clairvoy ML Classifier**: Reads white matter tract profiles (`tractmeasures`) and classifies the subject's injury profile.
@@ -21,7 +21,7 @@ Clairvoy couples the browser-based **ezBIDS** conversion service with high-perfo
 ```mermaid
 flowchart LR
     A["Raw Clinical DICOMs<br/>(T1w + DWI)"] -->|ezBIDS| B["BIDS Dataset"]
-    B -->|Brainlife DWI Pipeline| C["Tract Profiles<br/>(tractmeasures)"]
+    B -->|brainlife.io DWI Pipeline| C["Tract Profiles<br/>(tractmeasures)"]
     C -->|Clairvoy App| D["Risk Prediction<br/>(Normal vs. High Risk)"]
 ```
 
@@ -31,7 +31,7 @@ flowchart LR
 
 ### Step 1: Ingest and BIDSify Data with ezBIDS
 
-1. Navigate to [ezBIDS](https://brainlife.io/ezbids) and sign in using your free Brainlife account. (If you don't have an account, see [Getting Started](/docs/user/started/)).
+1. Navigate to [ezBIDS](https://brainlife.io/ezbids) and sign in with your free brainlife.io account. (If you don't have an account, see [Getting Started](/docs/user/started/)).
 2. Under the **Upload Imaging Data** panel, drag and drop your DICOM folder or `.zip` archive.
 3. Review the extracted metadata in `Dataset Description`:
    - Enter a descriptive `Dataset Name` (e.g., `Concussion_Evaluation_01`).
@@ -39,24 +39,23 @@ flowchart LR
 4. **Defacing (Privacy Protection)**:
    - Run the automated `QuickShear` defacing step to remove facial features while preserving full intracranial volume.
    - Visually verify defacing and select **Use Defaced**.
-5. Click **Finalize** to generate the BIDS directory structure.
-6. Click **Send to Brainlife.io** and check **Run DWI Pipeline**.
-7. Click **Submit**. This automatically creates a private project on Brainlife and initializes the preprocessing pipeline.
+5. Select **Finalize** to generate the BIDS directory structure.
+6. Select **Send to brainlife.io** and choose "Send to brainlife and run DWI Pipeline". ezBIDS creates a private project on brainlife.io and starts the preprocessing pipeline.
 
 ---
 
-### Step 2: Monitor DWI Pipeline on Brainlife
+### Step 2: Monitor the DWI Pipeline on brainlife.io
 
-1. Navigate to **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io)) and open your newly created project.
-2. Click the **3. Processing** tab and select the **Pipeline** or **Summary** view.
-3. Confirm that the pipeline is active. The pipeline will automatically execute:
+1. Open **brainlife.io** ([connects.brainlife.io](https://connects.brainlife.io)), select **My Projects**, and open your new project.
+2. Go to **3. Processing** → **Pipeline** or **Summary**.
+3. Check that the automations are **Active**. The pipeline runs:
    - T1w ACPC alignment and brain masking.
    - Diffusion denoising, eddy current, and motion correction.
    - Whole-brain probabilistic tractography and tract segmentation.
    - Tract profile measurement extraction (`tractmeasures`).
 
 > [!NOTE] Processing Time
-> Pipeline execution typically takes between 1 and several hours depending on available high-performance compute clusters connected to Brainlife.
+> The pipeline usually takes from one to several hours, depending on the compute resources available.
 
 ---
 
@@ -64,20 +63,20 @@ flowchart LR
 
 Once the DWI pipeline has completed and produced the `tractmeasures` dataset:
 
-1. In your project, click the **2. Data** tab.
-2. Locate and check the box next to the generated **`tractmeasures`** dataset.
-3. In the action bar, click **Stage to process**.
-4. In the dialog, select **Create New Process**, name it `Clairvoy Prediction`, and click **Submit**.
-5. In the **3. Processing** tab, open the `Clairvoy Prediction` process and click **Execute / Submit App**.
-6. In the App search box, type **Clairvoy** and select the official **Clairvoy App** card.
-7. Verify that your staged `tractmeasures` dataset is bound to the input field, then click **Submit**.
-8. Execution requires less than 2 minutes.
+1. In your project, open the **2. Data** tab.
+2. Select the checkbox next to the **`tractmeasures`** dataset.
+3. Select **Stage to process** above the table.
+4. In **Add to process**, choose "Create a new process", name it `Clairvoy Prediction`, and select **Add and open editor**.
+5. In the process editor, select **Add App**.
+6. **Select App**: type **Clairvoy** and select the official **Clairvoy** App.
+7. **Select Inputs**: check that your `tractmeasures` dataset is the input. On **Configure Outputs**, select **Add App**.
+8. The job takes less than 2 minutes.
 
 ---
 
 ### Step 4: Interpreting Results
 
-Once the App finishes, open the output by clicking the eye icon next to the result dataset:
+When the job finishes, select **Visualize** next to the output dataset to open it:
 
 - <span style="color: #22c55e; font-weight: 700;">Normal Recovery Trajectory</span>: The injury is predicted to recover in under 28 days.
 - <span style="color: #ef4444; font-weight: 700;">High Risk (PPCS)</span>: The injury is flagged as high risk for developing Persistent Post-Concussive Symptoms (PPCS), indicating potential benefit from proactive clinical follow-up.

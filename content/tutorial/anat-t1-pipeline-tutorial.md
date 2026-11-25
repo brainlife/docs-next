@@ -1,119 +1,118 @@
 ## Pipeline Automation: Anatomical (T1w) Preprocessing
 
-Welcome to this tutorial on creating **automated pipelines** on Brainlife. In earlier tutorials, you learned how to manually stage datasets and submit apps one by one. While manual execution is ideal for exploratory testing on a single subject, managing large cohorts (dozens, hundreds, or thousands of subjects) requires automation.
+This tutorial shows you how to automate processing on brainlife.io. In earlier tutorials you added datasets to a process and ran Apps one at a time. That works well for testing on one subject, but large cohorts (dozens, hundreds or thousands of subjects) need automation.
 
-**Brainlife Pipelines** allow you to chain applications together declaratively. By defining **pipeline rules**, any dataset matching your specified datatype and tags will automatically trigger downstream apps in the cloud as soon as prerequisite outputs become available.
+A project's **pipeline** is its set of **automations**. An automation runs an App for every subject (and session) that has the inputs and does not yet have the output. When an upstream automation archives its outputs, the next automation finds them and runs.
 
-In this tutorial, you will build an automated T1w anatomical pipeline that chains:
-1. **FSL Anat (T1w)**: Brain extraction, bias correction, and ACPC alignment.
-2. **FreeSurfer 7.3.2**: Cortical surface reconstruction and subcortical parcellation.
-3. **Multi-Atlas Transfer Tool (MaTT)**: Mapping the Glasser HCP-MMP cortical atlas.
+In this tutorial you build an anatomical T1w pipeline that chains:
+1. **FSL Anat (T1w)**: brain extraction, bias correction and ACPC alignment.
+2. **FreeSurfer 7.3.2**: cortical surface reconstruction and subcortical parcellation.
+3. **Multi-Atlas Transfer Tool (MaTT)**: maps the Glasser HCP-MMP cortical atlas.
 
 > [!NOTE] Prerequisites
-> Before building automated pipelines, you should be familiar with project navigation and manual app submission described in the [Introduction to Brainlife](/docs/tutorial/introduction-to-brainlife/) tutorial.
+> Before you build a pipeline, make sure you know how to navigate a project and run an App by hand, as described in the [Introduction to brainlife.io](/docs/tutorial/introduction-to-brainlife/) tutorial.
 
 ---
 
-## How Pipelines Work: The Power of Tags
+## How Automations Work: Datatypes, Datatype Tags and Annotations
 
-Brainlife pipelines evaluate rules reactively:
-- **Input matching**: Each rule monitors your project's data archive for objects matching a specific datatype (e.g., `anat/t1w`) and dataset tags (e.g., `acpc_aligned`).
-- **Triggering execution**: Whenever a matching dataset is uploaded or produced by an upstream app, the rule automatically instantiates a new process and submits the App with your preconfigured parameters.
-- **Output tagging & chaining**: The rule assigns specific tags to its outputs (e.g., `preprocessed`, `freesurfer`). Downstream rules listening for those tags will automatically detect the new outputs and begin execution.
+Automations react to the datasets in your project:
+- **Input matching**: each automation looks in your project for datasets of a given datatype (for example `anat/t1w`). Filters on datatype tags and **Annotations** (for example `acpc_aligned`) pick the right dataset when a subject has more than one match.
+- **Running**: when a subject has a matching input and lacks the output, the automation creates a process and runs the App with the settings you chose.
+- **Output annotations and chaining**: the automation archives its outputs with the **Annotations** you set (for example `preprocessed`, `freesurfer`). A downstream automation that filters on those annotations finds the new outputs and runs.
 
 ```mermaid
 flowchart LR
-    A["Raw T1w Data<br/>(anat/t1w)"] -->|Rule 1: FSL Anat| B["ACPC Aligned T1w<br/>tags: preprocessed, acpc_aligned"]
-    B -->|Rule 2: FreeSurfer 7.3.2| C["Cortical Surfaces<br/>tag: freesurfer"]
-    C -->|Rule 3: MaTT| D["HCP-MMP Parcellation<br/>tag: Glasser"]
+    A["Raw T1w Data<br/>(anat/t1w)"] -->|Automation 1: FSL Anat| B["ACPC Aligned T1w<br/>annotations: preprocessed, acpc_aligned"]
+    B -->|Automation 2: FreeSurfer 7.3.2| C["Cortical Surfaces<br/>annotation: freesurfer"]
+    C -->|Automation 3: MaTT| D["HCP-MMP Parcellation<br/>annotation: Glasser"]
 ```
 
 ---
 
 ## Step 1: Import the Tutorial Dataset
 
-1. In Brainlife, create a new private project or open your existing tutorial project.
-2. Navigate to the [Sample Dataset Project](https://brainlife.io/dataset/datasets.datalad.org/labs/gobbini/famface/data).
-3. Click the **2. Data** tab.
+1. Create a new private project, or open your existing tutorial project.
+2. Open the [Sample Dataset](https://brainlife.io/dataset/datasets.datalad.org/labs/gobbini/famface/data).
+3. Open its data list.
 4. Filter by datatype `anat/t1w`.
 
 > [!WARNING] Select Only T1w Data
-> For this tutorial, select only `anat/t1w` objects. Do not select DWI or fMRI series.
+> For this tutorial, select only `anat/t1w` datasets. Do not select DWI or fMRI datasets.
 
-![Dataset Selection](../img/tutorial_pipeline_anat_t1_w_dataset.png)
+![Dataset selection](../img/tutorial_pipeline_anat_t1_w_dataset.png)
 
-5. Check the boxes next to 2–3 subjects, click **Stage to process** (or copy to your project), select your target project, and confirm.
+5. Select the checkboxes next to 2–3 subjects, select **Copy to project**, choose your tutorial project, and confirm.
 
-![Dataset Import](../img/tutorial_pipeline_anat_t1_w_dataset_import.png)
-
----
-
-## Step 2: Configure Pipeline Rules
-
-Navigate to your target project and click the **3. Processing** tab, then select the **Pipeline** sub-view.
-
-### Rule 1: Preprocessing and Alignment (FSL Anat)
-
-1. In the Pipeline canvas, click **Add Rule**.
-2. **App Selection**: Search for **FSL Anat (T1)** (`5e3c87ae9362b7166cf9c7f4`) and click the card.
-3. **Configuration**:
-   - Check **crop**, **reorient**, and **bias**.
-   - Set template to `MNI152_1MM`.
-4. **Input Tags**: Leave blank to match any incoming raw `anat/t1w` data.
-5. **Output Tags**:
-   - Specify output tags: `preprocessed` and `acpc_aligned`. These tags allow downstream rules to distinguish aligned T1w scans from raw scans.
-6. Click **Submit Rule**.
-
-![FSL Anat Configuration](../img/tutorial_pipeline_anat_t1_w_select_app_fsl_anat_t1w.png)
-![FSL Anat Output Tags](../img/tutorial_pipeline_anat_t1_w_output_app_fsl_anat_t1w.png)
+![Dataset import](../img/tutorial_pipeline_anat_t1_w_dataset_import.png)
 
 ---
 
-### Rule 2: Cortical Surface Reconstruction (FreeSurfer 7.3.2)
+## Step 2: Add Automations to the Pipeline
 
-1. Click **Add Rule** to create your second pipeline stage.
-2. **App Selection**: Search for **Freesurfer 7.3.2** (`5fe1056057aacd480f2f8e48`).
-3. **Configuration**:
-   - Enable **hippocampal** and **thalamicnuclei** subsegmentation.
-   - Set Output Dataset Tag to `freesurfer`.
-4. **Input Tags**:
-   - In the **Input** tab, require the tags `acpc_aligned` and `preprocessed`. This ensures FreeSurfer will only run on the output of Rule 1, avoiding unaligned raw images.
-5. Click **Submit Rule**.
+Open your tutorial project and go to **3. Processing** → **Pipeline**.
 
-![FreeSurfer App Selection](../img/tutorial_pipeline_anat_t1_w_select_app_free_surfer.png)
-![FreeSurfer Input Tags](../img/tutorial_pipeline_anat_t1_w_input_app_free_surfer.png)
+Each automation is added in four steps: **Select App**, **Configure App Settings**, **Configure Inputs** and **Configure Outputs**. Select **Next** to move between steps and **Complete** to save.
+
+### Automation 1: Preprocessing and alignment (FSL Anat)
+
+1. Select **+ Automation**.
+2. **Select App**: search for **FSL Anat (T1)** (`5e3c87ae9362b7166cf9c7f4`) and select it.
+3. **Configure App Settings**:
+   - Turn on **crop**, **reorient** and **bias**.
+   - Set the template to `MNI152_1MM`.
+4. **Configure Inputs**: leave the filters empty so the automation uses any raw `anat/t1w` dataset.
+5. **Configure Outputs**:
+   - Tick "Archive this output".
+   - Under **Annotations**, add `preprocessed` and `acpc_aligned`. These annotations let later automations tell aligned T1w scans from raw scans.
+6. Select **Complete**.
+
+![FSL Anat configuration](../img/tutorial_pipeline_anat_t1_w_select_app_fsl_anat_t1w.png)
+![FSL Anat output annotations](../img/tutorial_pipeline_anat_t1_w_output_app_fsl_anat_t1w.png)
 
 ---
 
-### Rule 3: Multi-Atlas Transfer Tool (MaTT)
+### Automation 2: Cortical surface reconstruction (FreeSurfer 7.3.2)
 
-1. Click **Add Rule** to create the final stage.
-2. **App Selection**: Search for **Multi-Atlas Transfer Tool (MaTT)** (`6016dcdc321a4aafce6decd5`).
-3. **Configuration**:
-   - Select `hcp-mmp-b` (Glasser 180-node atlas) as the target space/atlas.
-   - Set Output Dataset Tag to `Glasser`.
-4. **Input Tags**:
-   - FreeSurfer produces a unique datatype (`fs` / `freesurfer`), so MaTT can automatically bind to the outputs tagged `freesurfer`.
-5. Click **Submit Rule**.
+1. Select **+ Automation**.
+2. **Select App**: search for **Freesurfer 7.3.2** (`5fe1056057aacd480f2f8e48`).
+3. **Configure App Settings**: turn on **hippocampal** and **thalamicnuclei** segmentation.
+4. **Configure Inputs**: filter the T1w input on the annotations `acpc_aligned` and `preprocessed`. FreeSurfer then runs only on the output of automation 1, never on the unaligned raw image.
+5. **Configure Outputs**: tick "Archive this output" and add the annotation `freesurfer`.
+6. Select **Complete**.
 
-![Multi-Atlas Transfer Tool Rule](../img/tutorial_pipeline_anat_t1_w_select_app_multi_atlas.png)
+![FreeSurfer App selection](../img/tutorial_pipeline_anat_t1_w_select_app_free_surfer.png)
+![FreeSurfer input filters](../img/tutorial_pipeline_anat_t1_w_input_app_free_surfer.png)
+
+---
+
+### Automation 3: Multi-Atlas Transfer Tool (MaTT)
+
+1. Select **+ Automation**.
+2. **Select App**: search for **Multi-Atlas Transfer Tool (MaTT)** (`6016dcdc321a4aafce6decd5`).
+3. **Configure App Settings**: select `hcp-mmp-b` (the Glasser 180-node atlas) as the atlas.
+4. **Configure Inputs**: FreeSurfer produces its own datatype (`freesurfer`), so MaTT finds the FreeSurfer outputs without extra filters.
+5. **Configure Outputs**: tick "Archive this output" and add the annotation `Glasser`.
+6. Select **Complete**.
+
+![Multi-Atlas Transfer Tool automation](../img/tutorial_pipeline_anat_t1_w_select_app_multi_atlas.png)
 
 ---
 
 ## Step 3: Activate and Monitor the Pipeline
 
-1. Ensure the toggle switch on each of your pipeline rules is set to **Active**.
-2. Switch to the **Summary** or **Processes** view under the **3. Processing** tab.
-3. Brainlife will automatically detect your staged T1w subjects, generate the execution graph, and submit jobs to available high-performance compute clusters.
-4. Click the refresh button or open the details drawer to view live task statuses, resource utilization, and execution logs.
+1. Make sure each automation is set to **Active**. Open an automation (**View details**) to see and change its switch.
+2. Go to **3. Processing** → **Summary** or **Processes**.
+3. The automations find your T1w subjects, create processes and send the jobs to available compute resources.
+4. Select a process to see its status and logs. On **Summary**, resolve anything listed under **Needs Action** (for example an ambiguous input).
 
-![Details and Refresh](../img/tutorial_pipeline_anat_t1_w_details_refesh.png)
-![Pipeline Progress Stats](../img/tutorial_pipeline_anat_t1_w_details_stats.png)
+![Details and refresh](../img/tutorial_pipeline_anat_t1_w_details_refesh.png)
+![Pipeline progress](../img/tutorial_pipeline_anat_t1_w_details_stats.png)
 
 ---
 
 ## Summary and Key Takeaways
 
-1. **Automation**: Once rules are configured, simply uploading or staging new subjects into your project automatically triggers the entire pipeline from beginning to end without manual intervention.
-2. **Quality Control**: Use tags to enforce rigorous validation checkpoints (e.g., only running tractography on datasets with verified QA tags).
-3. **Reproducibility**: Pipeline rules are versioned and can be exported, shared with collaborators, or published alongside datasets with a citable DOI.
+1. **Automation**: once your automations are set up, every new subject you add to the project runs through the whole pipeline without manual steps.
+2. **Quality control**: use annotations as checkpoints (for example, run tractography only on datasets annotated as passing QA).
+3. **Reproducibility**: every output records its provenance, and you can publish your data and the Apps you used with a citable DOI.

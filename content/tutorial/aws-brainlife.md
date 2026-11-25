@@ -1,12 +1,12 @@
-# Using Brainlife with Amazon Web Services
+# Using brainlife.io with Amazon Web Services
 
 ## Introduction
 
-This tutorial guides you through accessing and using Brainlife datasets with various AWS services. Brainlife datasets are hosted on Amazon S3 and can be seamlessly integrated with SageMaker, Lambda, EC2, and Batch for neuroimaging analysis and processing.
+This tutorial shows you how to access brainlife.io datasets and use them with AWS services. brainlife.io datasets are stored on Amazon S3, so you can use them with SageMaker, Lambda, EC2 and Batch for analysis and processing.
 
-## Accessing Brainlife Datasets
+## Accessing brainlife.io Datasets
 
-Brainlife datasets are stored in an S3 bucket at `s3://brainlife/`. Each dataset includes a `config.json` file containing essential metadata.
+brainlife.io datasets are stored in an S3 bucket at `s3://brainlife/`. Each dataset includes a `config.json` file with its metadata.
 
 To list available datasets using the AWS CLI:
 
@@ -18,10 +18,10 @@ aws s3 ls s3://brainlife/
 
 ### SageMaker
 
-In a SageMaker notebook, you can import Brainlife datasets using:
+In a SageMaker notebook, you can copy brainlife.io datasets with:
 
 !!! info
-    Replace `project_id` and `dataset_id` with Brainlife-specific identifiers
+    Replace `project_id` and `dataset_id` with the brainlife.io project and dataset IDs
 
 ```
 !aws s3 cp s3://brainlife/project_id/dataset_id/ . --recursive
@@ -29,15 +29,15 @@ In a SageMaker notebook, you can import Brainlife datasets using:
 
 ### Lambda
 
-For serverless applications, reference Brainlife datasets in your Lambda function by specifying the S3 path and using the AWS SDK to access the data.
+For serverless applications, reference brainlife.io datasets in your Lambda function by specifying the S3 path and using the AWS SDK to access the data.
 
 ### EC2 & Batch
 
-For compute-intensive tasks, you can use EC2 instances or AWS Batch with Brainlife datasets. Access the datasets directly from S3 using the AWS SDK or CLI commands in your processing scripts. For neuroimaging workflows, you can either develop custom applications or leverage Brainlife's pre-built pipelines that are compatible with cloud-based execution environments.
+For compute-intensive tasks, you can use EC2 instances or AWS Batch with brainlife.io datasets. Access the datasets directly from S3 using the AWS SDK or CLI commands in your processing scripts. For neuroimaging workflows, you can write your own code or run brainlife.io Apps.
 
 ## OME-Zarr on S3
 
-OME-Zarr is a format for storing bioimaging data, often used in microscopy workflows. If you’re storing an OME-Zarr dataset in S3 (including Brainlife’s S3 buckets), you’ll find a directory structure containing various `.z*` files that specify metadata, multiscale images, and associated attributes.
+OME-Zarr is a format for storing bioimaging data, often used in microscopy workflows. If you’re storing an OME-Zarr dataset in S3 (including brainlife.io's S3 buckets), you’ll find a directory structure containing various `.z*` files that specify metadata, multiscale images, and associated attributes.
 
 Here’s an example of what an OME-Zarr layout might look like:
 

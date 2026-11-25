@@ -1,3 +1,5 @@
+> This tutorial uses an earlier version of the brainlife.io interface, so some tab and button names differ from what you see today.
+
 !!! warning
     This is a draft
 

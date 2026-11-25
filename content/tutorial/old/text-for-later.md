@@ -1,3 +1,5 @@
+> This tutorial uses an earlier version of the brainlife.io interface, so some tab and button names differ from what you see today.
+
 
 If you're happy with the results, then you're ready to move onto the next step: Thalamic nuclei segmentation!
 
@@ -77,7 +79,7 @@ To perform tissue-type segmentation of the ACPC-aligned anatomical (T1w) image, 
     * In the search bar, type 'mrtrix3 5tt mask generation'.
     * Click the app card.
 1. On the 'Submit App' page, select the following:
-    * For input, select the ACPC-aligned anatomical (T1w) image by clicking the drop-down menu and finding the appropriate dataset (look for the datatag 'acpc_aligned'.
+    * For input, select the ACPC-aligned anatomical (T1w) image by clicking the drop-down menu and finding the appropriate dataset (look for the datatype tag 'acpc_aligned'.
     * Select the box for 'Archive all output datasets when finished
         * For 'Dataset Tags', type and enter '5tt'
     * Hit 'Submit'

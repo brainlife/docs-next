@@ -1,3 +1,5 @@
+> This tutorial uses an earlier version of the brainlife.io interface, so some tab and button names differ from what you see today.
+
 ## Network connectivity.
 
 Networks, broadly, describe how centers (i.e. nodes) of a mechanism interact with one another and are connected (i.e. edges). One example of a network is the internet, with computers connecting to, and sharing information amongst, each other. Specifically in neuroscience, these networks describe how specific cortical regions in the brain are connected, either in terms of correlated BOLD signal (fMRI) or streamline density (dMRI). From this information, it’s possible to model how the brain is organized, both on global and local scales. For example, Sporns et al (2000) were able to model the organization of the white matter connections in the macaque visual cortex, providing supporting evidence of specific anatomical subgroupings within the visual cortex. This information is stored in the form of a matrix, with each cell in the matrix corresponding to the connectivity between two specific cortical regions. Specifically, these matrices can expresses either the presence of a connection (i.e. binary network) or the strength of a connection (i.e. weighted network). The data in these matrices can be viewed in multiple graphical ways which may illuminate specific communities, or interconnected regions within the global network, that might not be readily present in the matrix.
@@ -16,7 +18,7 @@ From these matrices, scientists can then examine properties that describe the in
 
 This page demonstrates how to generate both **functional and structural connectivity matrices** on brainlife.io. The goal of this tutorial is to show you how to generate functional and structural connectivity matrices following anatomical (T1w), fMRI, and dMRI preprocessing.
 
-This tutorial will use a combination of skills developed in the [Introduction tutorial](/docs/tutorial/introduction-to-brainlife/), [Anatomical (T1w) Preprocessing](/docs/tutorial/anatomical-preprocessing/), [fMRI Preprocessing](/docs/tutorial/functional-preprocessing/), and the [dMRI Preprocessing](/docs/tutorial/diffusion-preprocessing/) tutorials. If you are not comfortable archiving, staging, and running apps on brainlife.io, please go back through that tutorial before beginning this one.
+This tutorial will use a combination of skills developed in the [Introduction tutorial](/docs/tutorial/introduction-to-brainlife/), [Anatomical (T1w) Preprocessing](/docs/tutorial/t1w-preprocessing/), [fMRI Preprocessing](/docs/tutorial/fmri-preprocessing-tutorial/), and the [dMRI Preprocessing](/docs/tutorial/diffusion-preprocessing/) tutorials. If you are not comfortable archiving, staging, and running apps on brainlife.io, please go back through that tutorial before beginning this one.
 
 ### 1. Anatomical preprocessing.
 
@@ -80,7 +82,7 @@ Now, let's get to work! The following steps of this tutorial will show you how t
 1. Click the 'Archive' tab at the top of the screen to go to the Archives page.
 1. Select the following datatypes from one subject by clicking the boxes next to the data for subject 'test001':
     * dwi
-        * Both dwi files (AP and PA dataset-tagged)
+        * Both dwi files (annotated AP and PA)
     * anat/t1w
     * anat/t2w
     * func/task (rest)
@@ -211,8 +213,8 @@ Once complete, you can now convert the conmat datatype to a network dataytpe!
     * Click the app card.
 1. On the 'Submit App' page, select the following:
     * For anat/t1w, select the staged ACPC-aligned anatomical (T1w) image by clicking the drop-down menu and finding the appropriate dataset.
-    * For dwi, select the dwi image with the tag "PA" by clicking the drop-down menu and finding the appropriate dataset.
-    * For dwi (reverse), select the dwi image with the tag "AP" by clicking the drop-down menu and finding the appropriate dataset.
+    * For dwi, select the dwi image with the annotation "PA" by clicking the drop-down menu and finding the appropriate dataset.
+    * For dwi (reverse), select the dwi image with the annotation "AP" by clicking the drop-down menu and finding the appropriate dataset.
     * for acqd, choose 'posterior -> anterior (y) (PA) by clicking the drop-down menu and finding the appropriate choice.
     * Leave all the other options as default
     * Select the box for 'Archive all output datasets when finished'
