@@ -1,7 +1,7 @@
 ## Copyright Statement
 This copyright statement applies to all photography & images found on this website, and any other sites found on the brainlife.io domain. Please read carefully before downloading, linking to, or printing copies for use.
 
-##### © Copyright 2016-2024 Franco Pestilli.  All rights reserved.
+##### © Copyright 2016-2026 Franco Pestilli.  All rights reserved.
 
 ## I. Proprietary Rights
 
@@ -68,38 +68,66 @@ If you would like to use specific images and logos with some of the copyright pr
 
 The act of infringing on a copyright is a very serious business and is punishable by fines and/or imprisonment. I have worked very hard to present you with a quality photographic experience and I kindly ask that you refrain from copying anything from the site onto your own hard drive, diskette(s), printer, etc. You are welcome to copy the hyperlinks to other sites found on photos. Franco Pestilli, however, I ask that you do not copy any of the graphics, photographs, or articles from this site for your own use (other than the terms stated above). Doing so is an infringement of United States and International copyright laws.
 
-## SVG
+## brainlife.io logos
 
-### [brainlife.io.svg](img/media/brainlife.io.svg)
+### 2026 (current)
+
+The brainlife.io mark and wordmark used in the brainlife.io app (brainlife-lite), the website and the documentation. Use the **light** versions on white or light backgrounds and the **dark** versions on dark backgrounds. The wordmark text is DM Sans, converted to outlines, so the SVG files need no fonts. Please use the SVG files where possible.
+
+#### Wordmark
+
+**Light**: [SVG](img/media/2026/brainlife.io-wordmark-light.svg) · [PNG](img/media/2026/brainlife.io-wordmark-light.png)
+
+![brainlife.io wordmark, light](img/media/2026/brainlife.io-wordmark-light.svg)
+
+**Dark**: [SVG](img/media/2026/brainlife.io-wordmark-dark.svg) · [PNG](img/media/2026/brainlife.io-wordmark-dark.png)
+
+<div style="background:#07131c;padding:24px;border-radius:12px;text-align:center"><img src="https://raw.githubusercontent.com/brainlife/docs-next/main/public/img/media/2026/brainlife.io-wordmark-dark.png" alt="brainlife.io wordmark, dark" style="max-width:100%;max-height:160px"></div>
+
+#### Mark
+
+**Light**: [SVG](img/media/2026/brainlife-mark-light.svg) · [PNG](img/media/2026/brainlife-mark-light.png)
+
+![brainlife.io mark, light](img/media/2026/brainlife-mark-light.svg)
+
+**Dark**: [SVG](img/media/2026/brainlife-mark-dark.svg) · [PNG](img/media/2026/brainlife-mark-dark.png)
+
+<div style="background:#07131c;padding:24px;border-radius:12px;text-align:center"><img src="https://raw.githubusercontent.com/brainlife/docs-next/main/public/img/media/2026/brainlife-mark-dark.png" alt="brainlife.io mark, dark" style="max-width:100%;max-height:160px"></div>
+
+### 2022
+
+#### [logo1/brainlife.io.svg](img/media/logo1/brainlife.io.svg)
+
+![logo1(svg)/brainlife.io](img/media/logo1/brainlife.io.svg)
+
+#### [logo1/brainlife.io.png](img/media/logo1/brainlife.io.png)
+
+![logo1(png)/brainlife.io](img/media/logo1/brainlife.io.png)
+
+### 2019
+
+#### SVG
+
+##### [brainlife.io.svg](img/media/brainlife.io.svg)
 
 ![svg](img/media/brainlife.io.svg)
 
-### [logo.svg](img/media/logo.svg)
+##### [logo.svg](img/media/logo.svg)
 
 ![svg](img/media/logo.svg)
 
-## PNG
+#### PNG
 
-The following are bitmap version of the above logos. Please use SVG versions if possible.
+The following are bitmap versions of the above logos. Please use the SVG versions if possible.
 
-### [logo.png](img/media/logo.png)
+##### [logo.png](img/media/logo.png)
 
 ![png_brainlife](img/media/logo.png)
 
-### [logo_grayback.png](img/media/logo_grayback.png)
+##### [logo_grayback.png](img/media/logo_grayback.png)
 
 ![png_grayback](img/media/logo_grayback.png)
 
-### [brainlife.io.png](img/media/brainlife.io.png)
+##### [brainlife.io.png](img/media/brainlife.io.png)
 
-
-### logo1
-
-png 
-![logo1(png)/brainlife.io](img/media/logo1/brainlife.io.png)
 ![brainlife.io](img/media/brainlife.io.png)
-
-
-svg
-
-![logo1(svg)/brainlife.io](img/media/logo1/brainlife.io.svg)

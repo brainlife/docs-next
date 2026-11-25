@@ -32,32 +32,40 @@ The user agrees not to, and not to allow third parties to, use our platforms to:
 
 #### I WILL ACKNOWLEDGE BRAINLIFE.IO 
 
-The user agrees to add the following reference to any publication resulting from using data, data derivatives, analysis code, software, or data processing involving brainlife.io
+The user agrees to cite the following paper in any publication resulting from using data, data derivatives, analysis code, software, or data processing involving brainlife.io:
 
-    @misc{hayashi2023brainlifeio,
-           title={brainlife.io: A decentralized and open source cloud platform to support neuroscience research}, 
-           author={Soichi Hayashi and Bradley Caron and Anibal S. Heinsfeld and Sophia Vinci-Booher and 
-                  Brent C. McPherson and Daniel N. Bullock and Giulia Berto and J. Guiomar Niso and 
-                  Sandra Hanekamp and Daniel Levitas and Lindsey Kitchell and Josiah Leong and 
-                  Filipi N. Silva and Serge Koudoro and Hanna Willis and Jasleen Jolly and 
-                  Derek Pisner and Taylor Zuidema and Jan Kurzwaski and Koulla Mikellidou and 
-                  Aurore Bussalb and Christopher Rorden and Conner Victory and Dheeraj Bhatia and 
-                  D. Baran Aydogan and Frank C. Yeh and Franco Delogu and Javier Guaje and 
-                  Jelle Veraart and Jeremy Fischer and Joshua Faskowitz and Maximilien Chaumon and 
-                  Ricardo Fabrega and David Hunt and Shawn McKee and Shaw T. Brown and 
-                  Stephanie Heyman and Vittorio Iacovella and Amanda Mejia and Daniele Marinazzo and 
-                  Cameron Craddock and Emanuele Olivetti and Jamie Hanson and Paolo Avesani and 
-                  Eleftherios Garyfallidis and Daniel Stanzione and James P. Carson and Robert Henschel and 
-                  David Y. Hancock and Craig A. Stewart and David Schnyer and Damian Eke and 
-                  Russell A. Poldrack and Nathalie George and Holly Bridge and Ilaria Sani and 
-                  Winrich Freiwald and Aina Puce and Nicholas Port and Franco Pestilli},
-           year={2023},
-           eprint={2306.02183},
-           archivePrefix={arXiv},
-           primaryClass={cs.DC}
+> Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21, 809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
+
+BibTeX:
+
+    @article{hayashi2024brainlifeio,
+           title={brainlife.io: a decentralized and open-source cloud platform to support neuroscience research},
+           author={Hayashi, Soichi and Caron, Bradley A. and Heinsfeld, Anibal Sólon and Vinci-Booher, Sophia
+                       and McPherson, Brent and Bullock, Daniel N. and Bertò, Giulia and Niso, Guiomar and
+                       Hanekamp, Sandra and Levitas, Daniel and Ray, Kimberly and MacKenzie, Anne and Avesani,
+                       Paolo and Kitchell, Lindsey and Leong, Josiah K. and Nascimento-Silva, Filipi and Koudoro,
+                       Serge and Willis, Hanna and Jolly, Jasleen K. and Pisner, Derek and Zuidema, Taylor R. and
+                       Kurzawski, Jan W. and Mikellidou, Kyriaki and Bussalb, Aurore and Chaumon, Maximilien and
+                       George, Nathalie and Rorden, Christopher and Victory, Conner and Bhatia, Dheeraj and
+                       Aydogan, Dogu Baran and Yeh, Fang-Cheng F. and Delogu, Franco and Guaje, Javier and Veraart,
+                       Jelle and Fischer, Jeremy and Faskowitz, Joshua and Fabrega, Ricardo and Hunt, David and
+                       McKee, Shawn and Brown, Shawn T. and Heyman, Stephanie and Iacovella, Vittorio and Mejia,
+                       Amanda F. and Marinazzo, Daniele and Craddock, R. Cameron and Olivetti, Emanuale and Hanson,
+                       Jamie L. and Garyfallidis, Eleftherios and Stanzione, Dan and Carson, James and Henschel,
+                       Robert and Hancock, David Y. and Stewart, Craig A. and Schnyer, David and Eke, Damian O. and
+                       Poldrack, Russell A. and Bollmann, Steffen and Stewart, Ashley and Bridge, Holly and Sani,
+                       Ilaria and Freiwald, Winrich A. and Puce, Aina and Port, Nicholas L. and Pestilli, Franco},
+           journal={Nature Methods},
+           volume={21},
+           number={5},
+           pages={809--813},
+           year={2024},
+           doi={10.1038/s41592-024-02237-2},
+           url={https://doi.org/10.1038/s41592-024-02237-2}
     }
+
 #### I WILL ACKNOWLEDGE BRAINLIFE.IO's FUNDING
 
 Papers, book chapters, books, posters, oral presentations, and all other printed and digital presentations of results derived from data, data derivatives, analysis code, software or data processing served via brainlife.io should contain the following wording in the acknowledgments section.
 
-> "This publication benefitted at least in part from the use of data or technology provided by brainlife.io (NSF BCS 1734853 to Franco Pestilli)."
+> "This publication benefitted at least in part from the use of data or technology provided by brainlife.io, which is supported by Wellcome (226486/Z/22/Z); the U.S. National Institutes of Health (NINDS U24NS140384 and UM1NS132207 through the BRAIN Initiative, NIBIB R01EB029272 and R01EB030896, NIMH R01MH126699 and NIDCD R01DC020088); and the U.S. National Science Foundation (BCS-1734853, BCS-2203524, IIS-1636893, IIS-1912270, IIS-2148700, OAC-1916518 and OAC-2148729)."
