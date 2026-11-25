@@ -28,7 +28,7 @@ The steps below assume your App is already on GitHub and you are working in a cl
 
 MATLAB code needs a MATLAB license to run. If your App contains MATLAB code, compile it with the [`mcc` command](https://www.mathworks.com/help/compiler/mcc.html){target=_blank}. The compiled program runs without a MATLAB license, against the MATLAB Runtime (*MCR*), which is free to distribute.
 
-You can write a script that compiles your MATLAB code. This example comes from an Indiana University cluster; adjust the module name and paths to your system.
+You can write a script that compiles your MATLAB code. This example comes from an HPC cluster; adjust the module name and paths to your system.
 
 #### compile.sh
 
@@ -98,7 +98,7 @@ RUN ldconfig
 
 Some older operating systems (such as RHEL 6) only let Singularity mount a host path if the same directory already exists in the container, because the kernel lacks overlay support.
 
-If your App must run on such a host, create the mount points in your Dockerfile. For example, for the paths used on Indiana University clusters:
+If your App must run on such a host, create the mount points in your Dockerfile. For example, for a cluster that mounts its storage under `/N`:
 
 ```
 RUN mkdir -p /N/u /N/home /N/dc2 /N/soft

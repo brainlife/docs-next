@@ -37,7 +37,6 @@ Before you write an App for brainlife.io, you should be comfortable with:
 4. Basic concepts of high-performance computing (HPC). You can develop and test an App on your own computer, but brainlife.io runs most Apps on shared clusters. See:
 
     - [Slurm on HPC clusters (Princeton Research Computing)](https://researchcomputing.princeton.edu/support/knowledge-base/slurm){target=_blank}
-    - [Intro to HPC at IU (YouTube)](https://www.youtube.com/watch?v=atHXod7ZsfY){target=_blank}
 
 5. Containers. Apps run their software from a Docker container through Singularity. You do not need to build containers yourself (the brainlife.io team can help), but you should know what a container is and what Singularity does. See the [Singularity introduction](https://singularity-tutorial.github.io/00-introduction/){target=_blank}.
 

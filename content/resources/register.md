@@ -53,21 +53,12 @@ export PATH=~/abcd-spec/hooks/slurm:$PATH
 export PATH=~/abcd-spec/hooks/direct:$PATH
 ```
 
-!!! note
-    IU HPC resource, you can use brlife's shared installation
-
-    ```
-    $ ~/.bashrc
-    export PATH=/N/u/brlife/Carbonate/abcd-spec/hooks/slurm:$PATH
-    ```
-
 ### Work/Scratch directory
 
-In order to process data, you will need scratch / workdir to host your input/output files as well as any temporary files generated. Most HPC system provides access to scratch storage system, but for IU 
-system, you will need to submit a request for [slate](https://kb.iu.edu/d/axms) and configure your brainlife resource to use it. You can then create a directory inside your scratch directory such as
+In order to process data, you will need scratch / workdir to host your input/output files as well as any temporary files generated. Most HPC systems provide a scratch storage system; on some systems you need to request a scratch allocation first and configure your brainlife resource to use it. You can then create a directory inside your scratch directory such as
 
 ```
-mkdir /N/slate/<username>/brainlife-workdir
+mkdir /path/to/scratch/<username>/brainlife-workdir
 ```
 
 !!! note
@@ -77,7 +68,7 @@ mkdir /N/slate/<username>/brainlife-workdir
     You can run a command like this to search and purge unused workdirs (create a script and run this, or setup a cron job to run it automatically)
 
     ```
-    find /N/slate/<username>/brainlife-workdir -maxdepth 2 -type d -ctime +$days -exec rm -v -rf {} \;
+    find /path/to/scratch/<username>/brainlife-workdir -maxdepth 2 -type d -ctime +$days -exec rm -v -rf {} \;
     ```
 
 ### Common Binaries
@@ -89,30 +80,21 @@ brainlife.io expects these binaries on every resource. Please make sure followin
 * singularity (user level container execution engine)
 * node (some app uses node to generate job submission file)
 
-!!! note
-    For IU HPC resource, please feel free to use brlife's shared binary directory.
-
-    ```
-    $ ~/.bashrc
-    export PATH=$PATH:/N/u/brlife/Carbonate/bin
-    export PATH=$PATH:/N/u/brlife/Carbonate/app/node-v10.16.3-linux-x64/bin
-    ```
-
 For singularity, you can either install it on the system (`apt install singularity-container` with neurodebian, or `yum install epel-release singularity` for yum based systems), or for most HPC systems you can simply add `module load singularity` in your `~/.modules` file.
 
 By default, singularity uses user's home directory to cache docker images (and /tmp to create a merged container image to run). If you have limited amount of home directory space, you will need to override it by setting SINGULARITY_CACHEDIR. 
 
 ```
-export SINGULARITY_CACHEDIR=/N/slate/<username>/singularity-cachedir
+export SINGULARITY_CACHEDIR=/path/to/scratch/<username>/singularity-cachedir
 ```
 
 * Please replace <username> with your username, and make sure specified directories exists.
 
 !!! note
-    singularity by default does not expose any mounted file systems inside the container. For IU HPC systems, for example, you will need to specify your slate work directory in your .bashrc (comma delimited)
+    singularity by default does not expose any mounted file systems inside the container. On HPC systems, for example, you will need to specify your scratch work directory in your .bashrc (comma delimited)
 
     ```
-    export SINGULARITY_BINDPATH=/N/slate/<username>/brainlife-workdir,/N/any/other/paths/you/want/to/mount
+    export SINGULARITY_BINDPATH=/path/to/scratch/<username>/brainlife-workdir,/any/other/paths/you/want/to/mount
     ```
 
 ### Other ENV parameters
@@ -120,7 +102,7 @@ export SINGULARITY_CACHEDIR=/N/slate/<username>/singularity-cachedir
 Depending on the app you are trying to run, some app may require additional ENV parameters. For example, brainlife/app-freesurfer requires you to provide your freesurfer license via `FREESURFER_LICENSE`.
 
 ```
-export FREESURFER_LICENSE="hayashis@iu.edu 29511 *xxxxxxxxxxx xxxxxxxxxxx"
+export FREESURFER_LICENSE="you@example.edu 29511 *xxxxxxxxxxx xxxxxxxxxxx"
 ```
 
 You can request your freesurfer license [here](https://surfer.nmr.mgh.harvard.edu/registration.html){target=_blank}
@@ -152,7 +134,7 @@ An SSH resource needs the following settings:
 You can leave the rest of the fields empty for now.
 
 !!! warning
-	IU HPC systems requires you to submit [ssh public key agreement form](https://uitsradl-fireform.eas.iu.edu/online/form/authen/sshkeyagreement){target=_blank} so that you can authenticate using your ssh public key.
+	Some HPC systems require you to submit an SSH public key agreement form before you can authenticate using your SSH public key. Check your system's documentation.
 
 When you have copied the SSH key and the workdir exists, open the resource page and select **Test Resource** to check that brainlife.io can reach your resource.
 
