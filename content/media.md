@@ -82,7 +82,7 @@ The brainlife.io mark and wordmark used in the brainlife.io app (brainlife-lite)
 
 **Dark**: [SVG](img/media/2026/brainlife.io-wordmark-dark.svg) · [PNG](img/media/2026/brainlife.io-wordmark-dark.png)
 
-<div style="background:#07131c;padding:24px;border-radius:12px;text-align:center"><img src="https://raw.githubusercontent.com/brainlife/docs-next/main/public/img/media/2026/brainlife.io-wordmark-dark.png" alt="brainlife.io wordmark, dark" style="max-width:100%;max-height:160px"></div>
+<div style="background:#07131c;padding:32px;border-radius:12px"><img src="https://raw.githubusercontent.com/brainlife/docs-next/main/public/img/media/2026/brainlife.io-wordmark-dark.png" alt="brainlife.io wordmark, dark" style="display:block;margin:0 auto;width:100%;height:auto;max-height:650px;object-fit:contain"></div>
 
 #### Mark
 
@@ -92,7 +92,7 @@ The brainlife.io mark and wordmark used in the brainlife.io app (brainlife-lite)
 
 **Dark**: [SVG](img/media/2026/brainlife-mark-dark.svg) · [PNG](img/media/2026/brainlife-mark-dark.png)
 
-<div style="background:#07131c;padding:24px;border-radius:12px;text-align:center"><img src="https://raw.githubusercontent.com/brainlife/docs-next/main/public/img/media/2026/brainlife-mark-dark.png" alt="brainlife.io mark, dark" style="max-width:100%;max-height:160px"></div>
+<div style="background:#07131c;padding:32px;border-radius:12px"><img src="https://raw.githubusercontent.com/brainlife/docs-next/main/public/img/media/2026/brainlife-mark-dark.png" alt="brainlife.io mark, dark" style="display:block;margin:0 auto;width:100%;height:auto;max-height:650px;object-fit:contain"></div>
 
 ### 2022
 
