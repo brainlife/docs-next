@@ -1,120 +1,112 @@
 # Projects
 
-Projects are the primary collaborative workspaces on Brainlife. Within a project, you organize datasets, configure automated pipelines, execute computational tasks, launch interactive cloud Jupyter notebooks, and publish citable data releases.
+A project is your workspace on brainlife.io: data, processing, notebooks and publications, shared with a team.
 
-You can browse your own workspaces by selecting **My Projects** (`/projects?scope=mine`) or explore community research workspaces under **Public Projects** (`/projects?scope=public`).
-
----
-
-## Creating a Project
-
-To create a new project:
-
-1. Click **My Projects** in the left sidebar navigation.
-2. Click the **`New Project`** button in the upper-right corner.
-3. Fill in the project details:
-   - **Title**: A clear name for your project (e.g., *Developmental Connectome Study*).
-   - **Description**: A summary of your research goals, participant cohorts, or analytical techniques.
-4. Click **Create project**.
-
-Upon creation, you will be navigated directly to your project workspace.
+To see your projects, select **My Projects** in the sidebar ("Search and filter projects you administer, contribute to, or follow as a guest."). To browse projects others share, select **Public Projects** ("Browse public projects shared with the brainlife.io community.").
 
 ---
 
-## Project Structure & Navigation Tabs
+## Create a project
 
-Every standard Brainlife project is organized into five dedicated tabs:
+1. In the sidebar, select **My Projects**.
+2. Select **Project** (the button with a plus sign).
+3. In **Create project**, enter:
+   - **Title** (required): a clear name for the project.
+   - **Description**: what the project is about.
+4. Select **Create project**.
+
+brainlife.io creates the project and opens it.
+
+---
+
+## Project tabs
+
+Every project has five numbered tabs:
 
 ```
 [ 1. Overview ] ── [ 2. Data ] ── [ 3. Processing ] ── [ 4. Analysis ] ── [ 5. Publications ]
 ```
 
 ### 1. Overview
-The project homepage provides high-level documentation, metrics, and governance:
 
-![Brainlife Project Overview](../img/connect_datasets/project_overview.png)
+A summary of the project.
 
-- **Project Metrics & Stats**: Immediate summary counters displaying total storage consumption (e.g., `22.8 GB`), number of Datasets (`7`), Participants (`7`), Processes (`2`), and active Automation Rules (`5`).
-- **ReadMe Documentation**: Rich Markdown detailing your study protocol, hypotheses, experimental design, and data collection notes.
-- **Automatic App Citations**: A consolidated list of bibliographic citations for all computational Apps executed within the project, making it effortless to cite software in scientific publications.
-- **People & Roles**: A visual roster of project administrators and contributing members, complete with user avatars, institutional affiliations, and the **Add Member** management interface.
-- **Computing Resources**: A transparent panel listing all registered High-Performance Computing (HPC) clusters (e.g., *Karst*, *Big Red 200*, *Carbonate*, *Quartz*) authorized to process tasks for this project.
+![Project overview](../img/connect_datasets/project_overview.png)
 
+- **About**: the project's readme, written in Markdown.
+- **Citations**: citations for the **Apps** and **Resources** used to produce the project's data. Use them when you cite your work.
+- **Related Articles**: journal articles related to the project, found from its name and description.
+- **Admins**, **Members**, **Guests**: the people in the project.
+- **Data Agreements**: the data use agreements members must accept.
+- **Resources**: whether the project uses public resources, and which private resources are enabled.
 
 ### 2. Data
-The central data repository for your project (replacing the legacy "Archive"):
-- **Interactive Data Table**: View all data objects organized by Subject ID, Session, Datatype, and Tags.
-- **Datatype & Annotation Filters**: Filter and search participants or modalities in real time.
-- **Batch Actions**: Select multiple datasets to download, delete, edit tags, or stage directly into processing workflows.
-- **Dataset Inspector & Visualizer**: Click any dataset row to inspect file hierarchies, review provenance history, or launch in-browser **NiiVue WebGL** 3D volume and surface visualizers.
-- **Adding Data**: Use the **Add Project Data** button to upload local files, import BIDS datasets via ezBIDS, or copy open-science datasets directly from **OpenNeuro**, **DANDI**, **BossDB**, or **EMBER** without consuming local bandwidth.
+
+The **Project Data** table lists every dataset in the project, by subject and session. You can switch between the **Datasets** and **Subjects** views and filter by **Datatype**, **Subject**, **Session** and **Annotations**. From here you add data, look at datasets, stage them to a process, copy them to another project, or delete them. See [Project data](/docs/user/archive/).
 
 ### 3. Processing
-The computational execution engine, divided into three specialized sub-views:
-- **Summary**: Live dashboard of project processing health, task completion metrics, and tools to resolve ambiguous inputs.
-- **Pipeline**: Visual flowchart canvas to design and monitor rule-based **Automations** and **Automation Groups** for continuous batch processing.
-- **Processes**: Interactive table of individual compute jobs, sliding raw output log drawers, and the visual **Process DAG Editor**.
+
+Where you run Apps. It has three views:
+
+- **Summary**: what needs your attention, what failed, what completed, and which resources are in use.
+- **Processes**: the processes in the project, each a set of data and Apps you run by hand. See [Processes](/docs/user/process/).
+- **Pipeline**: the automations that run Apps for every subject and session. See [Pipelines](/docs/user/pipeline/).
 
 ### 4. Analysis
-Interactive data science in the cloud:
-- Launch cloud-hosted **Jupyter Notebook** instances directly attached to your project data.
-- Run group statistical models, plot tract profiles, analyze connectome matrices, and generate publication-ready figures without downloading datasets to your local machine.
+
+Jupyter notebooks launched against the project's data, from a blank template or a published notebook. See [Analysis with notebooks](/docs/user/groupanalysis/).
 
 ### 5. Publications
-Data preservation and scientific dissemination:
-- Snapshot project datasets and group analyses into permanent, citable **Releases** (`Release 1`, `Release 2`).
-- Automatically assign a DataCite **DOI** with long-term IU Scholarly Data Archive tape backing and FAIR schema.org metadata.
 
-!!! note "Lean Projects"
-    For lightweight repositories primarily focused on raw data hosting or pipeline execution without interactive notebook modeling, Brainlife supports **Lean Projects**, which streamline the layout into four tabs (`1. Overview`, `2. Data`, `3. Processing`, and `4. Publications`).
+The publications made from this project. Each publication has a DOI, assigned when you create it. See [Publications](/docs/user/publication/).
+
+!!! note "Projects stored on S3"
+    Some projects keep their data on S3 object storage. They have the same five tabs, but **2. Data** opens as a file browser: you search files and folders, preview them, and select **Use with apps** to use them in processing.
 
 ---
 
-## Project Settings & Access Control
+## Project settings
 
-Project administrators can manage project configuration at any time by clicking **Settings** (`/projects/:projectId/settings`). The settings dashboard is organized into five functional sections:
+Project admins open the settings by selecting **Edit** in the project header. Settings have five tabs. Select **Save Changes** to keep your edits.
 
-### 1. Details
-- **Title & Description**: Edit the public project name and abstract.
-- **ReadMe**: Update the project's Markdown documentation.
-- **Avatar**: Upload a custom icon or logo representing your project.
-- **Project Tags**: Add keywords (e.g., `fMRI`, `ADHD`, `Connectomics`) for search indexing across Brainlife.
+### Details
 
-### 2. Access & Group Roles
-Brainlife provides fine-grained role-based permissions:
+- **Details**: the project name, description and avatar.
+- **ReadMe**: the Markdown shown under **About** on **1. Overview**.
+- **Delete project**: permanently deletes the project. This cannot be undone.
 
-| Role | Permissions |
+### Access
+
+**Access policy** controls who can read the project's details and datasets:
+
+| Policy | Who can read |
 | :--- | :--- |
-| **Admin** | Full control. Can modify project settings, invite/remove members, adjust access policies, assign compute resources, and delete the project. |
-| **Member** | Read and write access. Can upload data, stage datasets, submit compute processes, edit automations, and launch analysis notebooks. Cannot alter project membership or delete the project. |
-| **Guest** | Read-only access. Can view project overview, browse datasets, and inspect pipeline execution status without making modifications. |
+| **Public** | All users can read the datasets. Only admins and members can change the project. |
+| **Private** | Only admins, members and guests can read the datasets. |
 
-#### Visibility Policies
-- **Public**: Any registered Brainlife user can view project details, download archived datasets, and use data as inputs in processing workflows.
-- **Private**: Restricted exclusively to project Admins, Members, and Guests. The project is hidden from public listings.
-- **List project summary for all users**: Keeps the underlying datasets private to project members while allowing the project title, abstract, and tags to appear in public searches so external researchers can request collaboration.
+For a private project, tick "Publicly list this private project" to make its name, description and readme searchable while its data stays hidden.
 
-### 3. Agreements (Data Use Agreements)
-Protect sensitive or human-subjects data with mandatory electronic agreements:
-- Add custom **Data Access Agreements** (DUAs), institutional ethics declarations, or consent forms.
-- Any researcher (including external users on public projects) must electronically accept your terms before they can download or stage project data.
+Under **Project collaborators**, use **Edit Admins**, **Edit Members** and **Edit Guests** to add people:
 
-### 4. Participants Info
-Manage participant demographic and phenotypic metadata (`participants.tsv`):
-- Configure clinical columns such as `age`, `sex`, `group`, `diagnosis`, or behavioral test scores.
-- **Publish Participant Info**: Toggle whether participant metadata is included when publishing data releases.
-- Strict privacy safeguards warn against including any Protected Health Information (PHI) or personal identifiers.
+| Role | What they can do |
+| :--- | :--- |
+| **Admin** | Edit the project settings and everything members can do. The project owner cannot be removed from admins. |
+| **Member** | Process data: add and stage datasets, run Apps, edit automations, launch notebooks. |
+| **Guest** | View the project. |
 
-### 5. Resources
-Designate computing clusters and execution queues:
-- Select which HPC or cloud compute resources (such as Indiana University HPC clusters, Slate, Jetstream, or private Slurm clusters) are authorized to execute jobs for this project.
-- Restrict job submissions to specific lab allocations or project billing accounts.
+### Data Use Agreements
 
----
+Add agreements that people must accept before they can open the project's data. Select **Add new agreement** and write the text (Markdown is supported), or start from the brainlife.io template. The tab title shows how many agreements the project has, for example **Data Use Agreements (1)**.
 
-## Storage Architecture: Standard vs. Direct S3
+When someone opens **2. Data** on a project with agreements, they see "You must consent to the following agreement(s) before accessing data on this project". They tick **I agree** for each agreement to continue.
 
-Brainlife projects support two underlying storage models:
-1. **Standard Storage**: Datasets are stored in Brainlife's secure distributed cloud storage backed by DataLad and IU tape archives.
-2. **Direct S3 Storage**: For petascale datasets hosted on AWS S3 or compatible object stores, Brainlife projects can link directly to external S3 buckets, allowing pipeline apps to stream and process cloud data in place.
+### Participants Info
 
+Per-subject information for the project (the BIDS participants table). Tick "Make participant info public" to treat it as public project data that may be included in publications. Only include information authorized by your IRB or consented by your participants, and no personally identifiable information.
+
+### Resources
+
+- **Public resources**: tick "Allow this project to use public resources" to let jobs run on shared resources. When unticked, jobs run only on the private resources you enable.
+- **Private resources**: add resources you own or administer so they can run jobs for this project. Changes are saved immediately.
+
+See [Registering a resource](/docs/resources/register/) to add your own compute resource.

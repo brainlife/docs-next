@@ -2,23 +2,31 @@
 
 ## Email
 
-[Brainlife &lt;brainlife.io@gmail.com&gt;](mailto:brainlife.io@gmail.com)
+[brainlife.io &lt;brainlife.io@gmail.com&gt;](mailto:brainlife.io@gmail.com)
 
 [Franco Pestilli (PI) &lt;pestilli@utexas.edu&gt;](mailto:pestilli@utexas.edu)
 
 ## Slack
 
-We use slack for our primary communication mechanism. [https://brainlife.slack.com](https://brainlife.slack.com).
+Slack is our main channel for questions and discussion: [brainlife.slack.com](https://brainlife.slack.com){target=_blank}.
 
-When you register to brainlife.io, we will send you an invite for our slack team. You can also [self invite to brainlife.slack.com](https://brainlife.slack.com){target=_blank} 
+When you register on brainlife.io, we send you an invitation to our Slack workspace. You can also [invite yourself to brainlife.slack.com](https://brainlife.slack.com){target=_blank}.
 
+In the brainlife.io app, you can also ask **SKAI**, the AI assistant, about your projects, data and runs.
 
-## Bug Report / Feature Request
+## Bug reports and feature requests
 
-[Github Issues](https://github.com/brainlife/brainlife/issues){target=_blank}
+Open an issue in the GitHub repository of the tool concerned:
+
+- ezBIDS and aimport: [brainlife/ezbids issues](https://github.com/brainlife/ezbids/issues){target=_blank}
+- The `bl` command-line tool: [brainlife/cli issues](https://github.com/brainlife/cli/issues){target=_blank}
+- This documentation: [brainlife/docs-next issues](https://github.com/brainlife/docs-next/issues){target=_blank}
+
+For other problems with brainlife.io, write to us on Slack or by email.
 
 !!! note
-    For Brainlife App specific issue, please contact individual App developers.
+    For a problem with a specific App, contact the App's developers: open the App's page and select **View on GitHub**.
+
 ## Newsletter Subscription
 
 <!-- Begin Mailchimp Signup Form -->

@@ -6,7 +6,7 @@
 
 !!! Disclaimer
 
-    brainlife.io is provided by the [Pestilli Lab](https://brainlife.io/plab){target=_blank} as a public service with the sole goal of benefiting society. All functionality of this platform is expressly provided "AS IS." 
+    brainlife.io is provided by the [Pestilli Lab](https://pestillilab.github.io/){target=_blank} as a public service with the sole goal of benefiting society. All functionality of this platform is expressly provided "AS IS." 
     
     BRAINLIFE.IO, THE PESTILLI LAB, INDIANA UNIVERSITY and THE UNIVERSITY OF TEXAS AT AUSTIN MAKE NO WARRANTY OF ANY KIND, EXPRESSED, IMPLIED, IN FACT OR ARISING BY OPERATION OF LAW, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT AND DATA PRIVACY OR ACCURACY. BRAINLIFE.IO NEITHER REPRESENTS NOR WARRANTS THAT THE OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR-FREE, OR THAT ANY DEFECTS WILL BE CORRECTED. BRAINLIFE.IO DOES NOT WARRANT OR MAKE ANY REPRESENTATIONS REGARDING THE USE OF THE SOFTWARE OR THE RESULTS THEREOF, INCLUDING BUT NOT LIMITED TO THE CORRECTNESS, ACCURACY, RELIABILITY, OR USEFULNESS OF THE SOFTWARE.
 

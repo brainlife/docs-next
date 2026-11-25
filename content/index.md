@@ -1,47 +1,60 @@
 <style> #disqus_thread, #__comments { display: none } </style>
 
-# What is Brainlife?
+<a id="what-is-brainlife"></a>
 
-brainlife.io promotes engagement and education in reproducible neuroscience by providing an online, community-based platform where users can publish code (Apps) and Data while integrating HPC and cloud-computing resources to run Apps. brainlife.io also allows users to publish all of the research assets associated with their projects that are embedded in our cloud-computing environment and referenced by a single digital-object identifier (DOI). Our platform is unique because of its focus on supporting scientific reproducibility beyond open code and open data -- brainlife.io also provides fundamental smart mechanisms for what we call “Open Services.”
+# What is brainlife.io?
 
-Below, you will learn about the main panel of tools you will encounter as soon as you log into brainlife.io. While these run-through are brief, you’ll learn much more about each feature as you review the rest of brainlife.io’s documentation.
+**Brain data across scales. One place to analyze, share and publish it.**
 
-If you have any questions, do not forget to reach out to us on the [brainlife.io slack channel](/docs/contact/)!
+brainlife.io is an open platform from The University of Texas at Austin for brain data across scales: electron and light microscopy, PS-OCT, MRI, fMRI, EEG and MEG. You bring data in from your computer or from public archives, run reproducible analyses as **Apps** on shared supercomputers, look at the results in your browser, and publish them with a DOI. brainlife.io is free for researchers.
 
-# Apps
+This page introduces the main ideas in the order you meet them. Each section links to a page with the details. When you are ready, go to [Getting started](/docs/user/started/).
 
-brainlife.io uses Apps to analyze data. Apps are small programs that can process data individually or be made part of a larger series of steps in a full data analysis workflow.
-
-Anyone can develop, use, combine, and reuse Apps to build complex pipelines for customized brain data analyses on the platform. You can publish apps to be used privately or shared publicly with the brainlife.io community. Combining multiple Apps allows for high-throughput data processing and aggregation across thousands of datasets.
+If you have questions, see [Contact](/docs/contact/) for email and the brainlife.io Slack.
 
 # Projects
 
-The best way to manage your data is with brainlife.io’s Projects feature. Here you can organize your datasets, perform data processing, and share results with your team by granting varying levels of access to members of your group. Projects can be public or private.
+A project is your workspace. It holds your data, your processing, your notebooks and your publications, and you share it with your team. Each person in a project is an admin, a member or a guest: admins edit the settings, members process data, and guests view. A project is public or private.
 
-# Publications 
-
-Once a Project is mature, the data is analyzed and all the derivatives generated, a portion of the Project can be made public via a brainlife.io publication. A brainlife.io publication creates a snapshot of your datasets and Apps archived on brainlife.io for at least 10 years. Anyone can access your publication page and download your datasets without logging or reuse the Apps and data on brainlife.io.
-
-# Datatypes
-
-Think of brainlife Datatypes as the way brainlife Apps communicate. A Datatype defines the expected list of filenames or the directory structure that an App can use as input or generate as output. Typically, multiple Apps use the same Datatype to communicate through their input and output datasets and reuse data to generate more data derivatives. Datatypes help join Apps together to form a pipeline or workflows.
-
-brainlife Datatypes are maintained by individual developers and are updated at [brainlife.io](https://brainlife.io/datatypes){target=_blank}.
+To find your projects, select **My Projects** in the sidebar. To browse projects that others share, select **Public Projects**. See [Projects](/docs/user/project/).
 
 # Datasets
 
-Our Datasets feature offers more than 300 datasets that users can import. This feature was established as part of a project that brainlife.io is collaborating with DataLad on. brainlife.io’s Datasets feature allows you to select and import the DataLad datasets you need from our list.
+A dataset is one item of project data: the files of one datatype for one subject (and session), for example the T1-weighted image of subject 01. You add datasets to a project in three ways:
+
+- Copy them from **Public Datasets**, which brings together DANDI, EMBER, BossDB, OpenNeuro and the brainlife.io **Dataset Library**. See [Public Datasets](/docs/user/datasets/).
+- Copy them from another project.
+- Upload your own data. See [Project data](/docs/user/archive/) for the upload routes that work today.
+
+# Datatypes
+
+A datatype describes which files a dataset contains, so that Apps can exchange data. An App declares the datatypes it takes in and the datatypes it produces, so the output of one App can be the input of the next. Browse them under **Datatypes** in the sidebar. See [Datatypes](/docs/user/datatypes/).
+
+# Apps
+
+An App is a containerized program, built from a GitHub repository, that takes datatypes in and produces datatypes out. Any GitHub repository can become an App. Commonly used tools such as FreeSurfer, FSL, MRtrix3, DIPY, fMRIPrep, QSIPrep and ANTs run as Apps, along with hundreds of others in the **Apps** catalog.
+
+You run Apps in a project in two ways:
+
+- **Processes**: choose data and Apps by hand, one step at a time. See [Processes](/docs/user/process/).
+- **Pipeline**: add automations that run an App for every subject and session that has the inputs. See [Pipelines](/docs/user/pipeline/).
+
+To write your own App, see [Developing Apps](/docs/apps/introduction/).
 
 # Resources
 
-We know it takes a lot of computing power to run workflows. That is why brainlife.io allows users to work with data and computers across a mix of cloud systems and high-performance computing clusters (HPC). Both brainlife.io users and compute resource providers can register a compute resource that is publicly available to the entire brainlife.io community or privately available to certain users. 
-
-Our compute resources are unique because, instead of running an entire workflow on a single resource, App developers can identify the best resource for each individual App by scoring brainlife.io’s compute resources on how well they work with each App. brainlife.io automatically keeps track of success rate and time to compute so that users can easily see how efficiently each resource processes data for each App.
+A resource is a computer, a cluster or a cloud, that runs your jobs. Public resources are shared by everyone; you can also register private resources and enable them for your projects. Jobs run on TACC, Jetstream2 and ACCESS. See **Public Resources** and **My Resources** in the sidebar, and [Registering a resource](/docs/resources/register/).
 
 # Visualizations
 
-Users can perform data visualizations on brainlife.io in the cloud instead of on their own computer, which means better security and data management. Data visualization gives users feedback on the quality of the results generated by Apps and pipelines. The visualizations allow users to run popular software for data visualization like FreeView, FSLview,  or MRview. Users can additionally run GPU-rendered visualizations on the cloud through Docker and VNC. Similar to Apps, developers can contribute visualizations to the platform.
+You look at data in your browser, without downloading it. Select a dataset and choose a viewer for its datatype, for example NiiVue for volumes, surfaces and streamlines, or Neuroglancer for large microscopy and EM volumes. Some datatypes also offer desktop programs streamed to your browser. See [Datatypes](/docs/user/datatypes/#look-at-a-dataset).
 
-Are you ready to start using brainlife.io? [Get started here!](/docs/user/started/)
+# Publications
 
+When your results are ready, you publish them. A publication is a citable record with a DOI that describes and shares your results; the DOI is assigned when you create it. A publication can hold releases of your data and the Apps and notebooks that produced them. Find yours under **My Publications** and everyone's under **Public Publications**. See [Publications](/docs/user/publication/).
 
+# Analysis
+
+Each project can launch Jupyter notebooks against its data, from a blank template or from a notebook published with a publication. See [Analysis with notebooks](/docs/user/groupanalysis/).
+
+Ready to start? [Get started here](/docs/user/started/).

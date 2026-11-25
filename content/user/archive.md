@@ -1,72 +1,84 @@
-# Project Data & Storage
+# Project data
 
-In Brainlife, your project's storage repository—formerly referred to in legacy versions as the "Archive"—is unified and managed under the **`2. Data`** tab. This tab serves as the central data catalog where all raw inputs, intermediate derivatives, and final scientific outputs are organized, inspected, and preserved.
+A project's data lives on its **2. Data** tab, under the heading **Project Data**. It holds every dataset in the project: the data you brought in, and the outputs of Apps that you chose to archive.
 
----
-
-## Modern Data Storage vs. Legacy Archive
-
-If you used earlier versions of Brainlife, you may recall having to manually request that an App's output be "archived back" into your project.
-
-In **Brainlife Connects**, data management is fully streamlined:
-
-1. **Automatic Derivative Archiving**: Every successful execution of a task—whether launched manually in the **Processes** tab or dispatched automatically by a **Pipeline Automation**—has its output datasets automatically cataloged and archived directly into your project's data repository.
-2. **Immediate Downstream Availability**: As soon as an output is archived, it is instantly indexed in the data table and immediately satisfies input requirements for subsequent downstream pipeline automations.
-3. **Continuous Provenance Tracking**: Brainlife automatically records the exact parent input datasets, App version, execution parameters, and compute resource that produced each archived data object.
+A **dataset** is the files of one datatype for one subject (and session). Older pages call it a "data object", and the old interface had an "Archive" tab. Today "archive" is only a verb: when you run an App, you choose whether to archive each output, which saves it as a dataset in the project.
 
 ---
 
-## Managing Your Data Repository
+## How App outputs become datasets
 
-Under the **`2. Data`** tab, you can inspect and manipulate your project datasets:
-
-### The Data Table
-The data table organizes your repository across several core columns:
-- **Subject & Session**: Participant identifier and scanning session (e.g., `002`, `003`).
-- **Datatype**: Standardized datatype chip (e.g., `anat/t1w`, `func/task`, `freesurfer`, `parcellation/volume`, `mask`, `transform/h5`) with distinct color coding.
-- **Source**: Upstream App or tool that generated the derivative (e.g., `fMRIPrep`, `Multi-Atlas Transfer Tool`, `Freesurfer 7.3.2`, `FSL Anat (T1)`).
-- **Datatype Tags**: Immutable intrinsic scan characteristics (e.g., `acpc_aligned`, `preprocessed`, `debiased`).
-- **Annotations (Object Tags)**: User-defined organizational labels (e.g., `control`, `patient`, `hcp-mmp-b`).
-- **Actions**: Direct access to dataset inspection and the eyeball (:fa-eye:) **Visualize** launcher.
-
-![Project Data Repository Table](../img/connect_datasets/select_image_to_visualize.png)
-
-### Filtering by Datatypes and Annotations
-When working with projects containing hundreds of datasets, you can narrow your view using the multi-select filter dropdowns in the table header:
-
-- **Filter by Datatype**: Click the **Datatypes** filter to isolate specific imaging modalities (such as `neuro/anat/t1w`, `neuro/anat/t2w`, or `neuro/dwi`). Each entry displays the live count of matching data objects.
-  
-  ![Filtering by Datatype](../img/connect_datasets/project_datatype.png)
-
-- **Filter by Annotations**: Click the **Annotations** dropdown to filter by user-assigned cohort labels or processing flags (such as `acpc_aligned`, `denoised`, `preprocessed`, or clinical cohorts).
-
-  ![Filtering by Annotations and Tags](../img/connect_datasets/project_annotation.png)
-
-
-### Batch Operations
-Use the selection checkboxes on the left of each row to perform batch operations via the top action bar:
-- **Stage to Process**: Bundle selected datasets and send them to the **Processes** tab for manual App execution (e.g., `STAGE TO PROCESS (4)`).
-- **Copy**: Duplicate datasets across projects (`COPY (4)`).
-- **Download Datasets**: Download individual files or generate multi-dataset tarballs directly to your local computer.
-- **Edit Annotations**: Bulk-apply or remove tags across cohorts of subjects.
-- **Delete Datasets**: Remove obsolete or erroneous datasets from your project (`DELETE (4)`).
-
-### Dataset Details & In-Browser Visualizers
-Clicking on any dataset row opens the comprehensive **Dataset Details** inspector:
-- **Files & Directory Tree**: Browse individual files, download specific components, or review sizes and file checksums.
-- **Provenance Graph**: An interactive visual diagram displaying the exact processing history—which upstream raw scans and Apps produced this dataset.
-- **Volume Viewer (Multi-Dataset Comparison)**: Compare up to 4 datasets simultaneously across orthogonal planes (axial, sagittal, coronal) with synchronized crosshairs, voxel/world coordinates, and custom color map thresholds.
-- **Remote Desktop Suites**: Launch GPU-accelerated cloud viewers (:fa-server: FSLeyes, Freeview) with one click.
-
-![Volume Viewer Multi-Dataset Comparison](../img/connect_datasets/visualization.png)
+- When you add an App to a process, the **Configure Outputs** step has an **Archive Output** switch. When it is on, the App's output is saved to the project when the job finishes.
+- When you create an automation, the **Configure Outputs** step has "Archive this output". Archived outputs appear in **2. Data** and can be the input of the next automation.
+- Each archived dataset records its provenance: the App, configuration and inputs that produced it. Open the dataset and select **Provenance (history)** to see it.
 
 ---
 
-## Long-Term Preservation & Storage Tiers
+## The data table
 
-Brainlife ensures that scientific datasets remain safe, reproducible, and compliant with FAIR data standards over long horizons:
+The table lists datasets by subject and session. Switch between the **Datasets** and **Subjects** views at the top. For each dataset you see its datatype (a colored chip, for example `anat/t1w`), its datatype tags (for example `acpc_aligned`), and its annotations (your own labels, for example `control`).
 
-- **Active Cloud Cache**: Staged datasets and active project data reside on high-speed NVMe/SSD cloud storage to support rapid App execution and interactive in-browser visualization.
-- **Scholarly Data Archive (SDA)**: Published and archived datasets are backed by Indiana University's multi-petabyte tape storage archive, ensuring data integrity and bit-level preservation for at least ten years.
-- **Direct S3 Object Storage**: For petascale cohorts or labs hosting data in institutional cloud buckets, Brainlife projects can connect directly to **AWS S3**, enabling compute jobs to stream and process cloud data in place without redundant data copies.
+![Project data table](../img/connect_datasets/select_image_to_visualize.png)
 
+Datasets copied from DANDI, EMBER or BossDB are marked as virtual: brainlife.io keeps a reference to the source instead of a copy.
+
+### Filter datasets
+
+Use the filters above the table: **Datatype**, **Subject**, **Session** and **Annotations**.
+
+- **Datatype**: show only some datatypes (for example `neuro/anat/t1w` or `neuro/dwi`).
+
+  ![Filtering by datatype](../img/connect_datasets/project_datatype.png)
+
+- **Annotations**: show only datasets with some annotations.
+
+  ![Filtering by annotations](../img/connect_datasets/project_annotation.png)
+
+### Act on one dataset
+
+In each row:
+
+- **Visualize** (the eye icon): choose a viewer for the dataset's datatype.
+- **Add to process** (the play icon): stage the dataset to a new or existing process.
+
+### Act on several datasets
+
+Tick the boxes on the left. A bar of actions appears above the table:
+
+- **Visualize together**: overlay compatible datasets (for example a T1w image with a mask or parcellation) in a viewer. It appears only when the selection can be combined.
+- **Stage to process (n)**: add the selected datasets to a process.
+- **Copy (n)**: copy the selected datasets to another project.
+- **Delete (n)**: delete the selected datasets.
+
+Downloading several datasets at once is not available yet; download them one at a time from the dataset view.
+
+### Open a dataset
+
+Select a dataset to open it. The dataset view has three tabs:
+
+- **Details**: subject, session, description, annotations, and validation results. You can edit the annotations here.
+- **Provenance (history)**: how the dataset was made.
+- **Metadata/Sidecar**: the dataset's metadata (the BIDS sidecar).
+
+Its actions are **Visualize**, **Download**, **Stage to process** and **Delete**.
+
+![Viewing a dataset](../img/connect_datasets/visualization.png)
+
+---
+
+## Add data
+
+Open the **Project Data** menu on **2. Data**:
+
+| Menu item | What it does |
+| :--- | :--- |
+| "Copy Data from Public Datasets" | Copy data from BossDB, DANDI, OpenNeuro or the Dataset Library. See [Public Datasets](/docs/user/datasets/). |
+| "Copy Data From another Project" | Search for a project and copy its datasets over. |
+| "Upload Data From local Files" | Shown as "Currently unavailable". |
+| "Upload Data from ezBIDS" | Shown as "Currently unavailable". |
+
+To bring your own data into a project today:
+
+- Convert DICOM (or MEG) data to BIDS with [ezBIDS](/docs/using_ezBIDS/) on the web, and send the result to brainlife.io from ezBIDS.
+- Upload data with the brainlife.io command-line tool. See [Uploading data](/docs/cli/upload/). Each datatype page also shows **Upload Instructions** for that datatype.
+- [aimport](/docs/using_aimport/) imports data from your own computer. It is new and not yet released.

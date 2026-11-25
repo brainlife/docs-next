@@ -1,138 +1,126 @@
-# Pipelines & Automations
+# Pipelines
 
-The **Processes** tab allows you to submit tasks one at a time. This manual approach is ideal when you are exploring different Apps, inspecting intermediate results, or testing configurations on a single subject. However, once you have identified your optimal processing steps and need to scale across tens, hundreds, or thousands of subjects, submitting them individually is neither practical nor reproducible.
+A [process](/docs/user/process/) runs Apps one at a time, by hand. That suits trying an App on one subject. To run the same Apps on tens or hundreds of subjects, build a **pipeline**.
 
-Brainlife solves this through **Pipelines and Automations** (rule-based stream processing). Instead of requiring you to write and maintain complex workflow scripts (like Snakemake, Nextflow, or Nipype DAGs) that run once and fail if any single participant errors out, Brainlife evaluates independent **Automations** continuously across your project.
+A pipeline is the set of **automations** in a project. An automation runs an App for every subject and session that has the inputs and does not yet have the output. (Older pages call automations "rules".)
 
 ---
 
-## How Brainlife Automations Work
-
-Think of a Brainlife pipeline as an intelligent assembly line:
+## How automations work
 
 ```
-[ Input Datasets ] ──> ( Automation 1: App A ) ──> [ Derivative 1 ] ──> ( Automation 2: App B ) ──> [ Final Results ]
+[ Input datasets ] ──> ( Automation 1: App A ) ──> [ Output 1 ] ──> ( Automation 2: App B ) ──> [ Results ]
 ```
 
-1. **Independent Rules**: Each automation defines an App to run, its configuration parameters, required input criteria (datatypes, tags, subject filters), and expected output tags.
-2. **Continuous Event-Driven Evaluation**: Brainlife continuously monitors your project. Whenever a subject or session possesses all required input datasets and has not yet produced the designated output, a new process is automatically dispatched.
-3. **Automatic Derivative Archiving**: As soon as an App finishes running, its output datasets are archived into your project and immediately satisfy the input requirements for downstream automations.
-4. **Fault Tolerance & Resilience**: If a particular subject fails (e.g., due to scan artifacts or motion), only that specific subject stops at that step. The rest of your cohort continues through the pipeline uninterrupted. You can inspect logs, resolve the issue, and once the missing output is produced, downstream automations pick it right back up.
+1. Each automation names an App, its settings, the inputs it needs (datatypes, tags, subject and session filters) and the outputs it archives.
+2. brainlife.io checks each subject and session in the project. When a subject or session has all the inputs and lacks the output, the automation submits the App for it.
+3. When the job finishes, the archived output is a dataset in the project, and it can be the input of the next automation.
+4. If one subject fails, only that subject stops at that step. The rest continue. When you fix the problem and the missing output appears, the next automations pick that subject up.
 
 ---
 
-## Accessing the Pipeline View
+## Open the pipeline
 
-To view and manage your project pipelines:
+1. Open your project.
+2. Select **3. Processing**.
+3. Select **Pipeline**.
 
-1. Open your project on Brainlife.
-2. Select the **`3. Processing`** tab from the top navigation bar.
-3. In the sub-navigation toggle, switch from **Summary** or **Processes** to **`Pipeline`**.
-
-!!! note "Prerequisites"
-    If your project does not contain any datasets yet, you will be prompted to first add or copy data into the project under the **`2. Data`** tab before configuring automations.
+!!! note "Add data first"
+    If the project has no datasets yet, you see "No datasets have been added to the project yet. To get started, go to Data". Add or copy data on **2. Data** before you create automations.
 
 ---
 
-## Creating a New Automation
+## Create an automation
 
-To add a new rule to your pipeline, click the **`+ Automation`** button in the top-right toolbar. This opens the **Add New Automation to Pipeline** wizard.
+Select **Automation** (the button with a plus sign). **Add New Automation to Pipeline** opens with four steps. Select **Next** to move between steps.
 
-The creation flow guides you through four sequential steps:
+### 1. Select App
 
-### Step 1: Select App
-Browse or search the Brainlife App catalog to select the App you want to automate (e.g., FreeSurfer, FSL BET, Tractoflow, etc.). You can search by App name, keywords, or modalities, and toggle compatibility filters to view only Apps that match your project's staged datatypes.
+Search the App catalog and choose the App to automate.
 
-![Select App Wizard Step](../img/connect_datasets/project_datasets_select_app.png)
+![Select App](../img/connect_datasets/project_datasets_select_app.png)
 
-### Step 2: Configure App Settings
-Configure the parameters and arguments for the chosen App:
-- Adjust default numeric values, flags, and configuration toggles required for your analysis.
-- Expand the **Advanced** section if your analysis requires specialized execution flags or custom script options.
+### 2. Configure App Settings
 
-![Configure App Settings Wizard Step](../img/connect_datasets/project_configure_app_setup.png)
+Set the parameters the App runs with. Less common options are under **Advanced Settings**.
 
-### Step 3: Configure Inputs
-This step defines the matching criteria Brainlife will use to select datasets for each subject and session:
+![Configure App Settings](../img/connect_datasets/project_configure_app_setup.png)
 
-- **Required Datatypes**: Review the expected input datatypes (e.g. `neuro/anat/t1w`, `neuro/dwi`).
-- **Datatype Tags & Annotation Filters**: If your project contains multiple datasets of the same datatype for a subject (e.g., multiple T1w runs or sessions), add specific datatype tags or annotation tags to resolve ambiguity and specify exactly which dataset to use.
-- **Parent Project Overrides**: If the input datasets reside in another project (such as a shared raw data repository), you can specify a project override to read data directly from the parent project without copying or duplicating files.
-- **Global Subject / Session Filters**:
-  Expand the **Global Subject/Session Filters** panel to restrict the automation to specific subjects or sessions using regular expressions:
-  - **Subject Filter**: Enter a regex pattern (e.g., `^100` to process only subjects whose IDs begin with `100`, or `sub-(01|02|03)` for specific cohorts).
-  - **Session Filter**: Enter a regex pattern to limit processing to specific sessions (e.g., `01` or `ses-baseline`).
-- **Live Match Counter**: A real-time badge indicates how many subjects/datasets in your project currently match your filter criteria.
+### 3. Configure Inputs
 
-![Configure Inputs Wizard Step](../img/connect_datasets/project_process_select_inputs.png)
+Say which data the automation uses for each subject and session.
 
-### Step 4: Configure Outputs
-Specify how generated derivatives should be identified:
+- **Use this input**: optional inputs can be left out.
+- **Expected dataset count**: for an input that accepts several datasets, how many to expect per subject and session.
+- Datatype tag and annotation filters: when a subject or session has more than one matching dataset, use these to choose the right one.
+- **Project override**: take this input from another project instead of the current one.
+- **Subject** and **Session** overrides: for every subject or session, use the data of one specific subject or session instead (for example a template).
+- **Global Subject & session filters**: limit the automation to some subjects and sessions with a **Subject Filter** and a **Session Filter**. A filter is a pattern: `^100` matches all subjects that start with `100`; `02` matches all sessions that contain `02`. Green rows show the subjects and sessions included.
 
-- **Output Dataset Tags (Annotations)**: Add descriptive tags to the generated outputs (e.g., `acpc_aligned`, `freesurfer7`).
-- **Output Descriptions**: Optionally provide a label or description for downstream tracking.
+![Configure Inputs](../img/connect_datasets/project_process_select_inputs.png)
 
-![Configure Outputs Wizard Step](../img/connect_datasets/project_process_configure_output.png)
+### 4. Configure Outputs
 
-!!! tip "Always Add Output Dataset Tags"
-    Tagging your outputs is strongly recommended. Output tags distinguish datasets generated by this specific automation from other Apps producing the same datatype, and they prevent accidental duplicate runs while enabling downstream automations to target this exact derivative.
+Choose which outputs to archive. For each output:
 
-Click **Create** to activate the automation and add it to your pipeline.
+- Tick "Archive this output". The automation submits the App only where this output does not already exist for the subject or session.
+- Add **Annotations** and a **Description** to the archived datasets.
 
+![Configure Outputs](../img/connect_datasets/project_process_configure_output.png)
+
+!!! tip "Annotate your outputs"
+    Annotations tell the outputs of this automation apart from other datasets of the same datatype. They also let the next automation pick exactly these outputs.
+
+Select **Complete** to add the automation to the pipeline.
 
 ---
 
-## Organizing Pipelines: Automation Groups
+## Organize automations into groups
 
-As your analysis grows in complexity, you can group related automations together:
+1. Select **Automation Group** (the button with a plus sign).
+2. In **Create automation group**, enter a **Group name** (for example "Structural preprocessing").
+3. To move an automation into a group, open its menu and choose **Switch group**.
 
-1. Click the **`+ Automation Group`** button in the pipeline toolbar.
-2. Enter a descriptive name (e.g., `Structural Preprocessing`, `Diffusion Processing`, or `Network Analysis`).
-3. Once created, groups appear on the canvas and in the sidebar list.
-4. You can collapse or expand groups to keep your workflow clean and focused.
-5. Move individual automations into or out of groups via the automation action menu (`Move to group`).
+To rename, recolor or delete a group, select **Edit group** in the automations list.
 
 ---
 
-## Interactive Flowchart Canvas
+## The pipeline canvas
 
-The pipeline page provides an interactive, visual flowchart canvas powered by an automated graph layout engine:
+The pipeline is shown as a graph.
 
-- **Nodes**: Each card represents an automation App, showing its icon, name, active status, and live subject processing counters.
-- **Connections (Edges)**: Directed lines automatically connect Apps when an output datatype and tag match downstream input requirements, showing you the end-to-end data flow at a glance.
-- **Canvas Controls**: Pan by dragging, zoom with your mouse wheel or the mini-map controls, and click nodes to open detailed inspectors.
-- **Collapsible Automations Sidebar**: Click the sidebar toggle on the left to reveal a searchable, ordered list of all automations and groups in your project.
-- **View Settings**: Click the **View Settings** button to toggle options such as **Show Inactive Automations** or customize canvas display preferences.
+- Each card is an automation. Lines connect an automation to the next one when its output matches the next one's input.
+- Pan by dragging and zoom with the mouse wheel or the controls.
+- Open the automations list (**Show automations list**) to search automations and groups, reorder them, and focus one on the canvas.
+- **View Settings** sets how the canvas is drawn.
+
+Each automation's menu offers **View details**, **View processes**, **Edit** and **Switch group**.
 
 ---
 
-## Monitoring Automation Status
+## Check an automation's progress
 
-Clicking on any automation card in the flowchart opens the **Automation Details** modal, which breaks down all subjects into four clear categories:
+Select an automation, or choose **View details**, to open its details. The switch at the top shows whether it is **Active** or **Inactive**. Subjects and sessions are sorted into four tabs:
 
-| Status Group | Description |
+| Tab | What it lists |
 | :--- | :--- |
-| **Waiting** | Subjects that have not run yet because required input datasets or upstream prerequisites are not yet available. |
-| **Processing** | Tasks that have met all prerequisites and are currently requested, queued, or running on compute resources. |
-| **Complete** | Subjects that have finished processing successfully and whose output datasets are safely archived. |
-| **Attention** | Subjects requiring user attention, including failed tasks or cases with ambiguous matching inputs (e.g., multiple matching datasets where tags are needed to distinguish them). |
+| **Waiting for data** | Subjects and sessions that do not have the inputs yet. |
+| **Requires attention** | Failed jobs, or issues that must be fixed before processing can continue, such as ambiguous inputs. |
+| **Processing in progress** | Jobs submitted and running. |
+| **Complete** | Subjects and sessions whose outputs are archived. |
 
-From the Automation Details modal, you can:
-- **Toggle Active / Inactive**: Use the switch to temporarily pause or resume automatic job submission.
-- **View in Processes**: Click the list icon to jump directly to the **Processes** tab with filters pre-set to show all tasks associated with this automation.
-- **Edit Automation**: Click the pencil icon to modify configuration settings, input filters, or output tags.
-- **Delete Automation**: Remove the rule from your pipeline.
+The **Summary** view of **3. Processing** collects the items that need action across all automations.
 
 ---
 
-## Modifying & Updating Automations
+## Change an automation
 
-If you need to change configurations or update parameters on an existing automation:
+1. Open the automation and turn its switch to **Inactive**, so no new jobs start with the old settings.
+2. Choose **Edit**. Change the **Settings**, **Inputs** or **Outputs**, and select **Save Automation**.
+3. If the change affects the outputs, remove the outputs made with the old settings on **2. Data** or **Processes**.
+4. Turn the switch back to **Active**.
 
-1. Open the automation details and toggle the status switch to **Inactive** so no new jobs are submitted with the old parameters.
-2. Click the **Edit** (pencil) button to adjust your App settings or filters.
-3. If the change alters data outputs (e.g., different resolution or registration target), navigate to the **Processes** tab or **Data** tab to clean up any obsolete tasks or outputs generated with the old configuration.
-4. Toggle the automation back to **Active** to resume processing.
+!!! note "Automations resubmit missing outputs"
+    An active automation submits the App wherever the inputs exist and the archived output does not. If you delete an output or a job while the automation is active, it runs that subject again. Make the automation **Inactive** first if you do not want that.
 
-!!! note "Automatic Re-submission Behavior"
-    Brainlife will automatically submit a task whenever a subject has valid inputs but no matching archived output. If you remove an existing task or output dataset while an automation remains **Active**, Brainlife will automatically re-queue and re-run that subject. If you do not want it re-submitted, deactivate the automation first.
+To delete an automation, use **Delete Automation**. Deleting an automation also removes all jobs it is processing, and cannot be undone.
