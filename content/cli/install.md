@@ -1,5 +1,8 @@
 # CLI Installation
 
+!!! note "bl aimport"
+    To import data from your computer with [aimport](../using_aimport.md), use the Python CLI instead: `pip install "git+https://github.com/brainlife/pybrainlife@enh/cli"`. It is the supported CLI for `bl aimport`; the npm package on this page does not include it.
+
 With the Brainlife CLI (`bl`), you can:
 
 * Upload and download data objects directly to and from your computer or HPC storage.
