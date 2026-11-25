@@ -29,6 +29,39 @@ Datatypes and [BIDS](https://bids-specification.readthedocs.io/en/stable/){targe
 - **BIDS** organizes a whole dataset on disk: folders, subjects, sessions and metadata.
 - **Datatypes** describe one item of data, raw or derived, so that an App receives exactly the files it expects, whoever produced them.
 
+Each datatype records how it corresponds to BIDS (a BIDS datatype such as `anat` plus a suffix such as `T1w`):
+
+| Match | Meaning | Example |
+| :--- | :--- | :--- |
+| **Equivalent** | Same content and files as the BIDS suffix. | `neuro/anat/t1w` and `anat/T1w` |
+| **Partial** | A subset or superset, several suffixes bundled, or tags needed to tell them apart. | `neuro/fmap` and the `fmap` suffixes |
+| **None** | BIDS has no counterpart, usually because BIDS does not standardize that derivative. | `neuro/tractmeasures` |
+
+BIDS sidecar files (`.json`, `.tsv`) are either carried as files, rebuilt on export from the metadata brainlife.io keeps for each dataset, or noted as missing. The export to BIDS uses this mapping.
+
+---
+
+## About a datatype: uses, BIDS and sharing
+
+The brainlife.io team keeps a reviewed record of every datatype. What you see on a datatype's page comes from it:
+
+- the description and what each file contains;
+- in the readme: what the datatype can and cannot be used for, its BIDS mapping (above), its default sharing tier, and how many Apps read or write it.
+
+The sharing tier follows the [Global Brain Governance toolkit](https://braindatagovernance.org){target=_blank}:
+
+| Tier | Meaning | Example |
+| :--- | :--- | :--- |
+| 1 | Aggregated, no participant-level records | group statistics, segmentation scores |
+| 2 | Participant-level, no direct identifiers | preprocessed diffusion data, tractograms |
+| 3 | Directly identifiable or traceable | a T1w image that has not been defaced (the face is visible) |
+| 4 | Functionally revealing derivatives | connectivity matrices used as fingerprints |
+| 5 | Model-associated | model weights trained on neurodata |
+
+A tier is a default for the datatype. The data itself decides: for example, a defaced T1w image moves from tier 3 to tier 2. When in doubt, treat data as the more protective tier.
+
+Changes to datatypes are reviewed before they reach brainlife.io. New BIDS datatypes are proposed for review the same way before they are added.
+
 ---
 
 ## Browse datatypes
@@ -48,6 +81,35 @@ A datatype's page shows:
 - **Upload Instructions**: how to upload data of this type with the command-line tool.
 
 To create a datatype, open **My Datatypes**, select **Datatype** (the button with a plus sign), enter a **Name** and **Description**, and select **Create datatype**. You can add files, tags and a validator after it is created.
+
+---
+
+## Validation
+
+When a dataset is uploaded (from the web app or with `bl data upload`), brainlife.io runs the datatype's **validator** before archiving it. The validator checks the files and reports:
+
+- **Errors**, which stop the upload: a required file is missing, a file is empty, or a file is not in its format (for example a truncated `.nii.gz`, a file that is not a NIfTI image, or JSON that does not parse).
+- **Warnings**, which are shown but let the upload through: for example a TSV file with uneven columns, or `bvals` and `bvecs` with different numbers of entries.
+
+Some datatypes have their own validator (for example `brainlife/validator-neuro-anat`, which also checks image dimensions). Datatypes without one use [`brainlife/validator-catalog`](https://github.com/brainlife/validator-catalog){target=_blank}, which checks any datatype from its list of files. The **Supports validation** filter on the Datatypes page shows which datatypes have a validator.
+
+What `brainlife/validator-catalog` checks:
+
+| Check | Result if it fails |
+| :--- | :--- |
+| A required file or folder was uploaded | error |
+| A file is not empty | error |
+| A gzip file (`.nii.gz`, `.mgz`, `.gz`) decompresses completely | error |
+| A NIfTI file has a valid NIfTI-1 or NIfTI-2 header | error |
+| A JSON file parses | error |
+| `bvals` and `bvecs` contain only numbers | error |
+| A file starts like its format: MGH/MGZ, PNG, JPEG, PDF, HDF5, ZIP/TRX, MATLAB/EEGLAB, EDF, BDF, FIF, BrainVision header, MRtrix `.tck`, TrackVis `.trk` | error |
+| A TSV or CSV file has a header row and even columns | warning |
+| `bvecs` has 3 rows; `bvals` and `bvecs` have the same number of entries, matching the DWI volumes | warning |
+| An SVG, HTML or GIfTI file contains its usual markup | warning |
+| A folder is not empty; a Zarr folder contains `zarr.json`, `.zgroup` or `.zarray` | warning |
+
+The format of each file comes from its name in the datatype (for example `channels.tsv` is checked as TSV). Files with other extensions are only checked for being present and not empty. A problem inside the validator itself is reported as a warning and never stops an upload, and the metadata and tags you give at upload are kept.
 
 ---
 
