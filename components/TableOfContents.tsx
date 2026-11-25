@@ -76,11 +76,11 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
             {/* On this page section */}
             {headings.length > 0 && (
                 <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">
+                    <div className="flex items-center gap-1.5 font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-bl-muted mb-3">
                         <AlignLeft size={14} />
                         <span>On this page</span>
                     </div>
-                    <ul className="space-y-1.5 text-xs border-l border-gray-200 dark:border-gray-800 pl-3">
+                    <ul className="space-y-1.5 text-xs border-l border-bl-line pl-3">
                         {headings.map(({ id, text, level = 2 }) => {
                             const isActive = activeId === id;
                             return (
@@ -89,8 +89,8 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
                                         href={`#${id}`}
                                         className={`block transition-all py-0.5 ${
                                             isActive
-                                                ? 'text-[#2693D8] font-medium border-l-2 border-[#2693D8] -ml-[13px] pl-[11px]'
-                                                : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+                                                ? 'text-bl-accent font-normal border-l-2 border-bl-accent -ml-[13px] pl-[11px]'
+                                                : 'text-bl-muted hover:text-bl-ink'
                                         }`}
                                     >
                                         {text}
@@ -104,43 +104,43 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
 
             {/* Related section */}
             <div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5">
+                <div className="font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-bl-muted mb-2.5">
                     Related
                 </div>
                 <ul className="space-y-2 text-xs">
                     <li>
                         <Link
                             href="/docs/user/started"
-                            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                            className="flex items-center gap-2 text-bl-muted hover:text-bl-ink transition-colors"
                         >
-                            <CheckSquare size={14} className="text-[#2693D8]" />
+                            <CheckSquare size={14} className="text-bl-accent" />
                             <span>Getting Started</span>
                         </Link>
                     </li>
                     <li>
                         <Link
                             href="/docs/user/started"
-                            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                            className="flex items-center gap-2 text-bl-muted hover:text-bl-ink transition-colors"
                         >
-                            <BookOpen size={14} className="text-[#2693D8]" />
+                            <BookOpen size={14} className="text-bl-accent" />
                             <span>Using brainlife</span>
                         </Link>
                     </li>
                     <li>
                         <Link
                             href="/docs/apps/introduction"
-                            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                            className="flex items-center gap-2 text-bl-muted hover:text-bl-ink transition-colors"
                         >
-                            <Code2 size={14} className="text-[#2693D8]" />
+                            <Code2 size={14} className="text-bl-accent" />
                             <span>Developing Apps</span>
                         </Link>
                     </li>
                     <li>
                         <Link
                             href="/docs/resources/register"
-                            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                            className="flex items-center gap-2 text-bl-muted hover:text-bl-ink transition-colors"
                         >
-                            <Cpu size={14} className="text-[#2693D8]" />
+                            <Cpu size={14} className="text-bl-accent" />
                             <span>Compute Resources</span>
                         </Link>
                     </li>
@@ -148,12 +148,12 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
             </div>
 
             {/* Feedback widget */}
-            <div className="bg-gray-50 dark:bg-[#2d3748] border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 space-y-2.5">
-                <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+            <div className="bg-bl-surface border border-bl-line rounded-xl p-3.5 space-y-2.5">
+                <div className="text-xs font-medium text-bl-ink">
                     Was this page helpful?
                 </div>
                 {feedback ? (
-                    <div className="text-xs text-[#2693D8] font-medium">
+                    <div className="text-xs text-bl-accent font-medium">
                         Thank you for your feedback!
                     </div>
                 ) : (
@@ -161,7 +161,7 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
                         <button
                             type="button"
                             onClick={() => setFeedback('yes')}
-                            className="p-1.5 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+                            className="p-1.5 rounded-lg border border-bl-line hover:bg-bl-band text-bl-muted transition-colors"
                             aria-label="Yes, this page was helpful"
                             title="Helpful"
                         >
@@ -170,7 +170,7 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
                         <button
                             type="button"
                             onClick={() => setFeedback('no')}
-                            className="p-1.5 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+                            className="p-1.5 rounded-lg border border-bl-line hover:bg-bl-band text-bl-muted transition-colors"
                             aria-label="No, this page was not helpful"
                             title="Not helpful"
                         >
@@ -181,9 +181,9 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
             </div>
 
             {/* Page metadata footer */}
-            <div className="pt-1 text-xs space-y-2 text-gray-500 dark:text-gray-400">
+            <div className="pt-1 text-xs space-y-2 text-bl-muted">
                 <div className="flex items-center gap-1.5">
-                    <Clock size={12} className="text-gray-400" />
+                    <Clock size={12} className="text-bl-muted" />
                     <span>Last updated 2 weeks ago</span>
                 </div>
                 <div>
@@ -191,7 +191,7 @@ export default function TableOfContents({ headings = [], githubEditUrl }: TableO
                         href={githubEditUrl || GITHUB_REPO_URL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-gray-600 hover:text-[#2693D8] dark:text-gray-400 dark:hover:text-[#50bfff] transition-colors"
+                        className="flex items-center gap-1.5 text-bl-muted hover:text-bl-accent transition-colors"
                     >
                         <GithubIcon className="w-3.5 h-3.5" />
                         <span>View on GitHub</span>

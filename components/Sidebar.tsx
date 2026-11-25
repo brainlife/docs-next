@@ -139,14 +139,14 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                         onClick={onClose}
                         className={`flex items-center gap-2.5 px-3 py-2 text-sm rounded-md transition-all ${
                             isHomeActive
-                                ? 'bg-[#1e3a5f] text-[#50bfff] font-semibold border-l-2 border-[#50bfff]'
-                                : 'text-gray-300 hover:text-white hover:bg-[#3a4352]/70'
+                                ? 'bg-bl-accent/10 text-bl-accent font-normal border-l-2 border-bl-accent'
+                                : 'text-bl-ink hover:bg-bl-band'
                         }`}
                     >
                         {IconComponent && (
                             <IconComponent
                                 size={16}
-                                className={isHomeActive ? 'text-[#50bfff]' : 'text-gray-400'}
+                                className={isHomeActive ? 'text-bl-accent' : 'text-bl-muted'}
                             />
                         )}
                         <span>{item.title}</span>
@@ -154,13 +154,13 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
                     {/* Sublinks under Home */}
                     {isHomeActive && item.children && (
-                        <div className="mt-1 ml-4 pl-3 border-l border-gray-600/60 space-y-1">
+                        <div className="mt-1 ml-4 pl-3 border-l border-bl-line space-y-1">
                             {item.children.map((sub) => (
                                 <a
                                     key={sub.title}
                                     href={sub.href || '#'}
                                     onClick={onClose}
-                                    className="block py-1 text-xs text-gray-300/80 hover:text-white transition-colors"
+                                    className="block py-1 text-xs text-bl-muted hover:text-bl-ink transition-colors"
                                 >
                                     {sub.title}
                                 </a>
@@ -183,26 +183,26 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                         onClick={() => toggleSection(item.title, !!isExpanded)}
                         className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors text-left ${
                             hasActiveChild
-                                ? 'text-[#50bfff] font-semibold bg-[#1e3a5f]/40'
-                                : 'text-gray-300 hover:text-white hover:bg-[#3a4352]/70'
+                                ? 'text-bl-accent font-normal'
+                                : 'text-bl-ink hover:bg-bl-band'
                         }`}
                     >
                         <div className="flex items-center gap-2.5 min-w-0">
                             {IconComponent && (
                                 <IconComponent
                                     size={16}
-                                    className={hasActiveChild ? 'text-[#50bfff]' : 'text-gray-400'}
+                                    className={hasActiveChild ? 'text-bl-accent' : 'text-bl-muted'}
                                 />
                             )}
                             <span className="truncate">{item.title}</span>
                         </div>
-                        <span className={hasActiveChild ? 'text-[#50bfff]' : 'text-gray-400'}>
+                        <span className={hasActiveChild ? 'text-bl-accent' : 'text-bl-muted'}>
                             {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                         </span>
                     </button>
 
                     {isExpanded && item.children && (
-                        <div className="mt-0.5 ml-4 pl-2.5 border-l border-gray-600/60 space-y-0.5">
+                        <div className="mt-0.5 ml-4 pl-2.5 border-l border-bl-line space-y-0.5">
                             {item.children.map((child) => {
                                 const childActive = isItemActive(child.href);
                                 return (
@@ -212,8 +212,8 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                                         onClick={onClose}
                                         className={`block px-2.5 py-1.5 text-xs rounded-md transition-colors ${
                                             childActive
-                                                ? 'bg-[#1e3a5f] text-[#50bfff] font-semibold border-l-2 border-[#50bfff] -ml-[11px] pl-[17px]'
-                                                : 'text-gray-300/80 hover:text-white hover:bg-[#3a4352]/50'
+                                                ? 'bg-bl-accent/10 text-bl-accent font-normal border-l-2 border-bl-accent -ml-[11px] pl-[17px]'
+                                                : 'text-bl-muted hover:text-bl-ink hover:bg-bl-band'
                                         }`}
                                     >
                                         {child.title}
@@ -234,15 +234,15 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 onClick={onClose}
                 className={`flex items-center justify-between px-3 py-2 text-sm rounded-md transition-all mb-0.5 ${
                     active
-                        ? 'bg-[#1e3a5f] text-[#50bfff] font-semibold border-l-2 border-[#50bfff]'
-                        : 'text-gray-300 hover:text-white hover:bg-[#3a4352]/70'
+                        ? 'bg-bl-accent/10 text-bl-accent font-normal border-l-2 border-bl-accent'
+                        : 'text-bl-ink hover:bg-bl-band'
                 }`}
             >
                 <div className="flex items-center gap-2.5 min-w-0">
                     {IconComponent && (
                         <IconComponent
                             size={16}
-                            className={active ? 'text-[#50bfff]' : 'text-gray-400'}
+                            className={active ? 'text-bl-accent' : 'text-bl-muted'}
                         />
                     )}
                     <span className="truncate">{item.title}</span>
@@ -262,9 +262,9 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 />
             )}
 
-            {/* Sidebar container matching header background #2d3748 */}
+            {/* Sidebar container matching the header surface */}
             <aside
-                className={`fixed lg:sticky top-16 bottom-0 lg:bottom-auto lg:h-[calc(100vh-4rem)] left-0 z-40 w-64 lg:shrink-0 bg-[#2d3748] border-r border-[#3a4352] text-white flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+                className={`fixed lg:sticky top-16 bottom-0 lg:bottom-auto lg:h-[calc(100vh-4rem)] left-0 z-40 w-64 lg:shrink-0 bg-bl-surface border-r border-bl-line text-bl-ink font-light flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
@@ -272,7 +272,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-4 custom-scrollbar text-left">
                     {DOCS_SECTIONS.map((section) => (
                         <div key={section.title}>
-                            <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-3 pb-1.5 select-none">
+                            <div className="font-mono text-[11px] font-normal text-bl-muted uppercase tracking-[0.14em] px-3 pb-1.5 select-none">
                                 {section.title}
                             </div>
                             <div className="space-y-0.5">
@@ -283,7 +283,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 </nav>
 
                 {/* Bottom Footer Info */}
-                <div className="p-3 border-t border-[#3a4352] text-[11px] text-gray-400 text-left px-4">
+                <div className="p-3 border-t border-bl-line text-[11px] text-bl-muted text-left px-4">
                     brainlife.io © {new Date().getFullYear()}
                 </div>
             </aside>

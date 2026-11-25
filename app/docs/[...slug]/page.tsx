@@ -119,7 +119,7 @@ export default async function DocPage({ params }: PageProps) {
                         href={githubEditUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-[#2693D8] transition-colors py-1 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                        className="inline-flex items-center gap-1.5 text-xs text-bl-muted hover:text-bl-accent transition-colors py-1 px-2 rounded-md hover:bg-bl-band"
                         title="Edit this page on GitHub"
                     >
                         <Pencil size={14} />
@@ -129,7 +129,7 @@ export default async function DocPage({ params }: PageProps) {
 
                 {/* Optional ezBIDS branding banner */}
                 {doc.relativePath.toLowerCase().includes('ezbids') && (
-                    <div className="mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div className="mb-6 flex items-center gap-3 pb-4 border-b border-bl-line">
                         <img
                             src={getAssetPath('/ezbids-logo.svg')}
                             alt="ezBIDS Logo"

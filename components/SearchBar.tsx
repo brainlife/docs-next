@@ -221,7 +221,7 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
             <>
                 {parts.map((part, i) =>
                     regex.test(part) ? (
-                        <span key={i} className="text-[#50bfff] font-bold">
+                        <span key={i} className="text-bl-accent font-medium">
                             {part}
                         </span>
                     ) : (
@@ -236,7 +236,7 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
         <div ref={containerRef} className={`relative ${className}`}>
             {/* Input Wrapper */}
             <div className="relative flex items-center">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-bl-muted">
                     <Search size={16} />
                 </div>
                 <input
@@ -254,7 +254,7 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                     onKeyDown={handleKeyDown}
                     placeholder="Search documentation..."
                     aria-label="Search documentation"
-                    className="w-full pl-9 pr-16 py-1.5 bg-[#1f2633] text-sm text-gray-100 placeholder-gray-400 rounded-md border border-[#4a5568] focus:outline-none focus:border-[#2693D8] focus:ring-1 focus:ring-[#2693D8] transition-colors"
+                    className="w-full pl-9 pr-16 py-1.5 bg-bl-bg text-sm font-light text-bl-ink placeholder:text-bl-muted rounded-md border border-bl-line focus:outline-none focus:border-bl-accent focus:ring-1 focus:ring-bl-accent transition-colors"
                 />
 
                 {query ? (
@@ -264,14 +264,14 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                             setQuery('');
                             inputRef.current?.focus();
                         }}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-colors"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-bl-muted hover:text-bl-ink transition-colors"
                         title="Clear search"
                     >
                         <X size={15} />
                     </button>
                 ) : (
                     <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
-                        <kbd className="text-[10px] font-mono font-medium text-gray-400 bg-[#2d3748] px-1.5 py-0.5 rounded border border-[#4a5568]">
+                        <kbd className="text-[10px] font-mono font-normal text-bl-muted bg-bl-surface px-1.5 py-0.5 rounded border border-bl-line">
                             ⌘ K
                         </kbd>
                     </div>
@@ -280,22 +280,22 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
 
             {/* Live Search Results Dropdown */}
             {isOpen && query.trim().length > 0 && (
-                <div className="absolute left-0 right-0 mt-2 z-50 bg-[#1f2633] border border-[#3a4352] rounded-lg shadow-2xl overflow-hidden backdrop-blur-md">
+                <div className="absolute left-0 right-0 mt-2 z-50 bg-bl-surface border border-bl-line rounded-lg shadow-2xl overflow-hidden backdrop-blur-md">
                     {/* Header info */}
-                    <div className="px-4 py-2 border-b border-[#3a4352] flex items-center justify-between text-xs text-gray-400 bg-[#19202c]">
+                    <div className="px-4 py-2 border-b border-bl-line flex items-center justify-between text-xs text-bl-muted bg-bl-band">
                         <span>
                             {isLoading ? (
                                 'Indexing documentation...'
                             ) : results.length > 0 ? (
                                 <>
-                                    Found <span className="text-white font-medium">{results.length}</span>{' '}
+                                    Found <span className="text-bl-ink font-normal">{results.length}</span>{' '}
                                     {results.length === 1 ? 'result' : 'results'} for &ldquo;{query}&rdquo;
                                 </>
                             ) : (
                                 'No matching documents'
                             )}
                         </span>
-                        <span className="text-[11px] text-gray-500 hidden sm:inline">
+                        <span className="text-[11px] text-bl-muted hidden sm:inline">
                             Navigate with ↑ ↓
                         </span>
                     </div>
@@ -304,7 +304,7 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                     {results.length > 0 ? (
                         <ul
                             ref={listRef}
-                            className="max-h-[60vh] sm:max-h-[420px] overflow-y-auto divide-y divide-[#2a3444] custom-scrollbar"
+                            className="max-h-[60vh] sm:max-h-[420px] overflow-y-auto divide-y divide-bl-rule custom-scrollbar"
                             role="listbox"
                         >
                             {results.map((result, idx) => {
@@ -318,16 +318,16 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                                         onClick={() => handleSelectResult(result)}
                                         className={`p-3.5 cursor-pointer transition-colors ${
                                             isSelected
-                                                ? 'bg-[#293548] text-white'
-                                                : 'hover:bg-[#252f3f] text-gray-300'
+                                                ? 'bg-bl-accent/10 text-bl-ink'
+                                                : 'hover:bg-bl-band text-bl-ink'
                                         }`}
                                     >
                                         <div className="flex items-start gap-2.5">
                                             <div
                                                 className={`mt-0.5 p-1 rounded ${
                                                     isSelected
-                                                        ? 'bg-[#2693D8] text-white'
-                                                        : 'bg-[#2d3748] text-gray-400'
+                                                        ? 'bg-bl-accent text-bl-accent-ink'
+                                                        : 'bg-bl-band text-bl-muted'
                                                 }`}
                                             >
                                                 <FileText size={14} />
@@ -335,8 +335,8 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
 
                                             <div className="flex-1 min-w-0">
                                                 {/* Hierarchy breadcrumbs */}
-                                                <div className="flex items-center gap-1.5 text-[11px] text-gray-400 font-medium mb-0.5">
-                                                    <span className="text-[#50bfff]">
+                                                <div className="flex items-center gap-1.5 text-[11px] text-bl-muted font-normal mb-0.5">
+                                                    <span className="text-bl-accent">
                                                         {result.category}
                                                     </span>
                                                     <span>/</span>
@@ -344,7 +344,7 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                                                 </div>
 
                                                 {/* Section Title */}
-                                                <div className="text-sm font-semibold text-white tracking-tight flex items-center gap-1">
+                                                <div className="text-sm font-normal text-bl-ink tracking-tight flex items-center gap-1">
                                                     <span>
                                                         {renderHighlightedText(
                                                             result.section,
@@ -354,14 +354,14 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                                                     {isSelected && (
                                                         <ArrowRight
                                                             size={13}
-                                                            className="text-[#50bfff] ml-auto flex-shrink-0"
+                                                            className="text-bl-accent ml-auto flex-shrink-0"
                                                         />
                                                     )}
                                                 </div>
 
                                                 {/* Matching Text Snippet */}
                                                 {result.snippet && (
-                                                    <p className="text-xs text-gray-400 leading-relaxed mt-1 line-clamp-2">
+                                                    <p className="text-xs text-bl-muted leading-relaxed mt-1 line-clamp-2">
                                                         {renderHighlightedText(
                                                             result.snippet,
                                                             result.matchedTerms
@@ -376,41 +376,41 @@ export default function SearchBar({ className = '', isMobileOpen = false, onClos
                         </ul>
                     ) : (
                         <div className="py-10 px-4 text-center">
-                            <p className="text-sm text-gray-300 font-medium">
+                            <p className="text-sm text-bl-ink font-normal">
                                 No documentation found matching &ldquo;{query}&rdquo;
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-bl-muted mt-1">
                                 Try searching for alternative keywords (e.g. &ldquo;apps&rdquo;, &ldquo;project&rdquo;, &ldquo;cli&rdquo;, &ldquo;bids&rdquo;)
                             </p>
                         </div>
                     )}
 
                     {/* Footer keyboard helpers */}
-                    <div className="px-4 py-2 border-t border-[#3a4352] bg-[#19202c] hidden sm:flex items-center justify-between text-[11px] text-gray-400">
+                    <div className="px-4 py-2 border-t border-bl-line bg-bl-band hidden sm:flex items-center justify-between text-[11px] text-bl-muted">
                         <div className="flex items-center gap-3">
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-[#2d3748] border border-[#4a5568] font-mono text-[10px]">
+                                <kbd className="px-1.5 py-0.5 rounded bg-bl-surface border border-bl-line font-mono text-[10px]">
                                     ↵
                                 </kbd>
                                 select
                             </span>
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-[#2d3748] border border-[#4a5568] font-mono text-[10px]">
+                                <kbd className="px-1.5 py-0.5 rounded bg-bl-surface border border-bl-line font-mono text-[10px]">
                                     ↑
                                 </kbd>
-                                <kbd className="px-1.5 py-0.5 rounded bg-[#2d3748] border border-[#4a5568] font-mono text-[10px]">
+                                <kbd className="px-1.5 py-0.5 rounded bg-bl-surface border border-bl-line font-mono text-[10px]">
                                     ↓
                                 </kbd>
                                 navigate
                             </span>
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-[#2d3748] border border-[#4a5568] font-mono text-[10px]">
+                                <kbd className="px-1.5 py-0.5 rounded bg-bl-surface border border-bl-line font-mono text-[10px]">
                                     esc
                                 </kbd>
                                 close
                             </span>
                         </div>
-                        <span className="text-[10px] text-gray-500">brainlife.io search</span>
+                        <span className="text-[10px] text-bl-muted">brainlife.io search</span>
                     </div>
                 </div>
             )}

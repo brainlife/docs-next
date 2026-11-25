@@ -16,7 +16,7 @@ export default function DocLayout({ children, headings = [], githubEditUrl }: Do
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-[#1a202c] text-gray-900 dark:text-gray-100 font-sans">
+        <div className="min-h-screen flex flex-col bg-bl-bg text-bl-ink font-sans">
             {/* Full-width Top Header */}
             <Header
                 isSidebarOpen={isSidebarOpen}
@@ -37,14 +37,14 @@ export default function DocLayout({ children, headings = [], githubEditUrl }: Do
                         {children}
 
                         {/* Page Footer */}
-                        <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400 space-y-2">
+                        <footer className="mt-16 pt-8 border-t border-bl-line text-xs text-bl-muted space-y-2">
                             <p>
                                 Copyright &copy; 2017 - {new Date().getFullYear()} brainlife.io | Please report issues on{' '}
                                 <a
                                     href={`${GITHUB_REPO_URL}/issues`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[#2693D8] hover:underline"
+                                    className="text-bl-accent hover:underline"
                                 >
                                     GitHub Issues
                                 </a>{' '}
@@ -53,7 +53,7 @@ export default function DocLayout({ children, headings = [], githubEditUrl }: Do
                                     href={SLACK_URL}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[#2693D8] hover:underline"
+                                    className="text-bl-accent hover:underline"
                                 >
                                     Slack
                                 </a>.

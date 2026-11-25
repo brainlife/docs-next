@@ -72,7 +72,7 @@ const QUICK_LINKS = [
 
 export default function NotFound() {
     return (
-        <div className="min-h-screen flex flex-col bg-[#080e1c] text-white relative overflow-hidden font-sans selection:bg-[#2693D8] selection:text-white">
+        <div className="min-h-screen flex flex-col bg-[#080e1c] text-white relative overflow-hidden font-sans selection:bg-brand-lightblue selection:text-white">
             {/* Ambient Background Glows */}
             <div
                 className="absolute top-[-150px] left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none z-0"
@@ -103,7 +103,7 @@ export default function NotFound() {
                         className="mb-4"
                     >
                         <h1
-                            className="text-[90px] sm:text-[130px] md:text-[170px] font-black leading-none tracking-tight font-['Work_Sans',sans-serif] bg-gradient-to-b from-white via-[#5cc5d8] to-[#2693D8] bg-clip-text text-transparent drop-shadow-[0_0_80px_rgba(38,147,216,0.35)] select-none"
+                            className="text-[90px] sm:text-[130px] md:text-[170px] font-black leading-none tracking-tight bg-gradient-to-b from-white via-[#5cc5d8] to-brand-lightblue bg-clip-text text-transparent drop-shadow-[0_0_80px_rgba(38,147,216,0.35)] select-none"
                         >
                             404
                         </h1>
@@ -116,7 +116,7 @@ export default function NotFound() {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="max-w-2xl mx-auto mb-10"
                     >
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-4 font-['Work_Sans',sans-serif] text-white">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white">
                             Lost in the Connectome
                         </h2>
                         <p className="text-sm sm:text-base md:text-lg leading-relaxed text-gray-300/80">
@@ -136,7 +136,7 @@ export default function NotFound() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link
                                 href="/"
-                                className="inline-flex items-center gap-2 px-7 py-3 h-12 rounded-lg bg-[#2693D8] hover:bg-[#1c7bb9] text-white text-sm font-bold tracking-wide uppercase shadow-lg shadow-[#2693D8]/30 hover:shadow-[#2693D8]/50 hover:-translate-y-0.5 active:scale-[0.98] transition-all font-['Work_Sans',sans-serif]"
+                                className="inline-flex items-center gap-2 px-7 py-3 h-12 rounded-lg bg-brand-lightblue hover:bg-brand-lightblue/90 text-white text-sm font-bold tracking-wide uppercase shadow-lg shadow-brand-lightblue/30 hover:shadow-brand-lightblue/50 hover:-translate-y-0.5 active:scale-[0.98] transition-all"
                             >
                                 <ArrowLeft size={16} />
                                 <span>Return to Home</span>
@@ -146,7 +146,7 @@ export default function NotFound() {
                                 href={MAIN_SITE_URL}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 px-6 py-3 h-12 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-bold tracking-wide uppercase border border-white/20 hover:border-white/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all font-['Work_Sans',sans-serif]"
+                                className="inline-flex items-center gap-2 px-6 py-3 h-12 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-bold tracking-wide uppercase border border-white/20 hover:border-white/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all"
                             >
                                 <span>Launch Portal</span>
                                 <ArrowUpRight size={16} />
@@ -154,7 +154,7 @@ export default function NotFound() {
 
                             <Link
                                 href="/docs/tutorial/introduction-to-brainlife/"
-                                className="inline-flex items-center gap-2 px-6 py-3 h-12 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-bold tracking-wide uppercase border border-white/20 hover:border-white/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all font-['Work_Sans',sans-serif]"
+                                className="inline-flex items-center gap-2 px-6 py-3 h-12 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-bold tracking-wide uppercase border border-white/20 hover:border-white/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all"
                             >
                                 <BookOpen size={16} />
                                 <span>Tutorials</span>
@@ -171,7 +171,7 @@ export default function NotFound() {
                     >
                         <div className="flex items-center gap-2.5 mb-5 px-1">
                             <Compass size={18} className="text-[#5cc5d8]" />
-                            <span className="text-xs font-extrabold uppercase tracking-wider text-gray-400 font-['Work_Sans',sans-serif]">
+                            <span className="text-xs font-extrabold uppercase tracking-wider text-gray-400">
                                 Suggested Destinations
                             </span>
                         </div>
@@ -194,7 +194,7 @@ export default function NotFound() {
                                     >
                                         <div>
                                             <div className="flex items-center justify-between mb-3">
-                                                <div className="w-9 h-9 rounded-lg bg-[#2693D8]/15 group-hover:bg-[#2693D8]/25 text-[#5cc5d8] flex items-center justify-center transition-transform group-hover:scale-110">
+                                                <div className="w-9 h-9 rounded-lg bg-brand-lightblue/15 group-hover:bg-brand-lightblue/25 text-[#5cc5d8] flex items-center justify-center transition-transform group-hover:scale-110">
                                                     <IconComponent size={18} />
                                                 </div>
                                                 <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-white/5 text-gray-300 border border-white/5">
@@ -202,7 +202,7 @@ export default function NotFound() {
                                                 </span>
                                             </div>
 
-                                            <h3 className="text-base font-bold text-white group-hover:text-[#5cc5d8] transition-colors font-['Work_Sans',sans-serif] mb-1.5 flex items-center justify-between">
+                                            <h3 className="text-base font-bold text-white group-hover:text-[#5cc5d8] transition-colors mb-1.5 flex items-center justify-between">
                                                 <span>{link.title}</span>
                                                 {isExt && (
                                                     <ArrowUpRight

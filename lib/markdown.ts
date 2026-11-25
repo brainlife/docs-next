@@ -76,8 +76,8 @@ function parseAdmonitions(text: string): string {
                 }
             }
 
-            let borderClass = 'border-l-4 border-[#2693D8] bg-[#ebf8ff] dark:bg-[#1e293b]/70 text-[#1e3a8a] dark:text-[#93c5fd]';
-            let badgeClass = 'text-[#2693D8] dark:text-[#50bfff]';
+            let borderClass = 'border-l-4 border-bl-accent bg-bl-band/70 text-bl-ink';
+            let badgeClass = 'text-bl-accent';
 
             if (['warning', 'caution', 'disclaimer'].includes(type)) {
                 borderClass = 'border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200';
@@ -92,10 +92,10 @@ function parseAdmonitions(text: string): string {
 
             const body = contentLines.join('\n').trim();
             output.push(`\n<div class="my-6 p-4 rounded-r-lg ${borderClass} shadow-xs">
-<div class="font-bold text-sm tracking-wide uppercase mb-1.5 flex items-center gap-1.5 ${badgeClass}">
+<div class="font-semibold text-sm tracking-wide uppercase mb-1.5 flex items-center gap-1.5 ${badgeClass}">
 <span>${displayTitle}</span>
 </div>
-<div class="text-sm leading-relaxed text-gray-800 dark:text-gray-200 font-normal">
+<div class="text-sm leading-relaxed text-bl-ink font-normal">
 
 ${body}
 
@@ -124,14 +124,14 @@ function processFootnotes(markdown: string): string {
 
     cleaned = cleaned.replace(/\[\^(\w+)\]/g, (_m, id) => {
         if (footnoteDefs[id]) {
-            return `<sup class="footnote-ref"><a href="#fn-${id}" id="fnref-${id}" class="text-[#2693D8] hover:underline font-semibold">[${id}]</a></sup>`;
+            return `<sup class="footnote-ref"><a href="#fn-${id}" id="fnref-${id}" class="text-bl-accent hover:underline font-semibold">[${id}]</a></sup>`;
         }
         return _m;
     });
 
-    let footnotesHtml = '\n\n<div class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-800 text-sm text-gray-600 dark:text-gray-400"><ol class="list-decimal pl-5 space-y-2">';
+    let footnotesHtml = '\n\n<div class="mt-12 pt-6 border-t border-bl-line text-sm text-bl-muted"><ol class="list-decimal pl-5 space-y-2">';
     for (const id of ids) {
-        footnotesHtml += `\n<li id="fn-${id}">${footnoteDefs[id]} <a href="#fnref-${id}" class="text-[#2693D8] hover:underline font-bold" aria-label="Back to reference">↩</a></li>`;
+        footnotesHtml += `\n<li id="fn-${id}">${footnoteDefs[id]} <a href="#fnref-${id}" class="text-bl-accent hover:underline font-semibold" aria-label="Back to reference">↩</a></li>`;
     }
     footnotesHtml += '\n</ol></div>\n';
 
@@ -206,9 +206,9 @@ export function processMarkdown(rawMarkdown: string, currentDocRelPath: string =
 
     // 5. Pre-process fontawesome shortcodes
     processed = processed
-        .replace(/\(?:fa-eye:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-[#2693D8]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>')
-        .replace(/\(?:fa-archive:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-[#2693D8]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>')
-        .replace(/\(?:fa-download:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-[#2693D8]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>')
+        .replace(/\(?:fa-eye:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-bl-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>')
+        .replace(/\(?:fa-archive:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-bl-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>')
+        .replace(/\(?:fa-download:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-bl-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>')
         .replace(/\(?:fa-calendar:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>')
         .replace(/\(?:fa-star:\)?/g, '<svg class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-yellow-400 fill-yellow-400" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
 
@@ -233,19 +233,19 @@ export function processMarkdown(rawMarkdown: string, currentDocRelPath: string =
         }
 
         const headingClasses: Record<number, string> = {
-            1: "text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-0 mb-6 font-['Work_Sans',sans-serif] pr-28 sm:pr-32",
-            2: "text-2xl font-bold text-gray-900 dark:text-white tracking-tight mt-12 mb-4 pb-2 border-b border-gray-100 dark:border-gray-800 font-['Work_Sans',sans-serif]",
-            3: "text-xl font-bold text-gray-900 dark:text-white mt-8 mb-3 font-['Work_Sans',sans-serif]",
-            4: "text-lg font-semibold text-gray-900 dark:text-white mt-6 mb-2 font-['Work_Sans',sans-serif]",
-            5: 'text-base font-semibold text-gray-900 dark:text-white mt-4 mb-2',
-            6: 'text-sm font-semibold text-gray-900 dark:text-white mt-4 mb-2',
+            1: "text-3xl sm:text-4xl font-semibold text-bl-ink tracking-tight mt-0 mb-6 pr-28 sm:pr-32",
+            2: "text-2xl font-semibold text-bl-ink tracking-tight mt-12 mb-4 pb-2 border-b border-bl-line",
+            3: "text-xl font-semibold text-bl-ink mt-8 mb-3",
+            4: "text-lg font-semibold text-bl-ink mt-6 mb-2",
+            5: 'text-base font-semibold text-bl-ink mt-4 mb-2',
+            6: 'text-sm font-semibold text-bl-ink mt-4 mb-2',
         };
 
         const className = headingClasses[depth] || '';
 
         return `<h${depth} id="${id}" class="${className} scroll-mt-24 group flex items-center justify-between">
             <span>${cleanText}</span>
-            <a href="#${id}" class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-[#2693D8] transition-opacity ml-2 text-sm font-normal" aria-label="Link to section">#</a>
+            <a href="#${id}" class="opacity-0 group-hover:opacity-100 text-bl-muted hover:text-bl-accent transition-opacity ml-2 text-sm font-normal" aria-label="Link to section">#</a>
         </h${depth}>`;
     };
 
@@ -259,10 +259,10 @@ export function processMarkdown(rawMarkdown: string, currentDocRelPath: string =
 
         return `
         <figure class="my-8">
-            <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm bg-gray-50 dark:bg-gray-900/50">
+            <div class="overflow-hidden rounded-xl border border-bl-line shadow-sm bg-bl-surface">
                 <img src="${imageSrc}" alt="${caption}" class="w-full h-auto object-contain mx-auto block max-h-[650px]" loading="lazy" />
             </div>
-            ${caption ? `<figcaption class="mt-2 text-center text-xs text-gray-500 dark:text-gray-400 italic">${caption}</figcaption>` : ''}
+            ${caption ? `<figcaption class="mt-2 text-center text-xs text-bl-muted italic">${caption}</figcaption>` : ''}
         </figure>
         `;
     };
@@ -278,14 +278,14 @@ export function processMarkdown(rawMarkdown: string, currentDocRelPath: string =
         const targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
         const finalHref = resolveInternalLink(href, currentDocRelPath);
 
-        return `<a href="${finalHref}" class="text-[#2693D8] hover:text-[#1d74ae] underline font-medium transition-colors"${targetAttr}${titleAttr}>${text}</a>`;
+        return `<a href="${finalHref}" class="text-bl-accent hover:text-bl-accent underline font-medium transition-colors"${targetAttr}${titleAttr}>${text}</a>`;
     };
 
     // Custom code block renderer with optional language header
     renderer.code = ({ text, lang }: { text: string; lang?: string }) => {
         return `
-        <div class="my-6 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 bg-[#1e293b] text-gray-100 shadow-sm">
-            ${lang ? `<div class="px-4 py-1.5 bg-[#0f172a] text-xs font-mono text-gray-400 border-b border-gray-800 flex justify-between items-center uppercase tracking-wider"><span>${lang}</span></div>` : ''}
+        <div class="my-6 rounded-lg overflow-hidden border border-bl-line bg-bl-code-bg text-bl-code-ink shadow-sm">
+            ${lang ? `<div class="px-4 py-1.5 bg-bl-code-bar text-xs font-mono text-bl-code-muted border-b border-bl-code-line flex justify-between items-center uppercase tracking-wider"><span>${lang}</span></div>` : ''}
             <pre class="p-4 text-xs font-mono overflow-x-auto leading-relaxed"><code>${text}</code></pre>
         </div>
         `;
