@@ -1,32 +1,35 @@
+# Versioning tips
 
-Although Brainlife does not require you to use any specific git branching schema and you should observe any standard practice from your own group, here are some guidelines that we suggest.
+brainlife.io does not require a particular git branching scheme, and you can follow your group's own practice. These are the guidelines we suggest.
 
-## Work on master branch
+## Work on the default branch
 
-When you are updating your app, you should push the latest changes to the master while pulling from the remote master often to reduce merge conflict. You can/should use your local branches for each features you are working on, but don't push them to the remote. When you are done testing the new feature / bug fixes on your local branch, merge them to your local master, then push that to the origin master as frequently as possible.
+Develop on the repository's default branch (`main` or `master`). Pull from the remote often to reduce merge conflicts. Use local branches for each feature, but do not push them. When a feature or fix is tested on your local branch, merge it into your local default branch and push it.
 
-## Test before pushing to master
+## Test before you push
 
-Brainlife App can be tested on your laptop by executing `main`, or submitting it to HPC system by using `start` script if you have the [ABCD Hook](/docs/resources/register/#abcd-default-hooks) installed on your PATH. You should not commit / push your changes to github just to test the change you just made on Brainlife.
+You can test an App on your computer by running `main`, or on an HPC system with the `start` script if the [ABCD default hooks](/docs/resources/register/#abcd-default-hooks) are on your PATH. Do not commit and push changes to GitHub just to test them on brainlife.io.
 
-## Create a branch for new versions
+## Create a branch for each release
 
-When we are done with making all changes, and tested the master branch on Brainlife, you should create a new git branch from the master branch. You can easily create a new branch using github UI. 
+When all changes are made and tested, create a release branch from the default branch. You can create one in the GitHub web interface.
 
 ![branch](../img/versioning.branch.gif)
 
-Once you create a new release branch, you should update the BL app to point users to use that new branch.
+Then point your App on brainlife.io to the new branch: open the App, select **Edit**, and on the **Details** tab set **Github Branch or Tag** under **Source code**. When you register a new App, the **Create app** dialog warns "Avoid releasing an app from master or main."
 
 ![branch](../img/versioning.app.gif)
 
-You could use tags instead of branches, but tags do not allow you to make modifications if you need to make quick bug fixes. Tags are great to point to any particular commit point, but you can do that with just a plain commit ID. We recommend creating new branches for each release.
+You can use tags instead of branches, but a tag cannot take a quick bug fix later. A tag only points to one commit, which a commit ID also does. We recommend a branch for each release.
 
-## Bug fix on release branch
+## Fix bugs on release branches
 
-If you find a critical bug after you create a branch, fix the bug on the master first, test it (both locally and on Brainlife), then apply the same fix on all branches that are affected by the bug. I recommend using a command like [cherry-pick](https://git-scm.com/docs/git-cherry-pick){target=_blank} to apply specific changes on other branches as you probably don't want to merge all other changes made to the master since the branch was created. We should not update branches other than some critical bug fixes to ensure the reproducibility of your App.
+If you find a critical bug after you create a release branch, fix it on the default branch first and test it (on your computer and on brainlife.io). Then apply the same fix to every affected release branch, for example with [cherry-pick](https://git-scm.com/docs/git-cherry-pick){target=_blank}, since you probably do not want to merge every other change made since the branch was created. Change release branches only for critical bug fixes, so that your App stays reproducible.
 
-## Learn Semver
+If your repository has a `brainlife.app.json` manifest, keep the copy on each release branch up to date. Its `version` field is the name of that branch.
 
-If you don't know what semantic versioning is, please read [https://semver.org/](https://semver.org/){target=_blank}.
+## Use semantic versioning
 
-For branch names, we should use major and minor versions (like "2.3"), but don't include the patch number, as patch numbers are incremented for each bug fixes and you don't need to create a new branch for each bug fixes. If you make non-backward compatible changes, you should consider registering a brand new Brainlife app with a different major version number so that the user can continue to submit your app with previous versions.
+If you do not know semantic versioning, read [semver.org](https://semver.org/){target=_blank}.
+
+Name branches with the major and minor version (like "2.3"), without the patch number: the patch number goes up with each bug fix, and you do not need a new branch for each fix. If you make changes that are not backward compatible, consider registering a new App with a new major version, so that people can still run the previous version.

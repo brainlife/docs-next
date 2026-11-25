@@ -1,12 +1,14 @@
-Life cycle hooks are the script used to start / stop / monitor your apps by Brainlife. By default, it looks for executable installed on each resource in the PATH with named `start`, `status`, and `stop`. Resource owner needs to make sure these scripts are installed and accessible by your apps. 
+# Custom hooks
 
-> For most PBS, SLURM, and vanilla VM, resource owner can install [ABCD default hooks](https://github.com/brainlife/abcd-spec/tree/master/hooks){target=_blank}.
+Life cycle hooks are the scripts brainlife.io uses to start, stop and monitor your App. By default, brainlife.io looks for executables named `start`, `status` and `stop` on the PATH of each compute resource. The resource owner makes sure these scripts are installed and available to Apps.
 
-By default, the `start` hook should look for a file named `main` to start your app. Therefore, the only file required to make your app runnable by Brainlife is this `main` executable on the root directory of the app's git repository.
+> For most PBS and Slurm clusters and plain VMs, the resource owner can install the [ABCD default hooks](https://github.com/brainlife/abcd-spec/tree/master/hooks){target=_blank}. See [Registering a resource](/docs/resources/register/#abcd-default-hooks).
 
-Under most circumstances, app developers shouldn't have to worry about these hook scripts. However, if your app requires some special mechanism to start / stop and monitor your app, you might need to provide your own hook scripts.
+The default `start` hook runs a file named `main`. So the only file your App needs to run on brainlife.io is an executable `main` at the root of its repository.
 
-You can specify the paths to these hook scripts by creating a file named `package.json`
+In most cases you do not need to think about hooks. If your App needs a special way to start, stop or monitor it, you can provide your own hook scripts.
+
+List the paths to your hook scripts in a file named `package.json` at the root of the repository:
 
 ```json
 {
@@ -18,13 +20,13 @@ You can specify the paths to these hook scripts by creating a file named `packag
 }
 ```
 
-Then, you will need to provide those hook scripts as part of your app.
+Then add those scripts to your App's repository.
 
-> Please be sure to `chmod +x *.sh` so that your hook scripts are executable.
+> Run `chmod +x *.sh` so that your hook scripts are executable.
 
 ### `start.sh`
 
-Following is an example for the `start` script. It submits a file named *main* (should be provided by each app) through qsub. It stores `jobid` so that we can monitor the job status.
+This example `start` script submits `main` with `qsub` (PBS) and saves the job ID in a file called `jobid`, so the job can be monitored.
 
 ```
 #!/bin/bash
@@ -37,7 +39,7 @@ qsub -d $PWD -V -o \$PBS_JOBID.log -e \$PBS_JOBID.err main > jobid
 
 ### `stop.sh`
 
-Following is an example for the `stop` script. This script reads the jobid created by the `start` script and calls qdel to stop it.
+This example `stop` script reads the job ID saved by the `start` script and stops the job with `qdel`.
 
 ```
 #!/bin/bash
@@ -46,9 +48,9 @@ qdel `cat jobid`
 
 ### `status.sh`
 
-The status hook is a bit more complicated. It needs to return various exit codes based on the status of the app. It uses the `jobid` stored by start script to query the job status with `qstat` PBS command. 
+The `status` hook is a little more complex. It returns an exit code that reports the state of the App. This example uses the job ID saved by the `start` script to query the job with the PBS `qstat` command.
 
-Anything you output to stdout will be used to set the task's status message. For example, you can output the last line from the log file to relay the last log entry to the users on Brainlife.
+Whatever the script prints to stdout becomes the job's status message. For example, print the last line of the log file to show users the latest log entry.
 
 ```
 #!/bin/bash

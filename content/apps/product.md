@@ -1,19 +1,19 @@
 # `product.json`
 
-Your App can optionally generate a file named `product.json` to send information back to Brainlife. You can think of it as the counterpart for `config.json`. As `config.json` is used to pass configuration parameters from the user to an App, `product.json` can be used to send information from your App back to Brainlife upon successful completion. The information stored in  `product.json` can be used relay information back to the App submitter, or used to perform data aggregation quickly across multiple subjects.
+Your App can write a file named `product.json` into its working directory to send information back to brainlife.io. It is the counterpart of `config.json`: `config.json` passes parameters from the user to the App, and `product.json` passes information from the App back to brainlife.io when the job finishes. Use it to tell the user something about the run, or to store small results that you can later collect across many subjects quickly.
 
 !!! warning
-    You should not store more than a few kilobytes of information on `product.json`.
+    Keep `product.json` to a few kilobytes.
 
-You can use `product.json` for the following purposes.
+Use `product.json` to:
 
-1. Display messages, statuses, graphs(plotly) on Brainlife UI.
-2. Store a small amount of unstructured data that you can later use to quickly aggregate across multiple output datasets.
-3. Specify user tags (or datatype_tags) to be added to the output dataset.
+1. Show messages, graphs (Plotly) and images on brainlife.io.
+2. Store a small amount of data that you can later collect across many output datasets.
+3. Set annotations (dataset tags), metadata or datatype tags on the output datasets.
 
-We will explain each use case below.
+Each use is explained below.
 
-## 1. Displaying messages, graphs on Brainlife UI
+## 1. Show messages and graphs on brainlife.io
 
 <!--
 
@@ -32,64 +32,67 @@ We will explain each use case below.
 ```
 -->
 
-Although `product.json` can store any data, we've defined a special key(`"brainlife"`) that you could use to render graphical information back to Brainlife UI.
+`product.json` can hold any data. Items under the special key `"brainlife"` are shown on brainlife.io.
 
-### Messages (error / warnings)
+### Messages (errors and warnings)
 
-You can display error / warning messages on Brainlife process UI by storing them in the following format.
+To show an error or warning message, store it in this format:
 
 ```json
 {
 	"brainlife": [
-		{"type": "error", "msg": "Some tracts have less than 20 streamlines. Check quality of data!"},
-       ]
+		{"type": "error", "msg": "Some tracts have less than 20 streamlines. Check quality of data!"}
+	]
 }
 ```
 
-The above message will be displayed under the Output section of the process UI as well as in the dataset detail page, like the following.
+The message is shown with the job's results: in the **Results** section of the process side panel (**3. Processing** → **Processes**) and in the process editor. (The screenshot below is from the previous brainlife.io interface.)
 
 ![messages](../img/product.messages.png)
 
-You can also display the following message types.
+These message types are available:
 
 ```json
 {
 	"brainlife": [
 		{"type": "error", "msg": "here is my error message"},
-		{"type": "danger", "msg": "here is my error message"},
+		{"type": "danger", "msg": "here is my danger message"},
 		{"type": "info", "msg": "here is my info message"},
 		{"type": "warning", "msg": "here is my warning message"},
-		{"type": "success", "msg": "here is my warning message"},
-       ]
-}
-```
-
-### Graphs (plotly)
-
-You can also display plotly graph.
-
-
-```json
-{
-	"brainlife": [
-        {
-		"type": "plotly",
-		"name": "my plotly test",
-		"data": [ 
-			{"x": '2014-06-11', "y": 10}, 
-			{"x": '2014-06-12', "y": 25}, 
-			{"x": '2014-06-13', "y": 30},
-			{"x": '2014-06-14', "y": 10}, 
-			{"x": '2014-06-15', "y": 15}, 
-			{"x": '2014-06-16', "y": 30} 
-		],
-		"layout": { start: '2014-06-10', end: '2014-06-18' },
-		}	
+		{"type": "success", "msg": "here is my success message"}
 	]
 }
 ```
 
-You can embed images by first base64 encoding the image and storing it on product.json
+### Graphs (Plotly)
+
+To show a [Plotly](https://plotly.com/javascript/){target=_blank} graph:
+
+
+```json
+{
+    "brainlife": [
+        {
+            "type": "plotly",
+            "name": "my plotly test",
+            "data": [
+                {
+                    "type": "bar",
+                    "x": ["2014-06-11", "2014-06-12", "2014-06-13", "2014-06-14", "2014-06-15", "2014-06-16"],
+                    "y": [10, 25, 30, 10, 15, 30]
+                }
+            ],
+            "layout": { "xaxis": { "title": "date" }, "yaxis": { "title": "value" } }
+        }
+    ]
+}
+```
+
+`data` is a list of [Plotly traces](https://plotly.com/javascript/reference/){target=_blank} and `layout` is a Plotly layout. `name` labels the graph.
+
+### Images
+
+To show an image, encode it as base64 and store it in `product.json`:
 
 
 ```json
@@ -104,20 +107,18 @@ You can embed images by first base64 encoding the image and storing it on produc
 }
 ```
 
-## 2. Storing unstructured data
+## 2. Store small results
 
-Any unstructured data can be just stored anywhere inside the `product.json`. 
-
-Like...
+You can store any other data anywhere in `product.json`. For example:
 
 ```json
 {
     "rmse": 123,
-    "labels: ["apple", "orange"]
+    "labels": ["apple", "orange"]
 }
 ```
 
-You might have Apps that could produce multi-gigabytes of output datasets. If you need to run aggregation process across many subjects using such outputs, you might end up needing to stage hundreds of gigabytes of output datasets which may or may not be possible, or desirable to do so. Instead, you could produce pre-aggregated data and store it inside `product.json`. You can then query all datasets and download `product.json` contents from each dataset without having to download the actual output datasets. Please take a look at [Brainlife CLI](https://github.com/brainlife/cli){target=_blank} for more information on querying datasets.
+Some Apps produce outputs of many gigabytes. Collecting such outputs across many subjects could mean staging hundreds of gigabytes, which may not be possible or sensible. Instead, write a pre-computed summary into `product.json`. You can then query the datasets and read the `product.json` content of each one without downloading the datasets themselves. See the [CLI](/docs/cli/download/) and the warehouse API example in [Group analysis](/docs/cli/group/).
 
 <!--
 By storing all pre-aggregated information in `product.json`, you can create a Javascript-based visualizer that can simply query and consume information to visualize. The user can then dynamically update the query and play around with the data.
@@ -128,9 +129,9 @@ Developers can also use Brainlife API to query for datasets and its product.json
 -->
 
 
-## 3. Specifying dataset (user) tags
+## 3. Set annotations, metadata and datatype tags
 
-Your App can set "tags" key to specify dataset tags that you'd like to add to the dataset output. 
+Set the `tags` key to add annotations (dataset tags) to the output datasets:
 
 ```json
 {
@@ -139,10 +140,9 @@ Your App can set "tags" key to specify dataset tags that you'd like to add to th
 ```
 
 !!! note
-    If you have multiple output datasets, specified tags will be applied to all output datasets. If you'd like to specify different tags
-    for each output dataset, please read the section below ("Multiple output datasets")
+    If your App has several outputs, the tags are added to all of them. To set different tags for each output, see "Multiple output datasets" below.
 
-You can also set(/override) dataset metadata
+You can also set (or override) dataset metadata:
 
 ```json
 {
@@ -153,24 +153,24 @@ You can also set(/override) dataset metadata
 }
 ```
 
-Although not recommended, you can also override the datatype tag of the output dataset.
+You can also override the datatype tags of the output dataset, although we do not recommend it:
 
 ```json
 {
-    "datatype_tags": [ "acpc_aligned" ],
+    "datatype_tags": [ "acpc_aligned" ]
 }
 ```
 
 !!! warning 
-    Brainlife UI relies on each App to have predetermined datatype and datatype tags. Overriding datatype tags could cause your workflow to be inconsistent. You should also make sure that any datatype tags you are using is valid and [registered](https://brainlife.io/datatypes){target=_blank} for your output datatype.
+    brainlife.io expects each App to produce the datatype and datatype tags it is registered with. Overriding datatype tags can make your workflow inconsistent. Make sure any datatype tag you use is valid and listed under **Official tags** for the output datatype in the [Datatypes](https://connects.brainlife.io/datatypes?scope=public){target=_blank} catalog.
 
 ## Multiple output datasets
 
-Most Apps output more than 1 datasets. By default, all information stored on `product.json` will be copied to all output datasets. If you'd like to store different information for each output dataset, you can do so by organizing your `product.json` with App's registered output IDs as keys on the root of `product.json`
+Many Apps produce more than one output dataset. By default, everything in `product.json` is copied to every output. To store different information for each output, use the output IDs registered for your App as keys at the root of `product.json`.
 
-For example, let's assume you have an App with 2 output datasets; t1, and mask, and you have used "t1" and "mask" as output IDs when you registered your App.
+For example, suppose your App has 2 outputs, registered with the IDs "t1" and "mask".
 
-You could then output something like the following `product.json`
+Your App can then write a `product.json` like this:
 
 ```
 {
@@ -186,4 +186,4 @@ You could then output something like the following `product.json`
 
 ```
 
-When this `product.json` is imported, brainlife will pick "t1" as the root of product.json for t1 output, and "mask" as mask output. You can still store items on the root of the `product.json` which will be merged on to output specific data. This is useful if you have information that is common across all outputs, but wants to be able to specify output specific information also.
+When brainlife.io reads this `product.json`, it uses the "t1" object for the t1 output and the "mask" object for the mask output. Items at the root of `product.json` are merged into each output's data, so you can store information common to all outputs next to output-specific information.

@@ -1,40 +1,33 @@
-# Group Analysis
+# Group analysis
 
-!!! warning "Deprecated Workflow"
-    Performing group analysis by querying `product.json` records through raw local scripts has been **deprecated and superseded by in-platform Group Analysis**. 
-    
-    To perform statistical analyses, profile averages, and visualizations directly on brainlife.io without downloading data to your local machine, please see our dedicated guide:
-    
-    👉 **[In-Platform Group Analysis Guide](/docs/user/groupanalysis)**
+!!! note
+    The simplest way to analyze data across subjects is in brainlife.io itself: open a project, go to **4. Analysis** and select **New analysis** to launch a Jupyter notebook on the project's data, from **Blank Template Notebooks** or **Notebooks from Publications**. See [Analysis](/docs/user/groupanalysis).
+
+This page shows how to collect dataset metadata and `product.json` summaries outside brainlife.io, with the warehouse API or the CLI.
 
 ---
 
 ## Overview
 
-Historically, Brainlife allowed users to download condensed textual data derivatives (`product.json`) using the REST API to conduct group analysis locally in Matlab or Python. 
-
-Today, Brainlife provides a **built-in Group Analysis notebook environment** directly within each project on [brainlife.io](https://brainlife.io):
-- **Integrated JupyterLab**: Launch interactive Python 3 (`brainlife/ga-python`) or Octave/Matlab (`brainlife/ga-octave`) notebooks directly from the **Analyses** tab in your project.
-- **Direct Data Access**: Notebooks run directly on connected compute resources with access to all project data objects without requiring manual download scripts.
-- **Reproducibility**: Analysis code and notebooks can be archived alongside project publications.
+Apps can store small results in [`product.json`](/docs/apps/product/). You can read these results for many datasets through the warehouse API without downloading the datasets themselves, and analyze them in MATLAB, Python or any other tool.
 
 ---
 
-## Programmatic API Access (Legacy / Advanced)
+## Query the warehouse API
 
-If you are building external automated pipelines or custom services that need to query dataset metadata and `product.json` output summaries directly from the Brainlife warehouse API, you can authenticate using your Brainlife JWT token.
+If you build scripts or services that read dataset metadata and `product.json` summaries from the warehouse API, authenticate with the token that `bl login` saves.
 
 ### 1. Authentication
-The Brainlife CLI stores your current authentication token in:
+The CLI stores your token in:
 ```bash
 ~/.config/brainlife.io/.jwt
 ```
-You can generate or refresh this token using:
+Create or renew it with:
 ```bash
 bl login --ttl 30
 ```
 
-### 2. Python Example (Warehouse API Query)
+### 2. Python example
 
 ```python
 #!/usr/bin/env python3
@@ -53,7 +46,7 @@ headers = {
 }
 
 # Define search parameters for the warehouse API
-# Replace 'YOUR_PROJECT_ID' and 'YOUR_DATATYPE_ID' with valid Brainlife IDs
+# Replace 'YOUR_PROJECT_ID' and 'YOUR_DATATYPE_ID' with real IDs
 find_query = {
     'project': 'YOUR_PROJECT_ID',
     'datatype': 'YOUR_DATATYPE_ID',
@@ -62,7 +55,7 @@ find_query = {
 
 params = {
     'limit': 100,
-    'select': 'product meta tags',
+    'select': 'meta tags',
     'find': json.dumps(find_query)
 }
 
@@ -75,14 +68,17 @@ if res.status_code == 200:
     print(f"Found {len(datasets)} dataset records.")
     for d in datasets:
         subject = d.get('meta', {}).get('subject', 'unknown')
-        print(f"Dataset {d['_id']} - Subject: {subject}")
+        # product.json of each dataset
+        prod = requests.get(f"https://brainlife.io/api/warehouse/dataset/product/{d['_id']}", headers=headers)
+        product = prod.json().get('product') if prod.status_code == 200 else None
+        print(f"Dataset {d['_id']} - Subject: {subject} - product: {product}")
 else:
     print(f"Failed to query datasets: {res.status_code} - {res.text}")
 ```
 
-### 3. Recommended Alternative: Brainlife CLI
+### 3. Or use the CLI
 
-To inspect and download datasets locally from the command line, use the native `bl` CLI commands instead of writing custom API queries:
+To list and download datasets from the command line, use `bl` instead of writing API queries:
 
 * To query datasets:
   ```bash
@@ -97,4 +93,4 @@ To inspect and download datasets locally from the command line, use the native `
   bl data download -i <data_object_id>
   ```
 
-For full details on using the CLI, visit [CLI Installation](/docs/cli/install) and [Downloading Data](/docs/cli/download).
+See [Installing the CLI](/docs/cli/install) and [Downloading data](/docs/cli/download).

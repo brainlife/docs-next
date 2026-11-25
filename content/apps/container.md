@@ -1,32 +1,34 @@
-# Run App via a Singularity
+# Containerizing an App
 
-Docker is a software containerization tool that allows you to package your App and its dependencies into a portable *container* that you can run on any machine that supports Docker engine, or singularity.
+Docker packages software and its dependencies into a portable *container* that runs on any machine with the Docker engine or Singularity (Apptainer). Most brainlife.io Apps run their software from a Docker container through Singularity.
 
-Although you can create a fully functional standalone Docker container for your app, for Brainlife, we recommend to containerize only the App's *environment and the dependencies*, and not include the main part of your App (your python or Matlab scripts that drives your algorithm) on your container.
+You can build a complete, standalone Docker container for your App. For brainlife.io, we recommend that you containerize only the App's *environment and dependencies*, and keep the main part of the App (the Python or MATLAB scripts that drive your algorithm) out of the container.
 
-You can use singularity to run the most idiosyncratic parts of your App which can be stored and maintained inside your github repo and injected into an environment container at runtime. Like...
+Your scripts stay in your GitHub repository, and Singularity runs them inside the environment container at run time. For example:
 
 ```bash
 singularity exec -e docker://brainlife/dipy:0.13 ./app.py
 ```
 
-In the above example, I am using `brainlife/dipy:0.13` as an environment container, and running app.py which is stored locally (comes with the github repo for my App) and injected into my environment at runtime. 
+Here `brainlife/dipy:0.13` is the environment container, and `app.py` comes from the App's repository and runs inside that environment.
 
-You can even share the same Docker container across multiple Apps that you and your lab members maintain, but you should make sure to specify the container version ("0.13" in the above example) so that your App won't be affected when the container gets updated. 
+You can share one container across several Apps that you and your lab maintain. Always name a specific container version ("0.13" above), so that your App does not change when the container is updated.
 
-## Docker Engine
+If you write a `brainlife.app.json` manifest, list the container image under `runtime` (see [Describe your App with a manifest](/docs/apps/register/#describe-your-app-with-a-manifest)).
 
-To build a docker container, you need to [install Docker engine on your laptop](https://docs.docker.com/machine/install-machine/){target=_blank} or find a server that has docker engine installed that you can use. (Contact [Franco](mailto:pestilli@utexas.edu), [Anibal](mailto:anibalsolon@utexas.edu) or [Kim](mailto:kimray@utexas.edu) if you need help.)
+## Docker engine
 
-We assume you already have your Brainlife app hosted on Github, and you are making changes inside a cloned git repo on a machine with the Docker engine.
+To build a Docker container, [install Docker](https://docs.docker.com/get-started/get-docker/){target=_blank} on your computer or use a server that has it. If you need help, [contact the brainlife.io team](/docs/contact/).
 
-## Compiling Matlab Scripts
+The steps below assume your App is already on GitHub and you are working in a clone of its repository on a machine with Docker.
 
-> Skip this section if you are not using Matlab
+## Compiling MATLAB scripts
 
-Matlab code requires a matlab license to run. If your App contains any Matlab code, it needs to be compiled to a binary format using [`mcc` command](https://www.mathworks.com/help/compiler/mcc.html){target=_blank} which allows you to execute your code without Matlab license. You will still need to run it against a special Matlab compiled runtime called *MCR* which can be distributed freely and does not require any license.
+> Skip this section if you do not use MATLAB.
 
-You can create a script that compiles your matlab code.
+MATLAB code needs a MATLAB license to run. If your App contains MATLAB code, compile it with the [`mcc` command](https://www.mathworks.com/help/compiler/mcc.html){target=_blank}. The compiled program runs without a MATLAB license, against the MATLAB Runtime (*MCR*), which is free to distribute.
+
+You can write a script that compiles your MATLAB code. This example comes from an Indiana University cluster; adjust the module name and paths to your system.
 
 #### compile.sh
 
@@ -47,79 +49,78 @@ matlab -nodisplay -nosplash -r build
 
 ```
 
-This script generates a Matlab script called `build.m` and immediately executes it. `build.m` will load Matlab paths and run Matlab command called `mcc` which compiles your Matlab code into an executable binary that can run without Matlab license. The generated binary still requires a few Matlab proprietary libraries called MCR which can be download from the Matlab website.
+The script writes a MATLAB script called `build.m` and runs it. `build.m` sets the MATLAB paths and runs `mcc`, which compiles your code into an executable that runs without a MATLAB license. The executable still needs the MATLAB Runtime (MCR) libraries, which you can download from MathWorks.
 
 !!! note
-        Brainlife team has built a Docker MCR container [brainlife/mcr](https://hub.docker.com/r/brainlife/mcr/tags/){target=_blank} which can be used to execute your compiled Matlab code with singularity.
+    The brainlife.io team maintains Docker images with the MATLAB Runtime, [brainlife/mcr](https://hub.docker.com/r/brainlife/mcr/tags){target=_blank}, that you can use to run compiled MATLAB code with Singularity.
 
-For the sample build script above, you will need to adjust addpath() to include all of your Matlab dependencies that your Matlab script requires. `myapp` is the name of the matlab entry function that you use to execute your application. mcc command will create a binary with the same name `myapp` inside the ./compiled directory.
+In `build.m`, add every MATLAB dependency of your code with `addpath()`. `myapp` is the name of the MATLAB entry function of your App; `mcc` writes an executable with the same name, `myapp`, into `./compiled`.
 
-A few other mcc options to note.
+Some `mcc` options:
 
-* `-m ...` tells the name of the main entry function (in this case it's `main`) of your application (it reads your config.json and runs the whole application)
-* `-R -nodisplay` sets the command line options you'd normally pass when you run MatLab on the command line.
-* -d ...` tells where to output the generated binary. You should avoid writing it out to the application root directory; just to keep things organized.
-* If your app or your Matlab libraries access any non-Matlab files (mexfiles, datafiles, models, templates, etc..) you will need to include them by specifying paths with `-a`. mcc will include specified files/directories as part of your compiled binary and make it available to the compiled code as if it is available through the local filesystem (similar to how Docker containerizes things).
+* `-m ...` names the main entry function of your App (the function that reads `config.json` and runs the whole App).
+* `-R -nodisplay` sets the command-line options you would normally pass to MATLAB.
+* `-d ...` sets where to write the executable. Avoid the root of the repository, to keep it tidy.
+* If your App or its libraries read non-MATLAB files (MEX files, data files, models, templates, and so on), include them with `-a`. `mcc` adds the files and directories to the executable, and the compiled code reads them as if they were on the local file system.
 
-* If you are using OpenMP, you will need to include libgomp1 library installed in your MCR container.
-* mcc compiled application can't run certain Matlab statements; like addpath. You will need to wrap some code with `if ~isdeployed` type statement to prevent it from getting executed.
+* If you use OpenMP, install the `libgomp1` library in your MCR container.
+* Compiled code cannot run some MATLAB statements, such as `addpath`. Wrap such code in `if ~isdeployed` so it does not run.
 
 !!! note
-        If you are loading any custom paths via startup.m, those paths may influence how your binary is compiled. At the moment, I don't know a good way to prevent it from loaded when you run build.m. The only workaround is to temporarily rename your startup.m to something else while you are compiling your code.s
+    Custom paths set in `startup.m` can affect how your code compiles. A workaround is to rename `startup.m` temporarily while you compile.
 
-### Loading custom Matlab data structure
+### Loading custom MATLAB data structures
 
-If your Matlab code is loading (by doing something like `load('data.mat')`) any custom data structures (like a sparse tensor array in encode's fe structure), addpath() is not enough to include them into the compiled binary. You will need to explicitly tell Matlab compiler that you are using those data structures by including a special comment like the following.
+If your code loads custom data structures (for example with `load('data.mat')`, such as the sparse tensor array in encode's `fe` structure), `addpath()` is not enough to include their classes in the executable. Tell the compiler about them with a special comment like this:
 
 `%# function sptensor`
 
-This tells the Matlab compiler to include the sptensor class to the compiled binary.
+This tells the compiler to include the `sptensor` class.
 
-## Creating Docker Container
+## Creating a Docker container
 
-There are quite a few materials detailing how to write Dockerfile / containers online. If you are looking for a place to start, we recommend [Docker's Getting Started Guide](https://docs.docker.com/get-started/){target=_blank}.
+There are many guides to writing a Dockerfile. A good place to start is [Docker's Getting Started guide](https://docs.docker.com/get-started/){target=_blank}.
 
-As most Brainlife Apps execute Docker containers through singularity, there are a few Brainlife specific items that you might need to be aware so that your App will run properly on Brainlife.
+Because most brainlife.io Apps run Docker containers through Singularity, a few details matter for your App to run correctly.
 
 ### ldconfig
 
-As singularity runs containers as a normal user, we must perform some OS-level initialization steps outside the singularity.
+Singularity runs containers as a normal user, so some system setup has to happen when you build the image.
 
-When Docker installs OS packages, it won't initialize dynamically linked library links until they are first invoked. As singularity runs as a normal user with set uid disabled, it won't be able to setup these paths once the container is executed through singularity. To fix this, we can run `ldconfig` command. This command creates the necessary links and cache to the most recent shared libraries installed in the lib directories. In your Dockerfile, please be sure to run ldconfig as the last command. Like...
+When Docker installs system packages, it may not create the links for shared libraries until they are first used. Under Singularity the container runs as a normal user and cannot create them. Run `ldconfig` as the last command in your Dockerfile; it creates the links and cache for the shared libraries in the library directories:
 
 ```
 #make it work under singularity
 RUN ldconfig 
 ```
 
-### IU HPC paths
+### Mount points on older hosts
 
-Some OS (like RHEL6) don't allow singularity to mount a host path unless there is a corresponding directory already present inside the container (due to lack of overlayfs support by the kernel).
+Some older operating systems (such as RHEL 6) only let Singularity mount a host path if the same directory already exists in the container, because the kernel lacks overlay support.
 
-To make your App run on RHEL6 hosts (like IU Karst), please add following somewhere inside your Dockerfile
+If your App must run on such a host, create the mount points in your Dockerfile. For example, for the paths used on Indiana University clusters:
 
 ```
 RUN mkdir -p /N/u /N/home /N/dc2 /N/soft
 ```
 
-### Use Bash 
+### Use bash
 
-If you are using ubuntu, by default it changes the default /bin/sh to point to a thing called "dash" rather than "bash". "dash" is simpler/faster to load than "bash", but unfortunately it breaks a lot of programs that expect /bin/sh to point to bash. To correct this, you can add following in your Dockerfile to reset it to bash.
+On Ubuntu, `/bin/sh` points to `dash`, not `bash`. `dash` loads faster, but many programs expect `/bin/sh` to be `bash`. To reset it, add this to your Dockerfile:
 
 ```
 #https://wiki.ubuntu.com/DashAsBinSh
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 ```
 
-Now, your container should be ready to GO!
+Your container is now ready.
 
-## Example Dockerfile for environment containers
+## Example Dockerfile for an environment container
 
 * [brainlife/app-dipy-workflows](https://github.com/brainlife/app-dipy-workflows/blob/master/Dockerfile){target=_blank}
-* [brainlife/docker-mcr](https://github.com/brainlife/docker-mcr){target=_blank}
+* MATLAB Runtime images: [brainlife/mcr on Docker Hub](https://hub.docker.com/r/brainlife/mcr/tags){target=_blank}
 
-## Examples Apps using environment containers
+## Example Apps that use environment containers
 
-* [github brainlife/app-freesurfer](https://github.com/brainlife/app-freesurfer){target=_blank}
-* [github brainlife/app-wmaSeg](https://github.com/brainlife/app-wmaSeg){target=_blank}
-
+* [brainlife/app-freesurfer](https://github.com/brainlife/app-freesurfer){target=_blank}
+* [brainlife/app-wmaSeg](https://github.com/brainlife/app-wmaSeg){target=_blank}
