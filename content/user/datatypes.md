@@ -29,6 +29,40 @@ Datatypes and [BIDS](https://bids-specification.readthedocs.io/en/stable/){targe
 - **BIDS** organizes a whole dataset on disk: folders, subjects, sessions and metadata.
 - **Datatypes** describe one item of data, raw or derived, so that an App receives exactly the files it expects, whoever produced them.
 
+Each datatype records how it corresponds to BIDS (a BIDS datatype such as `anat` plus a suffix such as `T1w`):
+
+| Match | Meaning | Example |
+| :--- | :--- | :--- |
+| **Equivalent** | Same content and files as the BIDS suffix. | `neuro/anat/t1w` and `anat/T1w` |
+| **Partial** | A subset or superset, several suffixes bundled, or tags needed to tell them apart. | `neuro/fmap` and the `fmap` suffixes |
+| **None** | BIDS has no counterpart, usually because BIDS does not standardize that derivative. | `neuro/tractmeasures` |
+
+BIDS sidecar files (`.json`, `.tsv`) are either carried as files, rebuilt on export from the metadata brainlife.io keeps for each dataset, or noted as missing. The export to BIDS uses this mapping.
+
+---
+
+## The datatype catalog
+
+Every datatype has a record in the [datatype catalog](https://github.com/brainlife/abcd-spec/tree/master/datatypes){target=_blank} on GitHub. The short readme on a datatype's page summarizes it and links to the full record, which holds:
+
+- what the datatype is and what each of its files contains;
+- what it can and cannot be used for;
+- the Apps that read or write it, and why;
+- its BIDS mapping (above);
+- **sharing defaults**, from the [Global Brain Governance toolkit](https://braindatagovernance.org){target=_blank}: whether it is human neurodata, a default tier, the conditions that change the tier, the kinds of information it can reveal, and what to check before sharing.
+
+| Tier | Meaning | Example |
+| :--- | :--- | :--- |
+| 1 | Aggregated, no participant-level records | group statistics, segmentation scores |
+| 2 | Participant-level, no direct identifiers | preprocessed diffusion data, tractograms |
+| 3 | Directly identifiable or traceable | a T1w image that has not been defaced (the face is visible) |
+| 4 | Functionally revealing derivatives | connectivity matrices used as fingerprints |
+| 5 | Model-associated | model weights trained on neurodata |
+
+A tier is a default for the datatype. The data itself decides: for example, a defaced T1w image moves from tier 3 to tier 2. When in doubt, treat data as the more protective tier.
+
+The catalog is reviewed on GitHub before anything changes on brainlife.io, and the same records list candidate new datatypes drawn from BIDS for review.
+
 ---
 
 ## Browse datatypes
@@ -48,6 +82,17 @@ A datatype's page shows:
 - **Upload Instructions**: how to upload data of this type with the command-line tool.
 
 To create a datatype, open **My Datatypes**, select **Datatype** (the button with a plus sign), enter a **Name** and **Description**, and select **Create datatype**. You can add files, tags and a validator after it is created.
+
+---
+
+## Validation
+
+When a dataset is uploaded (from the web app or with `bl data upload`), brainlife.io runs the datatype's **validator** before archiving it. The validator checks the files and reports:
+
+- **Errors**, which stop the upload: a required file is missing, a file is empty, or a file is not in its format (for example a truncated `.nii.gz`, a file that is not a NIfTI image, or JSON that does not parse).
+- **Warnings**, which are shown but let the upload through: for example a TSV file with uneven columns, or `bvals` and `bvecs` with different numbers of entries.
+
+Some datatypes have their own validator (for example `brainlife/validator-neuro-anat`, which also checks image dimensions). Datatypes without one use [`brainlife/validator-catalog`](https://github.com/brainlife/validator-catalog){target=_blank}, which checks any datatype from its file list in the catalog. Its README lists every check. The **Supports validation** filter on the Datatypes page shows which datatypes have a validator.
 
 ---
 
