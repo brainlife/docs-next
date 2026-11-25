@@ -31,7 +31,7 @@ import { getGithubEditUrl, SLACK_URL } from '@/lib/docsNavigation';
 import { getAssetPath } from '@/lib/basePath';
 
 const HOME_HEADINGS: TocHeading[] = [
-    { id: 'what-is-brainlife', text: 'What is Brainlife?', level: 1 },
+    { id: 'what-is-brainlife', text: 'What is brainlife.io?', level: 1 },
     { id: 'apps', text: 'Apps', level: 2 },
     { id: 'projects', text: 'Projects', level: 2 },
     { id: 'publications', text: 'Publications', level: 2 },
@@ -46,7 +46,7 @@ export default function HomePage() {
 
     const handleCopyCode = () => {
         navigator.clipboard.writeText(
-            '# Run a brainlife app with the CLI\nbrainlife run <app-id> --input /path/to/data --output /path/to/results'
+            '# Run an App on a dataset with the brainlife CLI\nbl app run --id <app-id> --input <input-id>:<dataset-id> --project <project-id>'
         );
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -69,10 +69,10 @@ export default function HomePage() {
                             id="what-is-brainlife"
                             className="text-3xl sm:text-4xl font-semibold text-bl-ink tracking-tight"
                         >
-                            What is Brainlife?
+                            What is brainlife.io?
                         </h1>
                         <p className="text-sm sm:text-base text-bl-muted mt-2 font-normal">
-                            A platform for reproducible neuroscience powered by open science, cloud computing, and community.
+                            Brain data across scales. One place to analyze, share and publish it.
                         </p>
                     </div>
 
@@ -92,17 +92,17 @@ export default function HomePage() {
                 <div className="bg-bl-band border border-bl-line rounded-2xl p-6 sm:p-7 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex-1 text-bl-ink text-xs sm:text-sm leading-relaxed space-y-3">
                         <p>
-                            <strong className="text-bl-ink font-semibold">brainlife.io</strong> promotes engagement and education in reproducible neuroscience by providing an online, community-based platform where users can publish code (Apps) and Data while integrating HPC and cloud-computing resources to run Apps. brainlife.io also allows users to publish all of the research assets associated with their projects that are embedded in our cloud-computing environment and referenced by a single digital-object identifier (DOI). Our platform is unique because of its focus on supporting scientific reproducibility beyond open code and open data &mdash; brainlife.io also provides fundamental smart mechanisms for what we call &ldquo;Open Services.&rdquo;
+                            <strong className="text-bl-ink font-semibold">brainlife.io</strong> is an open platform from The University of Texas at Austin for brain data across scales: electron and light microscopy, PS-OCT, MRI, fMRI, EEG and MEG. You bring data in from your computer or from public archives, run reproducible analyses as Apps on shared supercomputers, look at the results in your browser, and publish them with a DOI. brainlife.io is free for researchers.
                         </p>
                         <p>
-                            Below, you will learn about the main panel of tools you will encounter as soon as you log into brainlife.io. While these run-through are brief, you&rsquo;ll learn much more about each feature as you review the rest of brainlife.io&rsquo;s documentation.
+                            This page introduces the main ideas in the order you meet them. Each section links to a page with the details. When you are ready, go to <a href={getAssetPath('/docs/user/started')} className="text-bl-accent underline">Getting started</a>.
                         </p>
                     </div>
 
                     <div className="w-full md:w-56 lg:w-64 h-40 sm:h-48 relative shrink-0 flex items-center justify-center p-2">
                         <Image
                             src={getAssetPath('/brand/brainlife-mark-lightblue-orange-app-on-light.svg')}
-                            alt="Brainlife Logo"
+                            alt="brainlife.io logo"
                             fill
                             className="object-contain dark:hidden"
                             priority
@@ -289,14 +289,15 @@ export default function HomePage() {
                             </button>
                         </div>
                         <div className="p-4 space-y-1.5 overflow-x-auto text-xs sm:text-sm leading-relaxed">
-                            <div className="text-bl-code-muted"># Run a brainlife app with the CLI</div>
+                            <div className="text-bl-code-muted"># Run an App on a dataset with the brainlife CLI</div>
                             <div>
-                                <span className="text-brand-lightblue font-medium">brainlife run</span>{' '}
+                                <span className="text-brand-lightblue font-medium">bl app run</span>{' '}
+                                <span className="text-bl-code-muted">--id</span>{' '}
                                 <span className="text-bl-code-ink">&lt;app-id&gt;</span>{' '}
                                 <span className="text-bl-code-muted">--input</span>{' '}
-                                <span className="text-brand-orange">/path/to/data</span>{' '}
-                                <span className="text-bl-code-muted">--output</span>{' '}
-                                <span className="text-brand-orange">/path/to/results</span>
+                                <span className="text-brand-orange">&lt;input-id&gt;:&lt;dataset-id&gt;</span>{' '}
+                                <span className="text-bl-code-muted">--project</span>{' '}
+                                <span className="text-brand-orange">&lt;project-id&gt;</span>
                             </div>
                         </div>
                     </div>
@@ -316,7 +317,7 @@ export default function HomePage() {
                         </h2>
                     </div>
                     <p className="text-xs sm:text-sm text-bl-ink leading-relaxed">
-                        The best way to manage your data is with brainlife.io&rsquo;s Projects feature. Here you can organize your datasets, perform data processing, and share results with your team by granting varying levels of access to members of your group. Projects can be public or private.
+                        A project is your workspace. It holds your data, your processing, your notebooks and your publications, and you share it with your team. Each person in a project is an admin, a member or a guest: admins edit the settings, members process data, and guests view. A project is public or private.
                     </p>
                 </section>
 
@@ -334,7 +335,7 @@ export default function HomePage() {
                         </h2>
                     </div>
                     <p className="text-xs sm:text-sm text-bl-ink leading-relaxed">
-                        Once a Project is mature, the data is analyzed and all the derivatives generated, a portion of the Project can be made public via a brainlife.io publication. A brainlife.io publication creates a snapshot of your datasets and Apps archived on brainlife.io for at least 10 years. Anyone can access your publication page and download your datasets without logging or reuse the Apps and data on brainlife.io.
+                        When your results are ready, you publish them. A publication is a citable record with a DOI that describes and shares your results; the DOI is assigned when you create it. A publication can hold releases of your data and the Apps and notebooks that produced them. Find yours under My Publications and everyone&rsquo;s under Public Publications.
                     </p>
                 </section>
 
@@ -353,10 +354,10 @@ export default function HomePage() {
                     </div>
                     <div className="text-xs sm:text-sm text-bl-ink leading-relaxed space-y-3">
                         <p>
-                            Think of brainlife Datatypes as the way brainlife Apps communicate. A Datatype defines the expected list of filenames or the directory structure that an App can use as input or generate as output. Typically, multiple Apps use the same Datatype to communicate through their input and output datasets and reuse data to generate more data derivatives. Datatypes help join Apps together to form a pipeline or workflows.
+                            Datatypes are how brainlife.io Apps communicate. A Datatype defines the expected list of filenames or the directory structure that an App can use as input or generate as output. Typically, multiple Apps use the same Datatype to communicate through their input and output datasets and reuse data to generate more data derivatives. Datatypes help join Apps together to form a pipeline or workflows.
                         </p>
                         <p>
-                            brainlife Datatypes are maintained by individual developers and are updated at{' '}
+                            brainlife.io datatypes are maintained by individual developers and are updated at{' '}
                             <a
                                 href="https://brainlife.io/datatypes"
                                 target="_blank"
@@ -383,7 +384,7 @@ export default function HomePage() {
                         </h2>
                     </div>
                     <p className="text-xs sm:text-sm text-bl-ink leading-relaxed">
-                        Our Datasets feature offers more than 300 datasets that users can import. This feature was established as part of a project that brainlife.io is collaborating with DataLad on. brainlife.io&rsquo;s Datasets feature allows you to select and import the DataLad datasets you need from our list.
+                        A dataset is one item of project data: the files of one datatype for one subject (and session). Copy datasets into a project from Public Datasets, which brings together DANDI, EMBER, BossDB, OpenNeuro and the brainlife.io Dataset Library, copy them from another project, or upload your own.
                     </p>
                 </section>
 
@@ -402,10 +403,10 @@ export default function HomePage() {
                     </div>
                     <div className="text-xs sm:text-sm text-bl-ink leading-relaxed space-y-3">
                         <p>
-                            We know it takes a lot of computing power to run workflows. That is why brainlife.io allows users to work with data and computers across a mix of cloud systems and high-performance computing clusters (HPC). Both brainlife.io users and compute resource providers can register a compute resource that is publicly available to the entire brainlife.io community or privately available to certain users.
+                            A resource is a computer, a cluster or a cloud that runs your jobs. Public resources are shared by everyone; you can also register private resources and enable them for your projects. Jobs run on TACC, Jetstream2 and ACCESS. Find them under Public Resources and My Resources in the sidebar.
                         </p>
                         <p>
-                            Our compute resources are unique because, instead of running an entire workflow on a single resource, App developers can identify the best resource for each individual App by scoring brainlife.io&rsquo;s compute resources on how well they work with each App. brainlife.io automatically keeps track of success rate and time to compute so that users can easily see how efficiently each resource processes data for each App.
+                            Each resource lists the Apps it runs, with a score; brainlife.io sends each job to the best available resource and tracks success rates and run times for every App.
                         </p>
                     </div>
                 </section>
@@ -424,7 +425,7 @@ export default function HomePage() {
                         </h2>
                     </div>
                     <p className="text-xs sm:text-sm text-bl-ink leading-relaxed">
-                        Users can perform data visualizations on brainlife.io in the cloud instead of on their own computer, which means better security and data management. Data visualization gives users feedback on the quality of the results generated by Apps and pipelines. The visualizations allow users to run popular software for data visualization like FreeView, FSLview, or MRview. Users can additionally run GPU-rendered visualizations on the cloud through Docker and VNC. Similar to Apps, developers can contribute visualizations to the platform.
+                        You look at data in your browser, without downloading it. Select a dataset and choose a viewer for its datatype, for example NiiVue for volumes, surfaces and streamlines, or Neuroglancer for large microscopy and EM volumes. Some datatypes also offer desktop programs streamed to your browser.
                     </p>
                 </section>
 
@@ -435,7 +436,7 @@ export default function HomePage() {
                             Are you ready to start using brainlife.io?
                         </h3>
                         <p className="text-xs sm:text-sm text-bl-code-muted m-0 mt-1">
-                            Follow our step-by-step onboarding guide to set up your account and launch your first pipeline.
+                            Follow the step-by-step guide to set up your account, create a project and run your first App.
                         </p>
                     </div>
                     <Link
