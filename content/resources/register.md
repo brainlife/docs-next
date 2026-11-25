@@ -1,20 +1,20 @@
 !!! note
-You need to be a resource owner in order to register you own resource. Please contact mailto:brainlife.io@gmail.com.
+You need to be a resource owner to register your own resource. Contact brainlife.io at [brainlife.io@gmail.com](mailto:brainlife.io@gmail.com).
 
 ## Background
 
-Brainlife provides a mechanism to make a computing resource, such as a Cloud compute system or a high-performance computing cluster, available to specific user, projects or user defined groups. By default, shared compute resources are available to all users where most of Brainlife apps are enabled. 
+brainlife.io lets you make a compute resource, such as a cloud system or a high-performance computing cluster, available to specific users and projects. By default, shared public resources are available to all users, and most brainlife.io Apps are enabled on them.
 
-As Brainlife's default resources are available by all users, often users must wait on the queue for requested tasks to get executed. You can register your own compute resources for the following use cases.
+Because everyone uses the public resources, jobs sometimes wait in the queue. You can register your own compute resource in these cases:
 
-1. You have access to your own HPC resource, and you'd like to use it to run Brainlife apps, for better performance, or better access control.
+1. You have access to your own HPC resource, and you'd like to use it to run brainlife.io Apps, for better performance, or better access control.
 2. You are an app developer and you'd like to use your own resource to troubleshoot your apps on your own resource, for easier debugging.
-3. You are an app developer and your app can only run on specialized resources (like Hadoop, Spark, etc..) that Brainlife's shared resources do not provide.
+3. You are an app developer and your app can only run on specialized resources (like Hadoop, Spark, etc..) that the public brainlife.io resources do not provide.
 
-Currently, only Brainlife admin can share personal resources with other members. If you wish to share your resources, please contact [Brainlife Admin](mailto:brainlife.io@gmail.com)
+Only brainlife.io administrators can make a resource available to all projects. To share your resource that way, contact the [brainlife.io administrators](mailto:brainlife.io@gmail.com).
 
 !!! note
-	Resource owner decides which apps are allowed to run on their resource. If you register a resource and enable apps on it, only you can run those apps on that resource. If you are publishing your app, and you want all users to be able to execute your app, please contact [Brainlife Admin](mailto:brainlife.io@gmail.com) to enable your app on Brainlife default resources.
+	Resource owner decides which apps are allowed to run on their resource. If you register a resource and enable apps on it, only you can run those apps on that resource. If you are publishing your app, and you want all users to be able to execute your app, contact the [brainlife.io administrators](mailto:brainlife.io@gmail.com) to enable your App on the public resources.
 
 !!! warning
 	Although we do our best to limit access to your dataset on shared resources, we recommend registering your own resource for added security
@@ -26,7 +26,7 @@ Before you can register your resource, you should make sure that your resource i
 
 ### ABCD Default Hooks
 
-[ABCD Hooks](https://github.com/brainlife/abcd-spec){target=_blank} are used to start, stop and monitor apps on remote resources. Some app provides its own hooks, but many of them relies on default hooks that are installed on each resource. As a resource provider, you need to provide these default hooks and make them available by setting `$PATH`. If you are not sure how to write these scripts, you can install and use Brainlife's default ABCD hooks by doing following.
+[ABCD Hooks](https://github.com/brainlife/abcd-spec){target=_blank} are used to start, stop and monitor apps on remote resources. Some app provides its own hooks, but many of them relies on default hooks that are installed on each resource. As a resource provider, you need to provide these default hooks and make them available by setting `$PATH`. If you are not sure how to write these scripts, you can install and use the default brainlife.io ABCD hooks:
 
 ```
 cd ~
@@ -82,9 +82,9 @@ mkdir /N/slate/<username>/brainlife-workdir
 
 ### Common Binaries
 
-Brainlife expects certain binaries to be installed on all resources. Please make sure following commands are installed.
+brainlife.io expects these binaries on every resource. Please make sure following commands are installed.
 
-* jq (command line json parser commonly used by Brainlife apps to parse config.json)
+* jq (command line JSON parser that many brainlife.io Apps use to read config.json)
 * git (used to clone / update apps installed)
 * singularity (user level container execution engine)
 * node (some app uses node to generate job submission file)
@@ -135,9 +135,15 @@ export BRAINLIFE_MAXTASKS=24
 
 ## Registering Resources
 
-To register your resource, go to the [resources](https://brainlife.io/resources){target=_blank} page, and click "Add New Account". A resource entry form should appear. Please populate the following fields.
+To register your resource:
 
-* *Name* Enter the name of rhe resource
+1. In the sidebar, select **My Resources**.
+2. Select **Resource** (the plus button).
+3. In **Create New Resource**, choose the **Resource Type** (**SSH (traditional HPC)** or **AWS Batch**), enter the **Resource Name**, choose the **Projects** that can use it, and select **Create Resource**.
+
+An SSH resource needs the following settings:
+
+* *Name*: the name of the resource
 * *Hostname* The hostname of your compute resource (usually a login/submit host)
 * *Username* Username used to ssh to this resource
 * *Workdir* Directory used to stage and store generated datasets by apps. *You should not share the same directory with other resources*. Please make sure that the specified directory exits (mkdir if not).
@@ -148,14 +154,17 @@ You can leave the rest of the fields empty for now.
 !!! warning
 	IU HPC systems requires you to submit [ssh public key agreement form](https://uitsradl-fireform.eas.iu.edu/online/form/authen/sshkeyagreement){target=_blank} so that you can authenticate using your ssh public key.
 
-Click OK. Once you are finished with copying ssh key and make sure the workdir exists, click "Test" button to see if Brainlife can access your resource. You should see a green checkbox if everything is good.
+When you have copied the SSH key and the workdir exists, open the resource page and select **Test Resource** to check that brainlife.io can reach your resource.
 
 ## Enabling Apps
 
 Once you have registered and tested your resource, you can now enable apps to run on your resource.
 
-Go back to the Brainlife's [resources](https://brainlife.io/resources){target=_blank} page, and click the resource you have created. Under the services section, enter the git org/repo name (such as like `brainlife/app-life`) for the app that you'd like to enable, and the score for each service. The higher the score is, the more likely the resource will be chosen to run your app (if there are multiple resources available). Brainlife gives higher score for resources that you own (not shared ones), you should leave it the default of 10 unless it's competing with other resource that you have access to. Click OK.
+1. In **My Resources**, open the resource you created and select **Edit**.
+2. Open the **Apps** tab. Under **Allowed apps** ("Only apps listed here are submitted to this resource."), add each App you want to enable by its GitHub org/repo name (such as `brainlife/app-life`).
+3. Set a score for each App. The higher the score, the more likely this resource runs the App when several resources are available. brainlife.io gives a higher score to resources you own than to shared ones, so keep the default of 10 unless the resource competes with another resource you can use.
+4. Select **Save Changes**.
 
-You can see which resource an app is configured to run, and which resource will be chosen when you submit it under App detail / Computing Resources section on Brainlife. [example](https://brainlife.io/app/58c56cf7e13a50849b258800){target=_blank}
+To see which resources run an App, and which one will be chosen when you run it, open the App page and look under **Computing Resources**. [example](https://brainlife.io/app/58c56cf7e13a50849b258800){target=_blank}
 
 

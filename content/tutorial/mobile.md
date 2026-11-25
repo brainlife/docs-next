@@ -1,18 +1,18 @@
-## Brainlife Mobile App Tutorial
+## brainlife.io Mobile App Tutorial
 
-The **Brainlife** app is the official app for the brainlife.io platform. It allows you to monitor and manage your projects, datasets, apps, and publications on the go, bringing brainlife.io's neuroimaging analysis directly to your mobile device.
+The brainlife.io mobile app is the official app for the brainlife.io platform. Use it to monitor and manage your projects, datasets, Apps and publications from your phone.
 
-This page highlights the step-by-step instructions on how to perform key operations in the Brainlife app, including authenticating your account, creating a project, subscribing to notification alerts, importing datasets, running processes via Quick Run, submitting custom apps, setting up automation pipelines, executing quality control validation, and monitoring playgrounds.
+This page shows you how to do the key tasks in the mobile app: sign in, create a project, subscribe to notifications, import datasets, run Apps with Quick Run, run Apps from the process list, set up automations, check quality, and monitor playgrounds.
 
 ---
 
 ### A. Authenticate and Log In
 
-Before managing and processing your neuroimaging data on the go, you must sign in to your Brainlife account.
+Before you can manage and process your data, sign in to your brainlife.io account.
 
-1. Open the **Brainlife Mobile** app on your device.
+1. Open the brainlife.io mobile app on your device.
 2. Choose your preferred authentication method:
-    * **Username and Password**: Enter your Brainlife credentials directly in the login form and tap **Sign In**. The app securely authenticates with the Brainlife servers.
+    * **Username and Password**: Enter your brainlife.io credentials in the login form and tap **Sign In**.
     * **Third-Party Providers**: Tap **Google**, **GitHub**, **ORCID**, or **Apple**. The app will launch a secure system browser session to complete the authentication.
 
 ---
@@ -46,9 +46,9 @@ Stay informed of processing updates, failures, or completions by subscribing to 
 
 ---
 
-### D. Copy and Stage Datasets
+### D. Copy Datasets
 
-To run analysis tasks on your staged project, you must first import neuroimaging datasets.
+To run Apps in your project, first add datasets to it.
 
 1. Navigate to the project page and tap the **Data** tab.
 2. Tap either **Copy from Another Project** or **Import Public Dataset**.
@@ -59,8 +59,8 @@ To run analysis tasks on your staged project, you must first import neuroimaging
 4. To copy project data:
     * Select the target project to open its details.
     * Tap the **Copy to Project** action button.
-    * In the modal that appears, select the specific neuroimaging data types you wish to copy.
-    * Tap **Submit** to finalize staging.
+    * In the dialog, select the datatypes you want to copy.
+    * Tap **Submit** to copy them.
 
 ![Select Project to Copy](../img/mobile/select_project_to_copy.png){: style="max-width: 200px; width: 100%;"}
 
@@ -68,7 +68,7 @@ To run analysis tasks on your staged project, you must first import neuroimaging
 
 ### E. Run a Task via Quick Run
 
-For standard analyses, you can initiate a process execution directly using the simplified Quick Run interface.
+For standard analyses, start a process directly with Quick Run.
 
 1. Tap the **Processing** tab of your project.
 2. Tap the **Quick Run** card.
@@ -79,19 +79,19 @@ For standard analyses, you can initiate a process execution directly using the s
 
 ![Select Dataset](../img/mobile/select_data.png){: style="max-width: 200px; width: 100%;"}
 
-4. On the **Select App** tab, the app catalog automatically recommends pipelines and apps based on the datatype and input requirements of your selected dataset.
+4. On the **Select App** tab, the catalog recommends Apps that accept the datatype of your selected dataset.
 
 ![Select App](../img/mobile/select_app.png){: style="max-width: 200px; width: 100%;"}
 
-5. Select the desired app, configure the app settings according to your research parameters, and tap the **Run** button.
+5. Select the App, configure its settings, and tap **Run**.
 
 ![Run App](../img/mobile/run_app.png){: style="max-width: 200px; width: 100%;"}
 
 ---
 
-### F. Submit a Job via View Processes
+### F. Run an App from View Processes
 
-For custom execution workflows, you can submit apps directly from the project's active processes timeline.
+For custom workflows, add Apps directly from the project's list of processes.
 
 1. Navigate to the **Overview** tab of your project detail screen.
 2. Scroll to the **Quick Actions** section and tap **View Processes**.
@@ -102,30 +102,30 @@ For custom execution workflows, you can submit apps directly from the project's 
 
 ![Submit App](../img/mobile/submit_app.png){: style="max-width: 200px; width: 100%;"}
 
-4. Browse or search for your desired app in the App Store catalog, define the inputs, and submit the process.
+4. Browse or search the App catalog, choose the inputs, and submit.
 
 ---
 
-### G. Create an Automation Rule (Pipeline)
+### G. Create an Automation (Pipeline)
 
-Automation rules allow you to define processing pipelines that run automatically on new matching subject data as soon as it is archived or copied to the project.
+An automation runs an App on every subject that has matching data, as soon as that data is archived or copied to the project. A project's automations make up its pipeline.
 
-1. Access the **Create Automation Rule** wizard via the project pipeline interface.
-2. Follow the four-step stepper timeline to construct your pipeline:
-    * **Step 1: Select App**: Choose the Brainlife app to run.
-    * **Step 2: Configure Rule**: Enter the automation rule's name, description, Git branch (defaults to `master`), and toggle parameters like **Cleanup on Success** or string matching criteria for subjects and sessions.
-    * **Step 3: Configure Inputs**: Define the input query tags and configure overrides (project, subject, or session overrides).
-    * **Step 4: Configure Outputs**: Set up your output archiving behavior and append custom output tags.
-3. Tap **Submit** to deploy your rule. The background system will continuously process any matching incoming datasets.
+1. Open the **Create Automation Rule** wizard from the project pipeline screen.
+2. Follow the four steps:
+    * **Step 1: Select App**: choose the App to run.
+    * **Step 2: Configure Rule**: enter the automation's name, description, Git branch (defaults to `master`), and toggle parameters like **Cleanup on Success** or string matching criteria for subjects and sessions.
+    * **Step 3: Configure Inputs**: set the datatype tags and annotations the inputs must have, and any project, subject or session overrides.
+    * **Step 4: Configure Outputs**: choose whether to archive each output and add annotations to it.
+3. Tap **Submit** to save the automation. From then on it processes every new matching dataset.
 
 ---
 
 ### H. Visual Quality Control and Validation
 
-Brainlife Mobile features a native **Validator** screen designed for rapid quality control (QC) of finished processing tasks:
+The mobile app has a **Validator** screen for quick quality control (QC) of finished jobs:
 
-1. Locate a completed task in the **Processing** tab.
-2. Select the task to open its dedicated **Validator** screen.
+1. Find a finished job in the **Processing** tab.
+2. Select it to open its dedicated **Validator** screen.
 3. Inspect 2D cross-sectional slices of the resulting brain maps across three orthogonal planes: **Sagittal**, **Coronal**, and **Axial**.
 4. Toggle between **Standard** and **ACPC** space orientations to visually inspect alignments.
 5. Previews are generated as secondary PNG images for mobile efficiency. For full-resolution interactive exploration, download or view the primary dataset.
@@ -145,7 +145,7 @@ Computational playgrounds provide interactive computing instances for custom tas
 
 ### J. Real-Time Notification Feed
 
-The global **Notification Feed** acts as a unified hub for tracking activity across all your Brainlife projects.
+The global **Notification Feed** acts as a unified hub for tracking activity across all your brainlife.io projects.
 
 * **Activity Summary**: Monitor task status changes (Success, Failure, Staged, etc.) in a consolidated feed.
 * **Relative Timestamps**: Each card displays human-readable relative time (e.g., "now", "12m ago", "3h ago").

@@ -1,14 +1,14 @@
 # Functional MRI (fMRI) Preprocessing
 
-This tutorial demonstrates standard steps used to preprocess functional magnetic resonance imaging (fMRI) data on **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank}).
+This tutorial demonstrates standard steps used to preprocess functional magnetic resonance imaging (fMRI) data on **brainlife.io** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank}).
 
 The goal of this tutorial is to process raw BOLD fMRI scans and structural data into analysis-ready outputs for:
 * **Functional activation & region-of-interest (ROI) analysis**
 * **Functional connectivity network matrices** (measuring synchronous BOLD signal correlations across brain networks)
 
-We will use the gold-standard pipeline **[fMRIPrep](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6319393/){target=_blank}** ([fMRIPrep - Volume Output](https://brainlife.io/app/5c61c69f14027a01b14adcb3){target=_blank}) on Brainlife.
+You will use **[fMRIPrep](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6319393/){target=_blank}** ([fMRIPrep - Volume Output](https://brainlife.io/app/5c61c69f14027a01b14adcb3){target=_blank}) on brainlife.io.
 
-This tutorial builds on concepts from the [Introduction to Brainlife Connects](/docs/tutorial/introduction-to-brainlife) and [Anatomical Preprocessing](/docs/tutorial/t1w-preprocessing) tutorials.
+This tutorial builds on concepts from the [Introduction to brainlife.io](/docs/tutorial/introduction-to-brainlife) and [Anatomical Preprocessing](/docs/tutorial/t1w-preprocessing) tutorials.
 
 ---
 
@@ -46,77 +46,76 @@ Functional BOLD scans suffer from several common acquisition artifacts:
 
 ## Step 1: Copy Tutorial Data
 
-We will use open tutorial data from the [Brainlife Tutorial Data Project](https://brainlife.io/project/5e7638f6de643b02832a8246/detail){target=_blank}:
+You will use open tutorial data from the [brainlife.io Tutorial Data project](https://brainlife.io/project/5e7638f6de643b02832a8246/detail){target=_blank}:
 
-1. Go to your project on [Brainlife Connects](https://connects.brainlife.io/){target=_blank}.
-2. Navigate to the **2. Data** tab and click **Add Project Data**.
-3. Select **Copy from another Project**, locate the *Tutorial Data* project (`5e7638f6de643b02832a8246`), and copy the following modalities for subject `test002`:
+1. Open your project on [brainlife.io](https://connects.brainlife.io/){target=_blank}.
+2. Go to the **2. Data** tab and open the **Project Data** menu.
+3. Choose "Copy Data From another Project", open the *Tutorial Data* project (`5e7638f6de643b02832a8246`), and copy these datasets for subject `test002` to your project:
     * `func/task rest` (BOLD fMRI)
     * `anat/t1w` (T1w anatomical)
     * `anat/t2w` (T2w anatomical)
     * `fmap` (Spin-echo fieldmaps)
-4. Confirm to stage the data into your project's **Data** inventory.
+4. Confirm. The datasets appear in your project's **Project Data** table.
 
 ---
 
 ## Step 2: Preprocess Anatomical Data (FSL Anat)
 
 ### T1w Preprocessing
-1. In the **2. Data** tab, select your `anat/t1w` dataset and click **Stage to process**.
-2. Name the process `fMRI Prep Pipeline` and confirm.
-3. Switch to the **3. Processing** tab and select the **Processes** view.
-4. Select your process and click **Submit App**.
-5. Search for **FSL Anat (T1)** and configure:
-    * **t1**: Select your staged raw T1w dataset.
-    * Check **crop** and **reorient**.
-6. Click **Submit**.
+1. On **2. Data**, select your `anat/t1w` and `anat/t2w` datasets and select **Stage to process**.
+2. In **Add to process**, choose "Create a new process", name it `fMRI Prep Pipeline`, and select **Add and open editor**.
+3. In the process editor, select **Add App**.
+4. **Select App**: search for **FSL Anat (T1)** and select it.
+5. **Configure App Settings**: turn on **crop** and **reorient**.
+6. **Select Inputs**: for **t1**, choose your raw T1w dataset.
+7. **Configure Outputs**: keep **Archive Output** on, then select **Add App**.
 
 ### T2w Preprocessing
-1. In the **Processes** view, click **Submit App** again.
-2. Search for **FSL Anat (T2)**:
-    * **t2**: Select your staged raw T2w dataset.
-    * Check **crop** and **reorient**.
-3. Click **Submit**.
+1. In the process editor, select **Add App** again.
+2. **Select App**: search for **FSL Anat (T2)** and select it.
+3. **Configure App Settings**: turn on **crop** and **reorient**.
+4. **Select Inputs**: for **t2**, choose your raw T2w dataset.
+5. **Configure Outputs**: keep **Archive Output** on, then select **Add App**.
 
-Once complete, verify both anatomical outputs using the built-in **NiiVue Volume Viewer** (Eye icon).
+When both jobs finish, check the anatomical outputs: select **Visualize** and choose the NiiVue volume viewer.
 
 ---
 
 ## Step 3: Reconstruct Cortical Surfaces (FreeSurfer 7.3.2)
 
-1. In the **Processes** view of your project, click **Submit App**.
-2. Search for **FreeSurfer 7.3.2**.
-3. Configure the inputs:
-    * **t1**: Select your ACPC-aligned T1w output from FSL Anat (`acpc_aligned` tag).
-    * **t2**: Select your ACPC-aligned T2w output from FSL Anat (`acpc_aligned` tag).
-    * Check **hippocampal** and **thalamicnuclei** (optional subfield segmentations).
-4. Click **Submit**.
+1. In the process editor, select **Add App**.
+2. **Select App**: search for **FreeSurfer 7.3.2** and select it.
+3. **Configure App Settings**: turn on **hippocampal** and **thalamicnuclei** (optional subfield segmentations).
+4. **Select Inputs**:
+    * **t1**: your ACPC-aligned T1w output from FSL Anat (datatype tag `acpc_aligned`).
+    * **t2**: your ACPC-aligned T2w output from FSL Anat (datatype tag `acpc_aligned`).
+5. **Configure Outputs**: keep **Archive Output** on, then select **Add App**.
 
-When FreeSurfer finishes (marked by a green card), inspect the cortical surfaces and subcortical parcellations using Brainlife's in-browser surface viewer.
+When FreeSurfer finishes, select **Visualize** on its output to inspect the cortical surfaces and subcortical parcellations in a browser surface viewer.
 
 ---
 
 ## Step 4: Run fMRIPrep (Volume Output)
 
-Now you are ready to execute the full functional preprocessing pipeline:
+Now run the functional preprocessing:
 
-1. In the **Processes** view, click **Submit App**.
-2. Search for **fMRIPrep - Volume Output** ([App Link](https://brainlife.io/app/5c61c69f14027a01b14adcb3){target=_blank}).
-3. Configure the inputs:
-    * **t1**: Your ACPC-aligned T1w output (`anat/t1w`).
-    * **t2**: Your ACPC-aligned T2w output (`anat/t2w`).
-    * **freesurfer**: The completed FreeSurfer 7.3.2 output directory.
-    * **bold**: Your functional scan (`func/task rest`).
-    * **fmap**: Your fieldmap dataset (`fmap`).
-    * **space**: Select `T1w` (or `MNI152NLin2009cAsym` for standardized group space).
-4. Click **Submit**.
+1. In the process editor, select **Add Data** and add your `func/task rest` and `fmap` datasets. Then select **Add App**.
+2. **Select App**: search for **fMRIPrep - Volume Output** ([App Link](https://brainlife.io/app/5c61c69f14027a01b14adcb3){target=_blank}) and select it.
+3. **Configure App Settings**: for **space**, select `T1w` (or `MNI152NLin2009cAsym` for a standard group space).
+4. **Select Inputs**:
+    * **t1**: your ACPC-aligned T1w output (`anat/t1w`).
+    * **t2**: your ACPC-aligned T2w output (`anat/t2w`).
+    * **freesurfer**: the FreeSurfer 7.3.2 output.
+    * **bold**: your functional scan (`func/task rest`).
+    * **fmap**: your fieldmap dataset (`fmap`).
+5. **Configure Outputs**: keep **Archive Output** on, then select **Add App**.
 
 ### Reviewing Quality Control (QC) Reports
 
 When fMRIPrep completes:
-1. Locate the output task card tagged with `html`.
-2. Click the **Eye (View)** icon and select the **HTML Report Viewer**.
-3. Review fMRIPrep's comprehensive visual report:
+1. Find the `html` output (in the process side panel under **Results**, or on **2. Data**).
+2. Select **Visualize** and choose the **HTML Report Viewer**.
+3. Review fMRIPrep's visual report:
     * **B0 fieldmap unwarping carpet plots**
     * **Framewise displacement (FD) and DVARS motion metrics**
     * **Coregistration alignment between BOLD volumes and anatomical boundaries**
@@ -125,7 +124,7 @@ When fMRIPrep completes:
 
 ## Next Steps
 
-Now that your fMRI data is preprocessed, you can proceed to network neuroscience and functional connectivity:
+With your fMRI data preprocessed, you can continue with network neuroscience and functional connectivity:
 
-* **[Functional Network Neuroscience](/docs/tutorial/networkneuroscience-functional)**: Extract region-of-interest timeseries using cortical parcellations (e.g. Glasser HCP-MMP) and compute functional connectivity correlation matrices.
-* **[Interactive Group Analysis](/docs/user/groupanalysis)**: Load preprocessed timeseries and motion metrics into cloud Jupyter Notebooks for statistical modeling.
+* **[Functional Network Neuroscience](/docs/tutorial/networkneuroscience-functional)**: extract region-of-interest timeseries with cortical parcellations (for example Glasser HCP-MMP) and compute functional connectivity matrices.
+* **[Group Analysis](/docs/user/groupanalysis)**: load preprocessed timeseries and motion metrics into Jupyter notebooks (**4. Analysis**) for statistical modeling.

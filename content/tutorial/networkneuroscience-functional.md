@@ -6,7 +6,7 @@ These correlations are typically represented in an $N \times N$ **functional con
 
 From these matrices, neuroscientists can characterize topological properties of the functional connectome (such as resting-state subnetworks, modularity, hub architecture, and dynamic flexibility) across tasks, age groups, and clinical populations.
 
-This tutorial demonstrates how to generate functional connectivity matrices on **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io)). You will learn how to:
+This tutorial demonstrates how to generate functional connectivity matrices on **brainlife.io** ([connects.brainlife.io](https://connects.brainlife.io)). You will learn how to:
 1. Align anatomical T1w images to ACPC space using [FSL Anat](https://brainlife.io/app/5e3c87ae9362b7166cf9c7f4).
 2. Reconstruct cortical surfaces and parcellations using [FreeSurfer 7.3.2](https://brainlife.io/app/5fe1056057aacd480f2f8e48).
 3. Map the HCP-MMP (Glasser 180-node) cortical atlas onto native surfaces with the [Multi-atlas Transfer Tool (MaTT)](https://brainlife.io/app/6016dcdc321a4aafce6decd5).
@@ -17,7 +17,7 @@ This tutorial demonstrates how to generate functional connectivity matrices on *
 8. Export connectivity matrices and network metrics to tidy CSV dataframes.
 
 > [!NOTE] Prerequisites
-> Before starting, review the [Introduction to Brainlife](/docs/tutorial/introduction-to-brainlife/) and [fMRI Preprocessing Tutorial](/docs/tutorial/fmri-preprocessing-tutorial/).
+> Before starting, review the [Introduction to brainlife.io](/docs/tutorial/introduction-to-brainlife/) and [fMRI Preprocessing Tutorial](/docs/tutorial/fmri-preprocessing-tutorial/).
 
 ---
 
@@ -48,105 +48,97 @@ Following fMRIPrep:
 
 ### Step 1: Copy Tutorial Data
 
-1. Open the [Tutorial Functional Data Project](https://brainlife.io/project/5ae916e7f446980028b15eb3) on Brainlife.
-2. Click the **2. Data** tab.
-3. Locate subject **10217** and check the boxes for:
+1. Open the [Tutorial Functional Data Project](https://brainlife.io/project/5ae916e7f446980028b15eb3) on brainlife.io.
+2. Open the **2. Data** tab.
+3. Find subject **10217** and select the checkboxes for:
    - `func/task rest`
    - `anat/t1w`
-4. Click **Stage to process** in the action bar:
-   - **Project**: Select your target project.
-   - **Process**: Select **Create New Process** and name it `Functional Network Neuroscience`.
-   - Click **Submit** to copy and stage the datasets into your project.
+4. Select **Copy** above the table and choose your project.
+5. In your project, open **2. Data**, select the same datasets and select **Stage to process**.
+6. In **Add to process**, choose "Create a new process", name it `Functional Network Neuroscience`, and select **Add and open editor**.
 
 ---
 
 ### Step 2: Preprocess Anatomical Data (FSL Anat)
 
-1. In your project, navigate to the **3. Processing** tab and select your `Functional Network Neuroscience` process in the **Processes** view.
-2. Click **Execute / Submit App** and search for **FSL Anat (T1w)** (`5e3c87ae9362b7166cf9c7f4`).
-3. Select your staged `anat/t1w` dataset as the input.
-4. Enable **crop** and **reorient** (leave other settings at default).
-5. Enable **Archive all output datasets when finished** and add the tag `fsl_anat`.
-6. Click **Submit**.
-7. Once finished, inspect the preprocessed volume using the in-browser **3D volume viewer (NiiVue)** to confirm ACPC centering and brain extraction.
+1. In the process editor of your `Functional Network Neuroscience` process, select **Add App**. On **Select App**, search for **FSL Anat (T1w)** (`5e3c87ae9362b7166cf9c7f4`) and select it.
+2. **Configure App Settings**: turn on **crop** and **reorient** (leave other settings at default).
+3. **Select Inputs**: choose your `anat/t1w` dataset.
+4. **Configure Outputs**: keep **Archive Output** on and add the annotation `fsl_anat`. Select **Add App**.
+5. When the job finishes, select **Visualize** and inspect the preprocessed volume in the **3D volume viewer (NiiVue)** to confirm ACPC centering and brain extraction.
 
 ---
 
 ### Step 3: Cortical Reconstruction (FreeSurfer 7.3.2)
 
-1. Click **Execute / Submit App** and search for **Freesurfer 7.3.2** (`5fe1056057aacd480f2f8e48`).
-2. Select your ACPC-aligned T1w output from FSL Anat (`fsl_anat` tag) as the input.
-3. Enable `hippocampal` and `thalamicnuclei` subsegmentations.
-4. Enable **Archive all output datasets when finished** and tag with `freesurfer`.
-5. Click **Submit**.
-6. When completed, view the surfaces and subcortical labels using the in-browser **Surface Viewer**.
+1. In the process editor, select **Add App**. On **Select App**, search for **Freesurfer 7.3.2** (`5fe1056057aacd480f2f8e48`) and select it.
+2. **Configure App Settings**: turn on `hippocampal` and `thalamicnuclei` subsegmentations.
+3. **Select Inputs**: choose your ACPC-aligned T1w output from FSL Anat (annotation `fsl_anat`).
+4. **Configure Outputs**: keep **Archive Output** on and add the annotation `freesurfer`. Select **Add App**.
+5. When the job finishes, select **Visualize** and view the surfaces and subcortical labels in the **Surface Viewer**.
 
 ---
 
 ### Step 4: Map Cortical Atlas with MaTT
 
-1. Click **Execute / Submit App** and search for **Multi-Atlas Transfer Tool (MaTT)** (`6016dcdc321a4aafce6decd5`).
-2. Select your `freesurfer` output dataset as the input.
-3. Set **atlas** to `hcp-mmp-b`.
-4. Enable **Archive all output datasets when finished** and tag with `hcp-mmp-b`.
-5. Click **Submit**.
+1. In the process editor, select **Add App**. On **Select App**, search for **Multi-Atlas Transfer Tool (MaTT)** (`6016dcdc321a4aafce6decd5`) and select it.
+2. **Configure App Settings**: set **atlas** to `hcp-mmp-b`.
+3. **Select Inputs**: choose your `freesurfer` output dataset.
+4. **Configure Outputs**: keep **Archive Output** on and add the annotation `hcp-mmp-b`. Select **Add App**.
 
 ---
 
 ### Step 5: Preprocess BOLD Data with fMRIPrep
 
-1. Click **Execute / Submit App** and search for **fmriPrep - Volume Output** (`5c61c69f14027a01b14adcb3`).
-2. Configure inputs:
+1. In the process editor, select **Add App**. On **Select App**, search for **fmriPrep - Volume Output** (`5c61c69f14027a01b14adcb3`) and select it.
+2. Set the parameters (**Configure App Settings**) and inputs (**Select Inputs**):
    - **anat/t1w**: Select your ACPC-aligned T1w dataset.
    - **freesurfer**: Select the FreeSurfer output dataset.
    - **func**: Select the raw functional dataset (`func/task rest`).
    - **space**: Select `T1w`.
-3. Enable **Archive all output datasets when finished** and tag with `fmriprep`.
-4. Click **Submit**.
-5. When complete, click the eye icon on the `html` output to open the interactive **fMRIPrep visual QA report** in your browser to inspect alignment, motion profiles, and brain masks.
+3. **Configure Outputs**: keep **Archive Output** on and add the annotation `fmriprep`. Select **Add App**.
+4. When the job finishes, select **Visualize** on the `html` output to open the **fMRIPrep visual QA report** in your browser to inspect alignment, motion profiles, and brain masks.
 
 ---
 
 ### Step 6: Extract Functional Timeseries
 
-1. Click **Execute / Submit App** and search for **fMRI Timeseries Extraction** (`5ed05fe8e3f4538080268585`).
-2. Configure inputs:
+1. In the process editor, select **Add App**. On **Select App**, search for **fMRI Timeseries Extraction** (`5ed05fe8e3f4538080268585`) and select it.
+2. **Select Inputs**:
    - Select the preprocessed functional BOLD data, brain mask, confound regressors (all generated by fMRIPrep), and the `hcp-mmp-b` parcellation volume from MaTT.
-3. Enable **Archive all output datasets when finished** and tag with `hcp-mmp-b`.
-4. Click **Submit**.
+3. **Configure Outputs**: keep **Archive Output** on and add the annotation `hcp-mmp-b`. Select **Add App**.
 
 ---
 
 ### Step 7: Construct Functional Connectivity Matrices
 
-1. Click **Execute / Submit App** and search for **Time series to network** (`60b961b10ad40d58e1ca7fe7`).
-2. Configure inputs:
+1. In the process editor, select **Add App**. On **Select App**, search for **Time series to network** (`60b961b10ad40d58e1ca7fe7`) and select it.
+2. Set the inputs (**Select Inputs**) and parameters (**Configure App Settings**):
    - Select the extracted timeseries dataset from Step 6.
    - Set **method** to `correlation`.
-3. Enable **Archive all output datasets when finished** and tag with `hcp-mmp-b`.
-4. Click **Submit**.
+3. **Configure Outputs**: keep **Archive Output** on and add the annotation `hcp-mmp-b`. Select **Add App**.
 
 ---
 
 ### Step 8: Network Preprocessing & Measurements
 
 1. **Network Preprocess**:
-   - Search and select **Network Preprocess** (`5e76ea90de643b5e7c2a9404`).
-   - Select the network dataset from Step 7.
-   - Set **transform** to `absolute` (or retain positive weights) and set a threshold (e.g., `0.1`).
-   - Tag output with `abs_thr_0p1` and click **Submit**.
+   - Select **Add App**, then search for and select **Network Preprocess** (`5e76ea90de643b5e7c2a9404`).
+   - Set **transform** to `absolute` (or keep positive weights) and set a threshold (for example `0.1`).
+   - **Select Inputs**: choose the network dataset from Step 7.
+   - On **Configure Outputs**, add the annotation `abs_thr_0p1` and select **Add App**.
 2. **Network Measurements**:
-   - Search and select **Network Measurements** (`5ea70853f1745db7d9f7b0dc`).
-   - Select the preprocessed network dataset.
-   - Tag output with `abs_thr_0p1` and click **Submit**.
+   - Select **Add App**, then search for and select **Network Measurements** (`5ea70853f1745db7d9f7b0dc`).
+   - **Select Inputs**: choose the preprocessed network dataset.
+   - On **Configure Outputs**, add the annotation `abs_thr_0p1` and select **Add App**.
 3. **Export to CSV**:
-   - Search and select **Extract network statistics and connectivity matrices from network datatype** (`649f24c53a63cf17374a4595`).
-   - Select the measured network dataset to produce clean tabular CSV files containing the adjacency matrix and local/global graph metrics.
+   - Select **Add App**, then search for and select **Extract network statistics and connectivity matrices from network datatype** (`649f24c53a63cf17374a4595`).
+   - **Select Inputs**: choose the measured network dataset. The App produces clean tabular CSV files containing the adjacency matrix and local/global graph metrics.
 
 ---
 
 ## Next Steps
 
 Your functional connectome and graph metrics are now ready:
-- Open the **4. Analysis** tab in your project to launch a JupyterLab notebook for statistical comparisons and dynamic connectivity analysis.
+- Open the **4. Analysis** tab of your project and select **New analysis** to launch a Jupyter notebook for statistical comparisons and dynamic connectivity analysis.
 - Use the **5. Publications** tab to preserve and publish your pipeline and data with a citable DOI.

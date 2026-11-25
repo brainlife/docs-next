@@ -1,6 +1,6 @@
 # Diffusion Tractography and White Matter Tractometry
 
-This tutorial demonstrates the standard pipeline used to perform whole-brain diffusion tractography, major white matter tract segmentation, and tractometry analysis on **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank}).
+This tutorial demonstrates the standard pipeline used to perform whole-brain diffusion tractography, major white matter tract segmentation, and tractometry analysis on **brainlife.io** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank}).
 
 The goal of this tutorial is to process anatomical and diffusion MRI data to:
 * **Generate whole-brain tractograms** using Constrained Spherical Deconvolution (CSD) and Anatomically-Constrained Tractography (ACT).
@@ -8,7 +8,7 @@ The goal of this tutorial is to process anatomical and diffusion MRI data to:
 * **Remove outlier streamlines** to isolate biologically plausible tract cores.
 * **Map microstructural profiles (tractometry)** along each tract's length for group statistical comparisons.
 
-This tutorial builds on concepts from the [Introduction to Brainlife Connects](/docs/tutorial/introduction-to-brainlife), [Anatomical Preprocessing](/docs/tutorial/t1w-preprocessing), and [Diffusion MRI Preprocessing](/docs/tutorial/diffusion-preprocessing) tutorials.
+This tutorial builds on concepts from the [Introduction to brainlife.io](/docs/tutorial/introduction-to-brainlife), [Anatomical Preprocessing](/docs/tutorial/t1w-preprocessing), and [Diffusion MRI Preprocessing](/docs/tutorial/diffusion-preprocessing) tutorials.
 
 ---
 
@@ -33,7 +33,7 @@ This tutorial builds on concepts from the [Introduction to Brainlife Connects](/
 5. Tract Profile Extraction ─────► Samples DTI/NODDI metrics at 100 equidistant nodes along each tract
               │
               ▼
-6. Group Analysis (Notebooks) ───► Statistical testing and visualization in cloud JupyterLab
+6. Group Analysis (Notebooks) ───► Statistical testing and visualization in Jupyter notebooks
 ```
 
 ### 1. Constrained Spherical Deconvolution (CSD) & ACT
@@ -49,48 +49,48 @@ Rather than averaging diffusion values across an entire tract volume, **tract pr
 
 ## Step 1: Copy Tutorial Data
 
-1. In your project on [Brainlife Connects](https://connects.brainlife.io/){target=_blank}, click on the **2. Data** tab.
-2. Click **Add Project Data** and choose **Copy from another Project**.
-3. Select the *Tutorial Data* project (`5ae916e7f446980028b15eb3`) and copy for subject `10217`:
+1. In your project on [brainlife.io](https://connects.brainlife.io/){target=_blank}, open the **2. Data** tab.
+2. Open the **Project Data** menu and choose "Copy Data From another Project".
+3. Open the *Tutorial Data* project (`5ae916e7f446980028b15eb3`) and copy these datasets for subject `10217` to your project:
     * `dwi` (Preprocessed diffusion dataset)
     * `anat/t1w` (Raw or ACPC-aligned T1w image)
-4. Confirm to copy the data into your project.
+4. Confirm. The datasets appear in your project's **Project Data** table.
 
 ---
 
 ## Step 2: Anatomical Alignment & FreeSurfer Parcellation
 
-1. In the **2. Data** tab, select your `anat/t1w` dataset and click **Stage to process**.
-2. Title the process `Tractography Pipeline` and confirm.
-3. In **3. Processing** > **Processes**, click **Submit App**:
-    * Run **[FSL Anat (T1)](https://brainlife.io/app/5e3c87ae9362b7166cf9c7f4){target=_blank}** to generate an ACPC-aligned anatomical image (`anat/t1w` with `acpc_aligned` tag).
-4. Next, submit **[FreeSurfer 7.3.2](https://brainlife.io/app/5fe1056057aacd480f2f8e48){target=_blank}** using the ACPC-aligned T1w output to reconstruct the cortical surfaces and tissue segmentations.
+1. On **2. Data**, select your `anat/t1w` and `dwi` datasets and select **Stage to process**.
+2. In **Add to process**, choose "Create a new process", name it `Tractography Pipeline`, and select **Add and open editor**.
+3. In the process editor, select **Add App**:
+    * Run **[FSL Anat (T1)](https://brainlife.io/app/5e3c87ae9362b7166cf9c7f4){target=_blank}** to generate an ACPC-aligned anatomical image (`anat/t1w` with the datatype tag `acpc_aligned`).
+4. Next, add **[FreeSurfer 7.3.2](https://brainlife.io/app/5fe1056057aacd480f2f8e48){target=_blank}** using the ACPC-aligned T1w output to reconstruct the cortical surfaces and tissue segmentations.
 
 ---
 
 ## Step 3: Whole-Brain Anatomically-Constrained Tractography
 
-1. In the **Processes** view, click **Submit App**.
-2. Search for **MRtrix3 Anatomically-Constrained Tractography (ACT)** ([App Link](https://brainlife.io/app/5e9dced9f1745d6994f692c0){target=_blank}).
-3. Configure the inputs:
+1. In the process editor, select **Add App**.
+2. **Select App**: search for **MRtrix3 Anatomically-Constrained Tractography (ACT)** ([App Link](https://brainlife.io/app/5e9dced9f1745d6994f692c0){target=_blank}) and select it.
+3. Set the parameters (**Configure App Settings**) and inputs (**Select Inputs**):
     * **dwi**: Preprocessed, ACPC-aligned `dwi` dataset.
     * **anat**: ACPC-aligned `anat/t1w` dataset.
     * **freesurfer**: Completed FreeSurfer output directory (used to generate the 5-tissue-type mask).
     * **num_fibers**: Set to `1000000` (or `100000` for rapid testing).
-4. Click **Submit**.
+4. On **Configure Outputs**, keep **Archive Output** on, then select **Add App**.
 
-When complete, click the **Eye (View)** icon on the `track/tck` output and select the **3D Tract Viewer** to inspect the reconstructed whole-brain streamlines directly in your browser.
+When the job finishes, select **Visualize** on the `track/tck` output and choose the **3D Tract Viewer** to inspect the whole-brain streamlines in your browser.
 
 ---
 
 ## Step 4: Segment Major White Matter Tracts
 
-1. In the **Processes** view, click **Submit App**.
-2. Search for **White Matter Anatomy Segmentation** ([App Link](https://brainlife.io/app/5cc73ef44ed9df00317f6288){target=_blank}).
-3. Configure:
+1. In the process editor, select **Add App**.
+2. **Select App**: search for **White Matter Anatomy Segmentation** ([App Link](https://brainlife.io/app/5cc73ef44ed9df00317f6288){target=_blank}) and select it.
+3. Set the parameters (**Configure App Settings**) and inputs (**Select Inputs**):
     * **freesurfer**: FreeSurfer output.
     * **track/tck**: Whole-brain tractogram from Step 3.
-4. Click **Submit**.
+4. On **Configure Outputs**, keep **Archive Output** on, then select **Add App**.
 
 This App classifies streamlines into major association, projection, and commissural bundles (e.g. IFOF, ILF, SLF, Arcuate, CST).
 
@@ -98,10 +98,10 @@ This App classifies streamlines into major association, projection, and commissu
 
 ## Step 5: Clean Outlier Streamlines
 
-1. In the **Processes** view, click **Submit App**.
-2. Search for **Remove Tract Outliers** ([App Link](https://brainlife.io/app/5cc9eca04b5e4502275edba6){target=_blank}).
-3. Select the segmented tract output from Step 4.
-4. Click **Submit**.
+1. In the process editor, select **Add App**.
+2. **Select App**: search for **Remove Tract Outliers** ([App Link](https://brainlife.io/app/5cc9eca04b5e4502275edba6){target=_blank}) and select it.
+3. **Select Inputs**: choose the segmented tract output from Step 4.
+4. On **Configure Outputs**, keep **Archive Output** on, then select **Add App**.
 
 The cleaned tract classification output (`wmc`) retains only coherent bundle cores.
 
@@ -109,24 +109,24 @@ The cleaned tract classification output (`wmc`) retains only coherent bundle cor
 
 ## Step 6: Extract Along-Tract Microstructural Profiles
 
-1. In the **Processes** view, click **Submit App**.
-2. Search for **Tract Analysis Profiles** ([App Link](https://brainlife.io/app/5ed02b780a8ed88a57482c92){target=_blank}).
-3. Configure:
+1. In the process editor, select **Add App**.
+2. **Select App**: search for **Tract Analysis Profiles** ([App Link](https://brainlife.io/app/5ed02b780a8ed88a57482c92){target=_blank}) and select it.
+3. Set the parameters (**Configure App Settings**) and inputs (**Select Inputs**):
     * **wmc**: Cleaned tract classification output.
     * **track/tck**: Whole-brain tractogram.
     * **tensor**: DTI tensor maps (e.g. from FSL DTIFit).
-4. Click **Submit**.
+4. On **Configure Outputs**, keep **Archive Output** on, then select **Add App**.
 
-This produces a `neuro/tractprofile` data object containing 100-node profiles of Fractional Anisotropy, Mean Diffusivity, and Radial Diffusivity for each bundle.
+This produces a `neuro/tractprofile` dataset containing 100-node profiles of Fractional Anisotropy, Mean Diffusivity, and Radial Diffusivity for each bundle.
 
 ---
 
 ## Step 7: Macrostructural Tract Statistics
 
-1. In the **Processes** view, click **Submit App**.
-2. Search for **Tractography Quality Check / Macrostructural Statistics** ([App Link](https://brainlife.io/app/5cc9c6b44b5e4502275edb4b){target=_blank}).
-3. Supply the cleaned `wmc` and `track/tck` outputs.
-4. Click **Submit**.
+1. In the process editor, select **Add App**.
+2. **Select App**: search for **Tractography Quality Check / Macrostructural Statistics** ([App Link](https://brainlife.io/app/5cc9c6b44b5e4502275edb4b){target=_blank}) and select it.
+3. **Select Inputs**: choose the cleaned `wmc` and the `track/tck` outputs.
+4. On **Configure Outputs**, keep **Archive Output** on, then select **Add App**.
 
 This extracts summary volumetric and geometric metrics (mean tract length, volume, streamline count, endpoint spread) into tidy `.csv` tables.
 
@@ -134,5 +134,5 @@ This extracts summary volumetric and geometric metrics (mean tract length, volum
 
 ## Next Steps
 
-* **[Interactive Group Analysis](/docs/user/groupanalysis)**: Load your generated `tractprofile` and macrostructural summary tables into Brainlife's cloud JupyterLab notebooks to perform ANOVA, regression models, and publication-ready tractometry plotting.
+* **[Group Analysis](/docs/user/groupanalysis)**: load your `tractprofile` and macrostructural summary tables into a Jupyter notebook (**4. Analysis**) for ANOVA, regression models and tractometry plots.
 * **[Structural Network Neuroscience](/docs/tutorial/networkneuroscience-structural)**: Combine tractography streamlines with multi-atlas parcellations to build whole-brain structural connectomes.
