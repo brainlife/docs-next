@@ -91,7 +91,7 @@ When a dataset is uploaded (from the web app or with `bl data upload`), brainlif
 - **Errors**, which stop the upload: a required file is missing, a file is empty, or a file is not in its format (for example a truncated `.nii.gz`, a file that is not a NIfTI image, or JSON that does not parse).
 - **Warnings**, which are shown but let the upload through: for example a TSV file with uneven columns, or `bvals` and `bvecs` with different numbers of entries.
 
-Some datatypes have their own validator (for example `brainlife/validator-neuro-anat`, which also checks image dimensions). Datatypes without one use `brainlife/validator-catalog`, which checks any datatype from its file list in the catalog. The **Supports validation** filter on the Datatypes page shows which datatypes have a validator.
+Some datatypes have their own validator (for example `brainlife/validator-neuro-anat`, which also checks image dimensions). Datatypes without one use [`brainlife/validator-catalog`](https://github.com/brainlife/validator-catalog){target=_blank}, which checks any datatype from its list of files. The **Supports validation** filter on the Datatypes page shows which datatypes have a validator.
 
 What `brainlife/validator-catalog` checks:
 
