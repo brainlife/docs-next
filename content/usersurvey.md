@@ -10,4 +10,4 @@ This survey will take approximately 5 to 10 minutes to complete and run until Ju
 
 You can take the survey here: [Click here to begin the survey](https://iu.co1.qualtrics.com/jfe/form/SV_0jozJ2vl9OkJSbb){target=_blank}
 
-If you have any questions, please email us at <a href="mailto:brlife@iu.edu">brlife@iu.edu</a>.
+If you have any questions, please email us at <a href="mailto:brainlife.io@gmail.com">brainlife.io@gmail.com</a>.
