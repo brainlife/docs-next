@@ -92,7 +92,25 @@ When a dataset is uploaded (from the web app or with `bl data upload`), brainlif
 - **Errors**, which stop the upload: a required file is missing, a file is empty, or a file is not in its format (for example a truncated `.nii.gz`, a file that is not a NIfTI image, or JSON that does not parse).
 - **Warnings**, which are shown but let the upload through: for example a TSV file with uneven columns, or `bvals` and `bvecs` with different numbers of entries.
 
-Some datatypes have their own validator (for example `brainlife/validator-neuro-anat`, which also checks image dimensions). Datatypes without one use [`brainlife/validator-catalog`](https://github.com/brainlife/validator-catalog){target=_blank}, which checks any datatype from its file list in the catalog. Its README lists every check. The **Supports validation** filter on the Datatypes page shows which datatypes have a validator.
+Some datatypes have their own validator (for example `brainlife/validator-neuro-anat`, which also checks image dimensions). Datatypes without one use `brainlife/validator-catalog`, which checks any datatype from its file list in the catalog. The **Supports validation** filter on the Datatypes page shows which datatypes have a validator.
+
+What `brainlife/validator-catalog` checks:
+
+| Check | Result if it fails |
+| :--- | :--- |
+| A required file or folder was uploaded | error |
+| A file is not empty | error |
+| A gzip file (`.nii.gz`, `.mgz`, `.gz`) decompresses completely | error |
+| A NIfTI file has a valid NIfTI-1 or NIfTI-2 header | error |
+| A JSON file parses | error |
+| `bvals` and `bvecs` contain only numbers | error |
+| A file starts like its format: MGH/MGZ, PNG, JPEG, PDF, HDF5, ZIP/TRX, MATLAB/EEGLAB, EDF, BDF, FIF, BrainVision header, MRtrix `.tck`, TrackVis `.trk` | error |
+| A TSV or CSV file has a header row and even columns | warning |
+| `bvecs` has 3 rows; `bvals` and `bvecs` have the same number of entries, matching the DWI volumes | warning |
+| An SVG, HTML or GIfTI file contains its usual markup | warning |
+| A folder is not empty; a Zarr folder contains `zarr.json`, `.zgroup` or `.zarray` | warning |
+
+The format of each file comes from its name in the datatype (for example `channels.tsv` is checked as TSV). Files with other extensions are only checked for being present and not empty. A problem inside the validator itself is reported as a warning and never stops an upload, and the metadata and tags you give at upload are kept.
 
 ---
 
