@@ -49,7 +49,7 @@ export default function EzBidsGuide({
                         href={githubEditUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-[#2693D8] transition-colors py-1 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                        className="inline-flex items-center gap-1.5 text-xs text-bl-muted hover:text-bl-accent transition-colors py-1 px-2 rounded-md hover:bg-bl-band"
                         title="Edit this page on GitHub"
                     >
                         <Pencil size={14} />
@@ -59,7 +59,7 @@ export default function EzBidsGuide({
 
                 {/* Breadcrumbs */}
                 <nav
-                    className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4"
+                    className="flex items-center gap-1.5 text-xs sm:text-sm text-bl-muted mb-4"
                     aria-label="Breadcrumb"
                 >
                     <Link href="/" className="hover:text-gray-900 dark:hover:text-gray-200 transition-colors">
@@ -73,7 +73,7 @@ export default function EzBidsGuide({
                         Using brainlife
                     </Link>
                     <ChevronRight size={13} className="text-gray-500" />
-                    <span className="text-[#50bfff] font-medium">ezBIDS</span>
+                    <span className="text-bl-accent font-medium">ezBIDS</span>
                 </nav>
 
                 {/* Real ezBIDS Logo */}
@@ -86,14 +86,14 @@ export default function EzBidsGuide({
                 </div>
 
                 {/* Title & Subtitle */}
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-1 mb-2 font-['Work_Sans',sans-serif]">
+                <h1 className="text-3xl sm:text-4xl font-semibold text-bl-ink tracking-tight mt-1 mb-2">
                     ezBIDS User Documentation
                 </h1>
-                <p className="text-base text-gray-600 dark:text-gray-400 mb-6 font-normal max-w-3xl leading-relaxed">
+                <p className="text-base text-bl-muted mb-6 font-normal max-w-3xl leading-relaxed">
                     Convert neuroscience data (neurophysiology, neuroimaging and microscopy) to
                     BIDS with ezBIDS on brainlife.io: MRI, PET and MEG on the web; EEG, iEEG,
                     NIRS, EMG and microscopy on your own computer with{' '}
-                    <Link href="/docs/using_aimport" className="text-[#50bfff] hover:underline">
+                    <Link href="/docs/using_aimport" className="text-bl-accent hover:underline">
                         aimport
                     </Link>
                     .
@@ -106,7 +106,7 @@ export default function EzBidsGuide({
                         onClick={() => setActiveTab('written')}
                         className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                             activeTab === 'written'
-                                ? 'bg-[#1e3a5f] text-[#50bfff] shadow-xs'
+                                ? 'bg-[#1e3a5f] text-bl-accent shadow-xs'
                                 : 'text-gray-400 hover:text-gray-200 hover:bg-[#222c3d]'
                         }`}
                     >
@@ -118,7 +118,7 @@ export default function EzBidsGuide({
                         onClick={() => setActiveTab('video')}
                         className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                             activeTab === 'video'
-                                ? 'bg-[#1e3a5f] text-[#50bfff] shadow-xs'
+                                ? 'bg-[#1e3a5f] text-bl-accent shadow-xs'
                                 : 'text-gray-400 hover:text-gray-200 hover:bg-[#222c3d]'
                         }`}
                     >
@@ -131,12 +131,12 @@ export default function EzBidsGuide({
                 {activeTab === 'written' ? (
                     <div>
                         {/* Introduction Lead Paragraph */}
-                        <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        <p className="text-base text-bl-ink leading-relaxed mb-6">
                             <a
                                 href="https://brainlife.io/ezbids"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[#50bfff] hover:underline font-medium"
+                                className="text-bl-accent hover:underline font-medium"
                             >
                                 ezBIDS
                             </a>{' '}
@@ -148,7 +148,7 @@ export default function EzBidsGuide({
                                 href="https://bids-specification.readthedocs.io/en/stable/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[#50bfff] hover:underline font-medium"
+                                className="text-bl-accent hover:underline font-medium"
                             >
                                 Brain Imaging Data Structure
                             </a>
@@ -161,7 +161,7 @@ export default function EzBidsGuide({
                                 href="https://bids-apps.neuroimaging.io/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[#50bfff] hover:underline font-medium"
+                                className="text-bl-accent hover:underline font-medium"
                             >
                                 BIDS apps
                             </a>
@@ -173,7 +173,7 @@ export default function EzBidsGuide({
                             <button
                                 type="button"
                                 onClick={() => setActiveTab('video')}
-                                className="w-14 h-14 rounded-xl bg-[#2693D8] hover:bg-[#1d74ae] text-white flex items-center justify-center flex-shrink-0 shadow-md transition-transform hover:scale-105 group"
+                                className="w-14 h-14 rounded-xl bg-bl-accent hover:bg-bl-accent/90 text-white flex items-center justify-center flex-shrink-0 shadow-md transition-transform hover:scale-105 group"
                                 aria-label="Play video walkthrough"
                             >
                                 <Play
@@ -182,7 +182,7 @@ export default function EzBidsGuide({
                                 />
                             </button>
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-lg font-bold text-white mb-1">
+                                <h3 className="text-lg font-semibold text-white mb-1">
                                     New to ezBIDS?
                                 </h3>
                                 <p className="text-sm text-gray-300 mb-3 leading-relaxed">
@@ -192,7 +192,7 @@ export default function EzBidsGuide({
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('video')}
-                                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-md bg-[#2693D8] hover:bg-[#1d74ae] text-white text-xs sm:text-sm font-medium transition-colors shadow-xs"
+                                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-md bg-bl-accent hover:bg-bl-accent/90 text-white text-xs sm:text-sm font-medium transition-colors shadow-xs"
                                 >
                                     <span>Watch video tutorial</span>
                                     <ExternalLink size={14} />
@@ -204,11 +204,11 @@ export default function EzBidsGuide({
                         <section className="mb-6">
                             <h2
                                 id="a-primer-to-ezbids"
-                                className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-3 font-['Work_Sans',sans-serif]"
+                                className="text-2xl font-semibold text-bl-ink tracking-tight mb-3"
                             >
                                 A Primer to ezBIDS
                             </h2>
-                            <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                            <p className="text-base text-bl-ink leading-relaxed mb-6">
                                 The process of converting raw imaging data to BIDS is often
                                 time-consuming and can require substantial technical expertise.
                                 ezBIDS provides a simplified, web-based interface to help you
@@ -217,13 +217,13 @@ export default function EzBidsGuide({
 
                             {/* Key Features Grid Cards */}
                             <div className="rounded-xl p-5 mb-8 border border-[#2b3548] bg-[#161f30]/60">
-                                <div className="flex items-center gap-2 text-xs font-semibold text-[#50bfff] mb-4 uppercase tracking-wider">
+                                <div className="flex items-center gap-2 text-xs font-semibold text-bl-accent mb-4 uppercase tracking-wider">
                                     <Sparkles size={15} />
                                     <span>Key features</span>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                     <div className="flex items-start gap-3">
-                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-[#50bfff] flex-shrink-0">
+                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-bl-accent flex-shrink-0">
                                             <Cloud size={20} />
                                         </div>
                                         <div>
@@ -236,7 +236,7 @@ export default function EzBidsGuide({
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-[#50bfff] flex-shrink-0">
+                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-bl-accent flex-shrink-0">
                                             <Settings size={20} />
                                         </div>
                                         <div>
@@ -249,7 +249,7 @@ export default function EzBidsGuide({
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-[#50bfff] flex-shrink-0">
+                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-bl-accent flex-shrink-0">
                                             <Database size={20} />
                                         </div>
                                         <div>
@@ -262,7 +262,7 @@ export default function EzBidsGuide({
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-[#50bfff] flex-shrink-0">
+                                        <div className="p-2 rounded-lg bg-[#1e3a5f]/60 text-bl-accent flex-shrink-0">
                                             <Users size={20} />
                                         </div>
                                         <div>
@@ -302,7 +302,7 @@ export default function EzBidsGuide({
                         <div className="rounded-xl p-6 border border-[#2b3548] bg-[#161f30]/60 space-y-5">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
-                                    <h3 className="text-xl font-bold text-white">
+                                    <h3 className="text-xl font-semibold text-white">
                                         ezBIDS: Automated BIDS Conversion Walkthrough
                                     </h3>
                                     <p className="text-sm text-gray-400 mt-1">
@@ -325,7 +325,7 @@ export default function EzBidsGuide({
                                         href="https://brainlife.io/ezbids"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#2693D8] hover:bg-[#1d74ae] text-xs font-semibold text-white transition-colors shadow-xs"
+                                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-bl-accent hover:bg-bl-accent/90 text-xs font-semibold text-white transition-colors shadow-xs"
                                     >
                                         <span>Launch ezBIDS</span>
                                         <ExternalLink size={12} />
@@ -335,43 +335,43 @@ export default function EzBidsGuide({
 
                             {/* Walkthrough Steps Grid */}
                             <div className="pt-4 border-t border-gray-700/60">
-                                <h4 className="text-xs font-semibold text-[#50bfff] uppercase tracking-wider mb-3.5 flex items-center gap-1.5">
+                                <h4 className="text-xs font-semibold text-bl-accent uppercase tracking-wider mb-3.5 flex items-center gap-1.5">
                                     <Clock size={14} />
                                     <span>Key Steps Covered in This Walkthrough</span>
                                 </h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-300">
                                     <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#111827]/60 border border-gray-800">
-                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-[#50bfff] flex items-center justify-center font-bold text-[11px] flex-shrink-0">
+                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-bl-accent flex items-center justify-center font-semibold text-[11px] flex-shrink-0">
                                             1
                                         </span>
                                         <span>Uploading raw DICOM or NIfTI/JSON files</span>
                                     </div>
                                     <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#111827]/60 border border-gray-800">
-                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-[#50bfff] flex items-center justify-center font-bold text-[11px] flex-shrink-0">
+                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-bl-accent flex items-center justify-center font-semibold text-[11px] flex-shrink-0">
                                             2
                                         </span>
                                         <span>Automated inference and dataset metadata review</span>
                                     </div>
                                     <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#111827]/60 border border-gray-800">
-                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-[#50bfff] flex items-center justify-center font-bold text-[11px] flex-shrink-0">
+                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-bl-accent flex items-center justify-center font-semibold text-[11px] flex-shrink-0">
                                             3
                                         </span>
                                         <span>Subjects, sessions, and series mapping</span>
                                     </div>
                                     <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#111827]/60 border border-gray-800">
-                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-[#50bfff] flex items-center justify-center font-bold text-[11px] flex-shrink-0">
+                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-bl-accent flex items-center justify-center font-semibold text-[11px] flex-shrink-0">
                                             4
                                         </span>
                                         <span>Resolving warnings (e.g., fieldmaps IntendedFor)</span>
                                     </div>
                                     <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#111827]/60 border border-gray-800">
-                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-[#50bfff] flex items-center justify-center font-bold text-[11px] flex-shrink-0">
+                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-bl-accent flex items-center justify-center font-semibold text-[11px] flex-shrink-0">
                                             5
                                         </span>
                                         <span>Mapping functional task timing & events</span>
                                     </div>
                                     <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#111827]/60 border border-gray-800">
-                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-[#50bfff] flex items-center justify-center font-bold text-[11px] flex-shrink-0">
+                                        <span className="w-5 h-5 rounded-full bg-[#1e3a5f] text-bl-accent flex items-center justify-center font-semibold text-[11px] flex-shrink-0">
                                             6
                                         </span>
                                         <span>Defacing anatomical images & exporting BIDS</span>
@@ -384,7 +384,7 @@ export default function EzBidsGuide({
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('written')}
-                                    className="inline-flex items-center gap-2 text-xs sm:text-sm text-[#50bfff] hover:underline font-medium"
+                                    className="inline-flex items-center gap-2 text-xs sm:text-sm text-bl-accent hover:underline font-medium"
                                 >
                                     <BookOpen size={15} />
                                     <span>

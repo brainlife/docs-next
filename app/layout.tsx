@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import "@fontsource/work-sans/300.css";
-import "@fontsource/work-sans/400.css";
-import "@fontsource/work-sans/500.css";
-import "@fontsource/work-sans/600.css";
-import "@fontsource/work-sans/700.css";
-import "@fontsource/work-sans/800.css";
+import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { getAssetPath } from "@/lib/basePath";
+
+// Same fonts as landing-next and brainlife-lite, so the docs, the site and the app read as one product.
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "brainlife Documentation",
@@ -35,14 +37,14 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className="h-full antialiased scroll-smooth"
+      className={`${dmSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
       <head>
         <link rel="icon" type="image/png" href={getAssetPath('/logo.png')} />
         <link rel="shortcut icon" href={getAssetPath('/logo.png')} />
         <link rel="apple-touch-icon" href={getAssetPath('/logo.png')} />
       </head>
-      <body className="min-h-full flex flex-col font-sans bg-white dark:bg-[#1a202c] text-[#2d3748] dark:text-[#eceef6]">
+      <body className="min-h-full flex flex-col font-sans bg-bl-bg text-bl-ink">
         {children}
       </body>
     </html>

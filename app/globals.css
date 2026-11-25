@@ -1,10 +1,32 @@
 @import "tailwindcss";
 
+/*
+ * brainlife design tokens, shared with landing-next (features/LandingV3/landing-v3.css)
+ * and brainlife-lite (src/themeMui.ts). Components use them through the Tailwind
+ * colours below: bg-bl-bg, bg-bl-surface, text-bl-ink, text-bl-muted, border-bl-line, ...
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #2d3748;
-  --font-work-sans: "Work Sans", sans-serif;
-  --font-roboto: "Roboto", sans-serif;
+  --bl-bg: #f7f8f6;
+  --bl-surface: #ffffff;
+  --bl-ink: #1d2230;
+  --bl-muted: #5a6273;
+  --bl-line: #c9cfd6;
+  --bl-rule: rgba(29, 34, 48, 0.12);
+  --bl-band: #eff2ee;
+  --bl-accent: #3d6a92;
+  --bl-accent-ink: #ffffff;
+  /* code blocks stay dark in both modes, like the landing hero */
+  --bl-code-bg: #0b1f2d;
+  --bl-code-bar: #07131c;
+  --bl-code-ink: #eef3f6;
+  --bl-code-muted: #a9bac6;
+  --bl-code-line: rgba(238, 243, 246, 0.16);
+
+  --font-sans-stack: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+  --font-mono-stack: var(--font-geist-mono), 'Geist Mono', ui-monospace, Menlo, monospace;
+
+  --background: var(--bl-bg);
+  --foreground: var(--bl-ink);
 
   /* Primary Palette */
   --color-primary: #2d3748;
@@ -46,8 +68,8 @@
   --color-dark: #212c30;
   --color-whitesmoke: #f5f5f5;
   --color-hover: #eeeeee;
-  --color-text-primary: #2d3748;
-  --color-text-secondary: #718096;
+  --color-text-primary: var(--bl-ink);
+  --color-text-secondary: var(--bl-muted);
   --color-appbar-bg: #2d3748;
   --color-drawer-bg: #2d3748;
 
@@ -75,8 +97,31 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans-stack);
+  --font-mono: var(--font-mono-stack);
+
+  --color-bl-bg: var(--bl-bg);
+  --color-bl-surface: var(--bl-surface);
+  --color-bl-ink: var(--bl-ink);
+  --color-bl-muted: var(--bl-muted);
+  --color-bl-line: var(--bl-line);
+  --color-bl-rule: var(--bl-rule);
+  --color-bl-band: var(--bl-band);
+  --color-bl-accent: var(--bl-accent);
+  --color-bl-accent-ink: var(--bl-accent-ink);
+  --color-bl-code-bg: var(--bl-code-bg);
+  --color-bl-code-bar: var(--bl-code-bar);
+  --color-bl-code-ink: var(--bl-code-ink);
+  --color-bl-code-muted: var(--bl-code-muted);
+  --color-bl-code-line: var(--bl-code-line);
+
+  /* brand palette (landing-next/public/brand/README.md) */
+  --color-brand-blue: #005981;
+  --color-brand-lightblue: #3b9fd0;
+  --color-brand-teal: #2ab0a0;
+  --color-brand-red: #a9262c;
+  --color-brand-orange: #e57536;
+  --color-brand-yellow: #f9c926;
 
   --color-primary: var(--color-primary);
   --color-primary-main: var(--color-primary-main);
@@ -140,18 +185,29 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #212c30;
-    --foreground: #eceef6;
-    --color-hover: #38454a;
-    --color-text-primary: #cfd6e1;
-    --color-text-secondary: #959fb3;
+    --bl-bg: #07131c;
+    --bl-surface: #0b1f2d;
+    --bl-ink: #eef3f6;
+    --bl-muted: #a9bac6;
+    --bl-line: rgba(238, 243, 246, 0.18);
+    --bl-rule: rgba(238, 243, 246, 0.12);
+    --bl-band: #0a1a25;
+    --bl-accent: #3b9fd0;
+    --bl-accent-ink: #0b1a24;
+    --bl-code-bg: #0a1a25;
+    --bl-code-bar: #07131c;
+
+    --color-hover: rgba(238, 243, 246, 0.06);
+    --color-text-primary: var(--bl-ink);
+    --color-text-secondary: var(--bl-muted);
+    color-scheme: dark;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bl-bg);
+  color: var(--bl-ink);
+  font-family: var(--font-sans-stack);
 }
 
 /* Custom scrollbar for sidebar */
@@ -171,8 +227,9 @@ body {
 
 /* Markdown Document Prose Typography */
 .prose-docs {
-  color: var(--color-text-primary);
+  color: var(--bl-ink);
   font-size: 0.95rem;
+  font-weight: 400;
   line-height: 1.75;
 }
 
@@ -180,6 +237,36 @@ body {
 .prose-docs > h1:first-of-type,
 .prose-docs > h2:first-of-type {
   margin-top: 0 !important;
+}
+
+.prose-docs h1,
+.prose-docs h2,
+.prose-docs h3,
+.prose-docs h4 {
+  color: var(--bl-ink);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.prose-docs h2 {
+  border-bottom-color: var(--bl-rule);
+}
+
+.prose-docs strong {
+  font-weight: 600;
+}
+
+.prose-docs a:not([aria-label]) {
+  color: var(--bl-accent);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--bl-accent) 45%, transparent);
+}
+
+.prose-docs a:not([aria-label]):hover {
+  text-decoration-color: currentColor;
 }
 
 .prose-docs p,
@@ -207,25 +294,37 @@ article p {
   line-height: 1.65;
 }
 
+.prose-docs li::marker {
+  color: var(--bl-muted);
+}
+
+.prose-docs blockquote {
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 3px solid var(--bl-accent);
+  color: var(--bl-muted);
+}
+
 .prose-docs table {
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--bl-line);
   border-radius: 0.5rem;
   font-size: 0.875rem;
   display: table;
+  background: var(--bl-surface);
 }
 
 .prose-docs thead {
-  background-color: #f8fafc;
+  background-color: var(--bl-band);
 }
 
 .prose-docs th {
   padding: 0.75rem 1rem;
   font-weight: 600;
-  border-bottom: 1px solid #e2e8f0;
-  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--bl-line);
+  border-right: 1px solid var(--bl-line);
   text-align: left;
 }
 
@@ -235,8 +334,8 @@ article p {
 
 .prose-docs td {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #e2e8f0;
-  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--bl-line);
+  border-right: 1px solid var(--bl-line);
   vertical-align: top;
   line-height: 1.6;
 }
@@ -246,44 +345,29 @@ article p {
 }
 
 .prose-docs tr:hover td {
-  background-color: rgba(241, 245, 249, 0.5);
+  background-color: var(--color-hover);
 }
 
 .prose-docs hr {
   margin: 2.5rem 0;
   border: 0;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--bl-line);
 }
 
 .prose-docs code:not(pre code) {
-  background-color: #f1f5f9;
-  color: #0f172a;
-  padding: 0.15rem 0.4rem;
+  background-color: var(--bl-band);
+  color: var(--bl-ink);
+  border: 1px solid var(--bl-rule);
+  padding: 0.1rem 0.35rem;
   border-radius: 0.25rem;
-  font-size: 0.875em;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+  font-family: var(--font-mono-stack);
 }
 
-@media (prefers-color-scheme: dark) {
-  .prose-docs table {
-    border-color: #2d3748;
-  }
-  .prose-docs thead {
-    background-color: #1e293b;
-  }
-  .prose-docs th, .prose-docs td {
-    border-color: #2d3748;
-  }
-  .prose-docs tr:hover td {
-    background-color: rgba(51, 65, 85, 0.4);
-  }
-  .prose-docs hr {
-    border-top-color: #2d3748;
-  }
-  .prose-docs code:not(pre code) {
-    background-color: #1e293b;
-    color: #e2e8f0;
-  }
+.prose-docs pre,
+.prose-docs pre code,
+.prose-docs kbd {
+  font-family: var(--font-mono-stack);
 }
 
 /* Mailchimp Newsletter Form */
@@ -344,16 +428,16 @@ article p {
 #mc_embed_signup input.email:focus,
 #mc_embed_signup input[type="text"]:focus,
 #mc_embed_signup input[type="email"]:focus {
-  border-color: #2693D8;
-  box-shadow: 0 0 0 3px rgba(38, 147, 216, 0.2);
+  border-color: var(--bl-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bl-accent) 20%, transparent);
   background-color: #ffffff;
 }
 
 #mc_embed_signup input[type="submit"],
 #mc_embed_signup .button {
-  background-color: #2693D8 !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
+  background-color: var(--bl-accent) !important;
+  color: var(--bl-accent-ink) !important;
+  font-weight: 400 !important;
   font-size: 0.875rem !important;
   padding: 0.625rem 1.75rem !important;
   border-radius: 0.5rem !important;
@@ -368,7 +452,7 @@ article p {
 
 #mc_embed_signup input[type="submit"]:hover,
 #mc_embed_signup .button:hover {
-  background-color: #1f7bb8 !important;
+  background-color: var(--bl-accent) !important;
 }
 
 @media (prefers-color-scheme: dark) {
