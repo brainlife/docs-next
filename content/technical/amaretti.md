@@ -127,11 +127,9 @@ The brainlife.io team runs Amaretti for brainlife.io. The [source code](https://
 
 Amaretti uses these services:
 
-| Service | Version used in the brainlife.io development setup | Purpose |
-| :--- | :--- | :--- |
-| **MongoDB** | 6.0 | Tasks, instances and resource configurations |
-| **Redis** | 7 | Cache |
-| **RabbitMQ** | 3 | Event message bus |
-| **Elasticsearch** | 7.17 | Task logs |
-
-The Amaretti API runs on Node.js and listens on port 8080 (health check at `/health`). It reads its settings from the `config` directory, and in the development setup from environment variables such as `MONGODB_URL`, `REDIS_URL` and `AMQP_URL`. Put an HTTPS proxy such as nginx in front of it.
+| Service | Purpose |
+| :--- | :--- |
+| **MongoDB** | Tasks, instances and resource configurations |
+| **Redis** | Cache |
+| **RabbitMQ** | Event message bus |
+| **Elasticsearch** | Task logs |
