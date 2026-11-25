@@ -41,15 +41,14 @@ BIDS sidecar files (`.json`, `.tsv`) are either carried as files, rebuilt on exp
 
 ---
 
-## The datatype catalog
+## About a datatype: uses, BIDS and sharing
 
-Every datatype has a record in the [datatype catalog](https://github.com/brainlife/abcd-spec/tree/master/datatypes){target=_blank} on GitHub. The short readme on a datatype's page summarizes it and links to the full record, which holds:
+The brainlife.io team keeps a reviewed record of every datatype. What you see on a datatype's page comes from it:
 
-- what the datatype is and what each of its files contains;
-- what it can and cannot be used for;
-- the Apps that read or write it, and why;
-- its BIDS mapping (above);
-- **sharing defaults**, from the [Global Brain Governance toolkit](https://braindatagovernance.org){target=_blank}: whether it is human neurodata, a default tier, the conditions that change the tier, the kinds of information it can reveal, and what to check before sharing.
+- the description and what each file contains;
+- in the readme: what the datatype can and cannot be used for, its BIDS mapping (above), its default sharing tier, and how many Apps read or write it.
+
+The sharing tier follows the [Global Brain Governance toolkit](https://braindatagovernance.org){target=_blank}:
 
 | Tier | Meaning | Example |
 | :--- | :--- | :--- |
@@ -61,7 +60,7 @@ Every datatype has a record in the [datatype catalog](https://github.com/brainli
 
 A tier is a default for the datatype. The data itself decides: for example, a defaced T1w image moves from tier 3 to tier 2. When in doubt, treat data as the more protective tier.
 
-The catalog is reviewed on GitHub before anything changes on brainlife.io, and the same records list candidate new datatypes drawn from BIDS for review.
+Changes to datatypes are reviewed before they reach brainlife.io. New BIDS datatypes are proposed for review the same way before they are added.
 
 ---
 
