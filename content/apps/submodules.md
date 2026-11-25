@@ -1,20 +1,14 @@
 # git submodules
 
-Submodules allows you to share code across multiple github repo. If you maintain multiple similar Apps, this is a 
-great way to refactor common code between different apps.
+Submodules let several GitHub repositories share code. If you maintain several similar Apps, they are a good way to keep the common code in one place.
 
-## Adding submodules
+## Add a submodule
 
-You can add submodule by running a command like on the root directory of your repo.
+Run a command like this at the root of your repository:
 
 ```
-git submodule add https://github.com:brainlife/vistasoft vistasoft
+git submodule add https://github.com/vistalab/vistasoft vistasoft
 ```
 
 !!! warning
-    Please do not use ssh-key based URL for your submodule repo (like `git@github.com/something/something.git`). Brainlife will not be able to clone your App if you use git@ url. You can check/update it by editing `.gitmodules` file.
-
-
-
-
-
+    Do not use an SSH URL for a submodule (like `git@github.com:something/something.git`). brainlife.io cannot clone your App if a submodule uses a `git@` URL. Check and fix the URLs in the `.gitmodules` file.

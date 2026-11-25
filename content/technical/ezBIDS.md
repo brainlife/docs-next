@@ -1,20 +1,20 @@
 # ezBIDS technical documentation
 
-This document is meant for reseachers (or users) who wish to contribute to the ezBIDS project. A key feature of ezBIDS is its ability to parse incoming imaging data for BIDS relevant information, and organize information into a file that can be ready by the ezBIDS frontend for display on the web pages. This information file is known as the `ezBIDS_core.json`. Researchers interested in contributing to ezBIDS (e.g. adding coverage for a new MRI or PET sequence) will need to understand the contents of the `ezBIDS_core.json` so that they can generate an identical file that is passed to the ezBIDS frontend.
+This page is for researchers and developers who want to contribute to [ezBIDS](https://github.com/brainlife/ezbids){target=_blank}, the web tool that converts DICOM (and MEG) data to BIDS in the browser. ezBIDS reads the uploaded data, finds the information BIDS needs, and writes it to a file that the ezBIDS web interface reads and displays. This file is `ezBIDS_core.json`. To add support for something new (for example a new MRI or PET sequence), you need to understand what `ezBIDS_core.json` contains so that you can produce the same structure for the web interface. To use ezBIDS, see the [ezBIDS user guide](/using_ezBIDS).
 
 ## ezBIDS and aimport
 
-ezBIDS covers neuroscience data: neurophysiology, neuroimaging and microscopy. The web app converts MRI, PET and MEG through `ezBIDS_core.json` (below). EEG, iEEG, NIRS, EMG and microscopy are handled by **aimport**, a local engine in the same repository ([`aimport/`](https://github.com/brainlife/ezbids/tree/master/aimport)) that reuses ezBIDS's mapping, conversion and defacing, adds an AI agent and a plan a person approves, de-identifies on the user's computer and validates against BIDS v1.11.2. It is driven by `bl aimport` (the brainlife Python CLI, [pybrainlife](https://github.com/brainlife/pybrainlife/tree/enh/cli#bl-aimport)) or, coming, ezBIDS desktop. User guide: [aimport](../using_aimport.md); engine API and internals: [aimport/README.md](https://github.com/brainlife/ezbids/blob/master/aimport/README.md).
+ezBIDS covers neuroscience data: neurophysiology, neuroimaging and microscopy. The web app converts MRI, PET and MEG through `ezBIDS_core.json` (below). EEG, iEEG, NIRS, EMG and microscopy are handled by **aimport**, a local engine in the same repository ([`aimport/`](https://github.com/brainlife/ezbids/tree/master/aimport)) that reuses ezBIDS's mapping, conversion and defacing, adds an AI agent and a plan a person approves, de-identifies on the user's computer and validates against BIDS v1.11.2. It is driven by `bl aimport` (the brainlife.io Python CLI, [pybrainlife](https://github.com/brainlife/pybrainlife/tree/enh/cli#bl-aimport), branch `enh/cli`) or, in the future, ezBIDS desktop. aimport is not released yet. User guide: [aimport](/docs/using_aimport/); engine API and internals: [aimport/README.md](https://github.com/brainlife/ezbids/blob/master/aimport/README.md).
 
 ## The ezBIDS Core
 
-The following block code provides information pertaing to the contents of the `ezBIDS_core.json` file. Necessary keys are not indented and their data type and description are provided and indented on the following lines. If the key is a dictionary, a _fields_ key will be provided with how the dictionary key value should be specified. 
+The block below describes the contents of `ezBIDS_core.json`. Top-level keys are not indented; the type and description of each key are indented on the lines below it. If a key is a dictionary, a _fields_ key lists the keys it contains.
 
 ```yaml
 # See https://bids-specification.readthedocs.io/en/stable/glossary.html#readme-files
 "readme":
    "type": str
-   "description": Details how the data(set) was converted. Default is "This data was converted using ezBIDS (https://brainlife.io/ezbids/). Additional information regarding this dataset can be entered in this file."
+   "description": Details how the data(set) was converted. Default is "This data was converted using ezBIDS (https://brainlife.io/ezbids). Additional information regarding this dataset can be entered in this file."
 # See https://bids-specification.readthedocs.io/en/stable/03-modality-agnostic-files.html#dataset-description
 "datasetDescription":
    "type": dict
@@ -25,7 +25,7 @@ The following block code provides information pertaing to the contents of the `e
          "description": Name of the dataset, default is “Untitled"
       "BIDSVersion":
          "type": str
-         "description": BIDS standard used for conversion, default is "1.8.0"
+         "description": BIDS standard used for conversion, default is "1.9.0"
       "DatasetType":
          "type": str
          "description": Interpretation of the dataset, default is "raw"
@@ -66,7 +66,7 @@ The following block code provides information pertaing to the contents of the `e
                "description": BIDS converter tool version, default is 1.0.0
             "Description":
                "type": str
-               "description": Description of the tool, default is "ezBIDS is a web-based tool for converting MRI datasets to BIDS, requiring neither coding nor knowledge of the BIDS specification"
+               "description": Description of the tool, default is "ezBIDS is a web-based tool for converting neuroscience datasets to BIDS, requiring neither coding nor knowledge of the BIDS specification"
             "CodeURL":
                "type": str
                "description": BIDS converter tool URL, default is "https://brainlife.io/ezbids/"
@@ -156,12 +156,9 @@ The following block code provides information pertaing to the contents of the `e
          "type": dict
          "description": Long-form information pertaining to participant's sex
          "fields":
-            "LongName":
-               "type": str
-               "description": Default value is "gender"
             "Description":
                "type": str
-               "description": Default value is "generic gender field"
+               "description": Default value is "Sex of the participant(s)"
             "Levels":
                "type": dict
                "description": Levels of the sex (e.g. M or F)
@@ -176,12 +173,12 @@ The following block code provides information pertaing to the contents of the `e
          "type": dict
          "description": Long-form information pertaining to participant's age
          "fields":
-            "LongName":
+            "Description":
                "type": str
-               "description": Default is "age"
+               "description": Default is "Age of the participant(s)"
             "Units":
                "type": str
-               "description": Default is "years"
+               "description": Default is "year"
 # Participants (subjects) information
 "participantsInfo":
    "type": dict
@@ -349,26 +346,26 @@ The following block code provides information pertaing to the contents of the `e
 ## Backend Workflow
 
 ### 1. Uploading Data
-When a user begins uploading data, ezBIDS will create a new session using (post)/session API. A session organizes each ezBIDS upload/conversion process. For each session, a new DB/session collection is created with the mongo ID as session ID, and creates a unique working directory using the session ID on the backend server where all uploaded data is stored. Once all files are successfully uploaded, the client makes a (patch)/session/uploaded/:session_id API call and sets the session state to "uploaded" to let the ezBIDS handler knows that the session is ready to being preprocessing.
+When a user starts uploading data, ezBIDS creates a new session with the (post)/session API. A session holds one ezBIDS upload and conversion. For each session, ezBIDS creates a record in the session collection of the database (its MongoDB ID is the session ID) and a working directory named after the session ID on the backend server, where all uploaded data is stored. When all files are uploaded, the client calls (patch)/session/uploaded/:session_id, which sets the session state to "uploaded" so that the ezBIDS handler knows the session is ready for preprocessing.
 
 ### 2. Preprocessing Data
-The backend server polls for uploaded sessions, and when it finds "uploaded" session, it launches the preprocessing script, setting the session state to "preprocessing". This consists of several steps, including un-compressing all compressed folders/files, running *dcm2niix*, and creating a list file containing all the NIfTI and sidecar json files. The *ezBIDS_core.py* uses this to analyze the files and at the end create *ezBIDS_core.json*. When the preprocessing is complete, the session state will be set to "analyzed". The preprocessing step then loads *ezBIDS_core.json* json and copies the contents to DB/ezBIDS collection (not session collection) under an original key.
+The backend server polls for uploaded sessions. When it finds one, it sets the session state to "preprocessing" and runs the preprocessing script. The script uncompresses all compressed folders and files, runs *dcm2niix*, and writes a list of all the NIfTI and JSON sidecar files. *ezBIDS_core.py* analyzes these files and writes *ezBIDS_core.json*. When preprocessing is complete, the session state is set to "analyzed". The preprocessing step then loads *ezBIDS_core.json* and copies its contents to the ezBIDS collection of the database (not the session collection) under the `original` key.
 
-### 3. User interact with the session via web UI.
-The web user interface (UI) detects the preprocessing completed by polling for session state, and loads the contents of ezBIDS_core.json via (get)/download/:session_id/ezBIDS_core.json API. User then view / correct the content of *ezBIDS_core.json*.
+### 3. The user works with the session in the web interface
+The web interface polls the session state, sees that preprocessing is complete, and loads *ezBIDS_core.json* with the (get)/download/:session_id/ezBIDS_core.json API. The user then reviews and corrects its contents.
 
-### 4. User request for defacing (optional)
-Before the user finalizes editing the information, they are given chance to deface anatomical images. When requested, the UI will make a (post)/session/:sessino_id/deface API call with a list of images to deface. The backend stores this information as *deface.json* in the workding directory (workdir) and sets the session state to "deface". The backend defacing handler looks for the "deface" state session and sets it to "defacing" and launches the *deface.sh* script. Once defacing is completed, it will set the session state to "defaced".
+### 4. The user asks for defacing (optional)
+Before finalizing, the user can deface the anatomical images. The web interface then calls (post)/session/:session_id/deface with the list of images to deface. The backend stores the list as *deface.json* in the working directory (workdir) and sets the session state to "deface". The defacing handler finds sessions in the "deface" state, sets them to "defacing" and runs the *deface.sh* script. When defacing is complete, it sets the session state to "defaced".
 
-*deface.sh* creates the following files under the workdir:
+*deface.sh* creates these files in the workdir:
 
-1. *deface.finished* (list the anatomical files successfully defaced)
-2. *deface.failed* (list the anatomical files that failed defacing)
+1. *deface.finished* (the anatomical files that were defaced)
+2. *deface.failed* (the anatomical files that could not be defaced)
 
-The UI polls these files to determine which files are successfully defaced (or not). The user can then choose whether they want to use the defaced anatomical file file or not (each object will have a field named defaceSelection set to either "original" or "defaced" to indicate which image to use).
+The web interface polls these files to see which images were defaced. The user then chooses whether to use each defaced image: each object has a field `defaceSelection` set to "original" or "defaced".
 
 ### 5. Finalize
-When the user clicks the "Finalize" button, the UI makes an API call for (post)/session/:session_id/finalize API. The UI passes the following content from the memory ($root).
+When the user selects **Finalize**, the web interface calls (post)/session/:session_id/finalize with this content from memory ($root):
 ```
 {
     datasetDescription: this.datasetDescription,
@@ -380,10 +377,10 @@ When the user clicks the "Finalize" button, the UI makes an API call for (post)/
 }
 ```
 
-The API then store this information as *finalized.json* in workdir, and copies the content to DB/ezBIDS collection under an updated key (to contrast with original key). The session status will be set to "finalized". This kicks off the finalized handler on the server side, and the handler resets the status to "bidsing" and runs the *bids.sh* script to generate the BIDS structure according to the information stored at the object level. Once finished, the session status will be set to "finished".
+The API stores this as *finalized.json* in the workdir and copies it to the ezBIDS collection under the `updated` key (next to `original`). The session state becomes "finalized". This starts the finalize handler on the server, which sets the state to "bidsing" and runs *bids.sh* to build the BIDS structure from the information in each object. When it is done, the session state is set to "finished".
 
-### 6. Access BIDS
-Once session status becomes "finished", the user will be then allowed to download the final BIDS directory via the download API, or send to other cloud resources
+### 6. Get the BIDS data
+When the session state is "finished", the user can download the BIDS folder with the download API, or send it to other services (such as a brainlife.io project or OpenNeuro).
 
 
 ## This repo was bootstrapped by

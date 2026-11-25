@@ -1,238 +1,137 @@
-# Task Orchestration Engine (Amaretti)
+# Task orchestration (Amaretti)
 
-**Amaretti** is Brainlife's lightweight, cross-resource, multi-user computational task orchestration engine. Written in Node.js, Amaretti operates as a **meta-scheduling system**: rather than replacing cluster job schedulers, it sits directly on top of heterogeneous computing infrastructures (such as SLURM, PBS/Torque, HTCondor, OpenNebula, and cloud VMs) to coordinate high-throughput scientific computing across distributed institutional boundaries.
+**Amaretti** is brainlife.io's workflow service. Its [README](https://github.com/brainlife/amaretti){target=_blank} describes it as "a light-weight, cross-resource, multi-user task orchestration service written in Node.js". It is a meta-scheduler: it does not replace the batch schedulers of compute clusters, but works on top of them (Slurm, PBS and others, and plain VMs), and can also submit to AWS Batch.
 
-Its primary mission is to eliminate the manual burden of distributed data engineering—automating compute resource selection, input data staging, containerized execution, real-time log monitoring, inter-cluster data synchronization, and scratch space lifecycle management.
+Amaretti takes care of the work that running jobs on many resources involves: choosing a compute resource, staging input data, starting and monitoring jobs, copying working directories between resources, and cleaning up scratch space.
+
+In brainlife.io, each run of an App is a job. In Amaretti a job is a **task**, and related tasks are grouped in an **instance** (a process in the web app).
 
 ---
 
-## 1. System Architecture & Topology
+## 1. Architecture
 
-Amaretti decouples high-level scientific workflow logic from low-level cluster execution. It connects to registered computing clusters via secure OpenSSH channels, manages job execution states in MongoDB, and broadcasts real-time status transitions over RabbitMQ.
+Amaretti connects to compute resources over SSH, keeps tasks, instances and resources in MongoDB, uses Redis as a cache, and publishes status changes on a RabbitMQ (AMQP) message bus, which the event service passes on to the web app and the CLI.
 
 ```
-                              ┌──────────────────────────────────────────────┐
-                              │           Brainlife Web Portal / CLI         │
-                              └──────────────────────┬───────────────────────┘
-                                                     │ REST API & WebSockets
-                                                     ▼
-                              ┌──────────────────────────────────────────────┐
-                              │             Nginx Reverse Proxy              │
-                              └───────┬──────────────┬───────────────┬───────┘
-                                      │              │               │
-                                      ▼              ▼               ▼
-                              ┌──────────────┐ ┌───────────┐ ┌───────────────┐
-                              │ Auth Service │ │ Warehouse │ │ Event Service │
-                              │ (JWT Tokens) │ │(Data/Pub) │ │  (WebSockets) │
-                              └──────────────┘ └─────┬─────┘ └───────▲───────┘
-                                                     │               │
-                                                     │ REST Requests │ AMQP Events
-                                                     ▼               │
-                              ┌──────────────────────────────────────┴───────┐
-                              │             AMARETTI ORCHESTRATOR            │
-                              │  ┌─────────────────┐   ┌──────────────────┐  │
-                              │  │ Resource Scorer │   │ Task State Mach. │  │
-                              │  ├─────────────────┤   ├──────────────────┤  │
-                              │  │ SSH Multiplexer │   │ Rsync Controller │  │
-                              │  └─────────────────┘   └──────────────────┘  │
-                              └──────────┬─────────────────────┬─────────────┘
-                                         │                     │
-                     ┌───────────────────┴──────────┐          │
-                     │ OpenSSH Multi-Channel Tunnel │          │ OpenSSH Multi-Channel Tunnel
-                     ▼                              ▼          ▼
-         ┌───────────────────────┐              ┌────────────────────────┐
-         │  HPC Cluster Alpha    │              │   Cloud Grid Beta      │
-         │  (Slurm / PBS)        │              │   (HTCondor / VMs)     │
-         │  - Singularity Engine │              │   - Docker Engine      │
-         │  - Scratch Storage    │              │   - Scratch Storage    │
-         └───────────┬───────────┘              └───────────▲────────────┘
-                     │                                      │
-                     └──────── Direct Inter-Cluster ────────┘
-                                rsync via SSH-Agent
+        brainlife.io web app / CLI
+                  │  REST API and WebSockets
+                  ▼
+            nginx proxy
+       ┌──────────┼───────────────┐
+       ▼          ▼               ▼
+  Auth service  Warehouse   Event service
+   (JWT)        (projects,      ▲
+                 data, Apps)    │ AMQP events
+                  │ REST        │
+                  ▼             │
+          ┌─────────────────────┴──┐
+          │        Amaretti        │
+          │  resource selection,   │
+          │  task state, rsync     │
+          └──────┬──────────┬──────┘
+                 │ SSH      │ SSH / AWS Batch
+                 ▼          ▼
+          HPC cluster     cloud VM or
+          (Slurm, PBS)    AWS Batch
+          Singularity     Docker
 ```
 
 ---
 
-## 2. Core Capabilities
+## 2. What Amaretti does
 
-### A. Dynamic Resource Scoring & Optimal Dispatch
-When a task is submitted, Amaretti does not arbitrarily dispatch it to a cluster. Instead, the **Resource Selection Algorithm** queries all registered computing resources and calculates an execution suitability score based on:
-1. **Application Whitelist**: Whether the resource administrator has approved and enabled this specific App.
-2. **Cluster Health & Reachability**: Real-time SSH ping status and cluster load.
-3. **Execution History & Latency**: Prior success rates, average queue wait times, and execution duration for similar tasks.
-4. **User & Project Allocations**: User billing accounts, project resource bindings, and administrator priority overrides.
+### A. Choosing a compute resource
 
-If the highest-scoring resource is temporarily unavailable or offline, Amaretti queues the task safely in `requested` status until connectivity is restored or falls back to an eligible alternative cluster.
+When a task is submitted, Amaretti scores every resource the user can use and picks the one with the highest score:
+
+1. **App enabled**: a resource only runs Apps that its administrators enabled on it, each with a score. A resource without the App, with a score of 0, with no free capacity (each resource sets the maximum number of tasks it runs at once) or whose status is not OK is not used.
+2. **Bonuses**: the score goes up by 5 if the task's dependencies ran on that resource (no data needs to move), by 10 if it is a private resource of the user, and by 15 if the user prefers it (for example `--preferred-resource` in the CLI).
+
+The App page shows these resources under **Computing Resources**, and `GET /resource/best` returns the result of this selection (see the [REST API](/docs/technical/api/)). If no resource can run the task yet, it stays `requested` until one can.
 
 ---
 
-### B. Task Lifecycle & State Transitions
+### B. Task states
 
-Compute tasks transition through a strictly enforced state machine:
+A task moves through these states:
 
 ```
-[ requested ] ──> ( Resource Assigned ) ──> [ running ] ──> ( Exit Code 0 ) ──> [ finished ]
-      │                                           │                                  │
-      │ (Resource Failure)                        │ (Job Error / Segfault)           │ (25 Days Elapsed)
-      ▼                                           ▼                                  ▼
- [ waiting ]                                  [ failed ]                         [ removed ]
-                                                  │
-                                                  │ (User Rerun)
-                                                  ▼
-                                            [ requested ]
+requested ──> running ──> finished ──> removed
+                 │
+                 ├──> failed  ──(rerun)──> requested
+                 │
+                 └──> stop_requested ──> stopped
 ```
 
-* **`requested`**: The task is validated and registered in MongoDB. It is evaluated by the resource selector and awaits dispatch.
-* **`running`**: Input data is synchronized to the remote cluster's scratch directory, container images are cached, and the job is queued in the cluster scheduler (e.g., via `sbatch`).
-* **`finished`**: The job completed with exit code `0`. Standard output and error files are finalized, and output datasets are registered for archiving.
-* **`failed`**: The task exited with a non-zero exit code or was terminated by the cluster scheduler (e.g., walltime limit exceeded or out-of-memory).
-* **`removed`**: The temporary work directory on remote scratch storage was purged according to data retention policies.
+* **`requested`**: the task is registered and waits for its dependencies and for a resource.
+* **`running`**: the inputs are staged in the task's working directory on the resource and the job has been submitted to the resource (for example with the `start` hook, which submits `main` to the scheduler).
+* **`finished`**: the job completed successfully. Outputs the user chose to archive are then archived as datasets.
+* **`failed`**: the job failed, for example with a non-zero exit code, or the scheduler stopped it (time limit, memory). A task also fails if a task it depends on failed ("Dependency failed.") or was removed ("Dependency removed.").
+* **`stop_requested`** and **`stopped`**: a user asked to stop the task, and it was stopped.
+* **`removed`**: the working directory was deleted from the resource.
 
 ---
 
-### C. Direct Inter-Cluster Data Synchronization
+### C. Copying data between resources
 
-A major bottleneck in multi-cloud and distributed HPC computing is data transfer between independent clusters. If Task 1 runs on **Cluster A** (e.g., Indiana University Karst) and child Task 2 must run on **Cluster B** (e.g., TACC Stampede), naive orchestrators proxy multi-gigabyte files through their central API server.
+If a task needs the output of a task that ran on another resource, Amaretti copies the parent task's working directory directly from one resource to the other, without passing the data through the brainlife.io servers:
 
-Amaretti solves this by establishing **direct peer-to-peer inter-resource synchronization**:
-
-```
-                       ┌───────────────────────────────┐
-                       │     Amaretti Orchestrator     │
-                       └──────┬─────────────────┬──────┘
-       1. Installs Temporary  │                 │ 2. Forwards Agent
-          SSH Key for R1      ▼                 ▼    to R2
-                        ┌──────────┐       ┌──────────┐
-                        │ Resource │       │ Resource │
-                        │  R1 (A)  │       │  R2 (B)  │
-                        └────┬─────┘       └────▲─────┘
-                             │                  │
-                             └──── 3. rsync ────┘
-                                   Direct Pull
-                       (Temporary SSH key purged immediately)
-```
-
-1. Amaretti starts an in-memory `ssh-agent` and generates a temporary, single-use SSH key pair authorizing access to Resource 1.
-2. Amaretti establishes an SSH connection to Resource 2 with **SSH-Agent Forwarding** enabled.
-3. From Resource 2, Amaretti executes `rsync` to pull the parent task directory directly from Resource 1 over an encrypted channel.
-4. The temporary SSH key is revoked and purged from memory immediately upon connection establishment, ensuring zero credential persistence.
+1. Amaretti starts an `ssh-agent` holding the key for the source resource.
+2. It connects to the destination resource over SSH with agent forwarding.
+3. On the destination resource it runs `rsync` to pull the parent task's directory from the source resource.
+4. When the copy ends, the agent is stopped.
 
 ---
 
-### D. Task Dependencies & Cascading Workflows
+### D. Task dependencies
 
-Tasks can be linked together into Directed Acyclic Graphs (DAGs) through explicit task dependencies:
-- **Prerequisite Validation**: A child task will not enter `running` status until all parent tasks have reached `finished` status with valid output files.
-- **Cascading Failure**: If an upstream task fails, Amaretti automatically halts downstream child tasks, marking them as blocked to avoid wasting compute cycles.
-- **Cascading Rerun**: If a researcher adjusts parameters and reruns a failed parent task, upon its successful completion Amaretti automatically re-triggers all dependent downstream child tasks.
-- **Instance Scoping**: Related tasks are grouped under an **Instance**. Instances provide a shared filesystem namespace on remote compute nodes, allowing downstream tasks on the same cluster to read parent outputs locally without network transfers.
+Tasks can depend on other tasks:
 
----
-
-### E. Scratch Space Lifecycle & 25-Day Purging Policy
-
-To prevent multi-terabyte datasets from overflowing high-speed scratch storage on partner HPC clusters:
-1. **Multi-Location Tracking**: Amaretti continuously tracks which compute clusters currently maintain a local copy of a task's working directory.
-2. **25-Day Retention**: By default, working scratch directories on HPC resources are scheduled for automatic deletion 25 days after task completion.
-3. **Automatic Status Transition**: When all physical remote working directories for a task have been purged, Amaretti transitions the task status to `removed`.
-4. **Permanent Preservation**: Datasets archived into Brainlife's **`2. Data`** tab or published in **Publications** are permanently preserved in secondary storage (IU Scholarly Data Archive tape and AWS S3) and are completely immune to scratch purging.
+- A task does not start until all the tasks it depends on are `finished` ("Waiting on dependencies").
+- If a dependency fails or is removed, the task fails.
+- Tasks in the same instance share a working area on the resource, so a task can read its parents' outputs there without a transfer when they ran on the same resource.
 
 ---
 
-### F. OpenSSH Multi-Channel Multiplexing
+### E. Cleaning up scratch space
 
-Connecting to remote HPC clusters over standard SSH can incur significant latency (200–800ms per handshake) and trigger connection throttling from institutional firewall bastions.
+Working directories live on the scratch disks of compute resources and are temporary:
 
-Amaretti implements an intelligent **OpenSSH Multi-Channel Connection Cache**:
-- Maintains persistent master SSH daemon sockets to active compute clusters.
-- Multiplexes multiple task commands, file transfers, and log queries over shared OpenSSH channels.
-- Employs request throttling and connection backoff to respect institutional security policies while minimizing execution latency.
-
----
-
-## 3. ABCD Container Specification
-
-Amaretti executes applications following the **ABCD (Action-Based Computational Derivative) Specification**:
-- **GitHub Hosted**: Apps are maintained in public or private Git repositories. Users can specify exact branch names, release tags, or commit SHAs to guarantee scientific reproducibility.
-- **Containerized**: App workloads execute inside Singularity (on HPC clusters) or Docker (on cloud nodes) containers.
-- **Standardized Working Directory**:
-  - `config.json`: Amaretti injects all user configuration options, parameters, and paths to input data-objects.
-  - `_app.sh` / wrapper script: The containerized command executed on the cluster.
-  - Output files: The application writes all derivatives directly into the working directory, where Amaretti catalogs and validates them against the registered Brainlife Datatype.
+1. A task can set a `remove_date`. After that date, housekeeping deletes its working directory.
+2. Without a `remove_date`, a task's working directory is deleted when the task is more than 90 days old.
+3. When the working directory is gone, the task becomes `removed`.
+4. Outputs that were archived as datasets in a project (**2. Data**) are stored by brainlife.io and do not depend on the working directory. Archive any output you want to keep.
 
 ---
 
-## 4. Standalone Installation & Self-Hosting
+### F. Reusing SSH connections
 
-While Amaretti is hosted and managed in production by the Brainlife team at Indiana University, it can be deployed independently by research institutions as a private compute orchestrator.
+Opening a new SSH connection for every command is slow and can trip the connection limits of institutional firewalls. Amaretti keeps SSH connections to resources open and reuses them for commands, file transfers and log reads.
 
-### Prerequisites
+---
 
-| Component | Recommended Version | Purpose |
+## 3. How an App runs
+
+Amaretti runs Apps that follow the ABCD (Application for Big Computational Data) [specification](https://github.com/brainlife/abcd-spec){target=_blank}:
+
+- **From GitHub**: an App is a GitHub repository. Each task records the branch it ran (`service_branch`), so results can be reproduced.
+- **Hooks**: Amaretti starts, monitors and stops a task with the `start`, `status` and `stop` hooks installed on the resource (or provided by the App; see [Custom hooks](/docs/apps/customhooks/)). The default `start` hook runs the App's `main`.
+- **Working directory**: Amaretti clones the App into the task's working directory and writes `config.json` there, with the user's parameters and the paths to the input data. The App writes its outputs into the same directory, in the structure of the output datatypes.
+- **Containers**: most Apps run their software from a Docker container with Singularity (Apptainer) on HPC clusters, or Docker on cloud resources.
+
+---
+
+## 4. Running Amaretti yourself
+
+The brainlife.io team runs Amaretti for brainlife.io. The [source code](https://github.com/brainlife/amaretti){target=_blank} is MIT licensed.
+
+Amaretti uses these services:
+
+| Service | Version used in the brainlife.io development setup | Purpose |
 | :--- | :--- | :--- |
-| **Node.js** | `>= 18.x LTS` | Amaretti core runtime |
-| **MongoDB** | `>= 6.0` | Task state, instance definitions, and resource configs |
-| **Redis** | `>= 7.0` | High-speed cache for cluster health metrics |
-| **RabbitMQ** | `>= 3.11` | Event message bus (`wf.task`, `wf.instance`) |
-| **Nginx** | `>= 1.22` | SSL termination, reverse proxy, and WebSocket streaming |
+| **MongoDB** | 6.0 | Tasks, instances and resource configurations |
+| **Redis** | 7 | Cache |
+| **RabbitMQ** | 3 | Event message bus |
+| **Elasticsearch** | 7.17 | Task logs |
 
----
-
-### Docker Deployment
-
-To launch Amaretti using Docker:
-
-```bash
-# 1. Pull the official Amaretti container image
-docker pull soichih/workflow
-
-# 2. Create local configuration directory
-mkdir -p /opt/amaretti/config
-
-# 3. Launch the container
-docker run -d \
-    --name amaretti-orchestrator \
-    --restart always \
-    --network host \
-    -v /opt/amaretti/config:/app/config \
-    -v ~/.ssh:/root/.ssh:ro \
-    soichih/workflow
-```
-
----
-
-### Nginx Reverse Proxy Configuration
-
-To expose Amaretti securely over HTTPS with WebSocket event streaming:
-
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name orchestrator.example.org;
-
-    ssl_certificate /etc/letsencrypt/live/orchestrator.example.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/orchestrator.example.org/privkey.pem;
-
-    proxy_redirect off;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-
-    # Amaretti REST API
-    location /api/amaretti/ {
-        proxy_pass http://127.0.0.1:8080/;
-        proxy_read_timeout 300s;
-        proxy_send_timeout 300s;
-    }
-
-    # WebSocket Real-Time Event Stream
-    location /api/amaretti/events {
-        proxy_pass http://127.0.0.1:8080/events;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_read_timeout 86400s;
-    }
-}
-```
+The Amaretti API runs on Node.js and listens on port 8080 (health check at `/health`). It reads its settings from the `config` directory, and in the development setup from environment variables such as `MONGODB_URL`, `REDIS_URL` and `AMQP_URL`. Put an HTTPS proxy such as nginx in front of it.

@@ -1,19 +1,22 @@
-# Uploading Data
+# Uploading data
 
-Brainlife CLI allows you to upload neuroimaging data objects directly from your local computer or cluster. You can upload individual data objects with `bl data upload`, or upload an entire structured dataset at once with `bl bids upload`.
+The CLI uploads data from your computer or cluster into a brainlife.io project. Upload one dataset at a time with `bl data upload`, or a whole BIDS folder at once with `bl bids upload`.
+
+!!! note
+    In the web app, "Upload Data From local Files" on the **Project Data** menu is shown as "Currently unavailable". The CLI is a way to upload your own data today. Each datatype page also shows CLI commands under **Upload Instructions**.
 
 ---
 
-## Prerequisites: Projects & Datatypes
+## What you need: a project, a datatype and a subject
 
-Every data object uploaded to Brainlife must be associated with:
-1. **A Project ID**: The destination project where data will be stored.
-2. **A Datatype**: The data structure specification defining which files are required (e.g. `neuro/anat/t1w` requires a `t1.nii.gz` file).
-3. **A Subject Name**: A subject identifier (e.g. `sub-01` or `101`).
+Every dataset you upload needs:
+1. **A project ID**: the project that receives the data.
+2. **A datatype**: the specification of which files the dataset contains (for example `neuro/anat/t1w` needs a `t1.nii.gz` file).
+3. **A subject**: a subject identifier (for example `sub-01` or `101`).
 
-### 1. Finding Your Project ID
+### 1. Find your project ID
 
-To find your project's ID, search using `bl project query`:
+Search with `bl project query`:
 
 ```bash
 $ bl project query --query "My Study"
@@ -26,21 +29,21 @@ Description: Diffusion and anatomical data
 (Returned 1 result)
 ```
 
-You can also filter by administrator or member:
+You can also filter by administrator (`--admin`), member (`--member`) or guest (`--guest`):
 
 ```bash
 bl project query --admin your_username
 ```
 
-To extract just the project ID in scripts, pass `--json` and use `jq`:
+In scripts, get just the ID with `--json` and `jq`:
 
 ```bash
 PROJECT_ID=$(bl project query --query "My Study" --json | jq -r '.[0]._id')
 ```
 
-### 2. Finding the Right Datatype
+### 2. Find the datatype
 
-Brainlife datatypes specify the file format and required files for each modality. Search for matching datatypes with `bl datatype query`:
+A datatype lists the files a dataset contains. Search with `bl datatype query`:
 
 ```bash
 $ bl datatype query --query t1
@@ -51,9 +54,9 @@ Files: [(required) t1: t1.nii.gz]
 (Returned 1 result)
 ```
 
-Notice the **`Files:`** section. The identifier before the colon (`t1`) is the file flag name you will pass to the upload command (i.e. `--t1 <path>`).
+Look at the **`Files:`** line. The name before the colon (`t1`) is the option you pass to the upload command (`--t1 <path>`).
 
-For diffusion MRI (`neuro/dwi`), multiple files are required:
+Diffusion MRI (`neuro/dwi`) needs several files:
 
 ```bash
 $ bl datatype query --query "neuro/dwi"
@@ -63,30 +66,28 @@ Description: Diffusion Weighted MRI
 Files: [(required) dwi: dwi.nii.gz, (required) bvecs: dwi.bvecs, (required) bvals: dwi.bvals]
 ```
 
-Here you must provide `--dwi <path>`, `--bvecs <path>`, and `--bvals <path>`.
+Here you pass `--dwi <path>`, `--bvecs <path>` and `--bvals <path>`.
 
 ---
 
-## Method 1: Uploading Individual Data Objects (`bl data upload`)
+## Upload one dataset (`bl data upload`)
 
-To upload an individual data object, run `bl data upload`. 
+### Required options
+* `-p, --project <project_id>`: the project ID.
+* `-d, --datatype <datatype_name_or_id>`: the datatype name or ID (for example `neuro/anat/t1w`).
+* `-s, --subject <subject_id>`: the subject (for example `sub-01`).
+* `--<file_key> <path>`: the path to each file of the datatype (for example `--t1 path/to/t1.nii.gz`).
 
-### Required Parameters
-* `-p, --project <project_id>`: Target Brainlife project ID.
-* `-d, --datatype <datatype_name_or_id>`: Name or ID of the datatype (e.g. `neuro/anat/t1w`).
-* `-s, --subject <subject_id>`: Subject identifier (e.g. `sub-01`).
-* `--<file_key> <path>`: Path to each file required by the datatype (e.g. `--t1 path/to/t1.nii.gz`).
+### Other options
+* `-e, --session <session>`: session (for example `ses-01`).
+* `-r, --run <run>`: run (for example `1`).
+* `-n, --desc <description>`: a description of the dataset.
+* `-t, --tag <tag>`: an annotation (dataset tag) for filtering; repeat for more.
+* `--datatype_tag <tag>`: a datatype tag (for example `defaced`, `acpc_aligned`); repeat for more.
+* `-m, --meta <file.json>`: a JSON sidecar file with BIDS or other metadata.
+* `-j, --json`: print the uploaded dataset as JSON.
 
-### Optional Parameters
-* `-e, --session <session>`: Session label (e.g. `ses-01`).
-* `-r, --run <run>`: Run label (e.g. `1`).
-* `-n, --desc <description>`: Text description for this data object.
-* `-t, --tag <tag>`: Custom tag for searching (can be specified multiple times).
-* `--datatype_tag <tag>`: Datatype tag (e.g. `defaced`, `acpc_aligned`).
-* `-m, --meta <file.json>`: Path to a JSON sidecar file containing BIDS-compliant or custom metadata.
-* `-j, --json`: Output uploaded dataset details in JSON format.
-
-### Example: Uploading an Anatomical T1w Image
+### Example: a T1-weighted image
 
 ```bash
 bl data upload \
@@ -101,7 +102,7 @@ bl data upload \
     --desc "Pre-operative T1w scan"
 ```
 
-### Example: Uploading a Diffusion MRI Dataset
+### Example: diffusion MRI
 
 ```bash
 bl data upload \
@@ -115,35 +116,36 @@ bl data upload \
     --meta ./data/sub-001_dwi.json
 ```
 
-### The Upload Process
+### What happens during an upload
 
 When you run `bl data upload`:
-1. The CLI bundles the files into an archive.
-2. It submits a temporary staging task (`app-noop`) on Brainlife compute services.
-3. The data is uploaded and untarred on the staging resource.
-4. If a validator is registered for that datatype (e.g. BIDS / neuroimaging validation), it validates the dataset before archiving.
-5. The object is registered and becomes visible in your project's **Archive / Data** view.
+1. The CLI packs the files into an archive.
+2. It starts a staging job (`brainlife/app-noop`) on a brainlife.io compute resource.
+3. It uploads the archive, which is unpacked on that resource.
+4. If the datatype has a validator, the validator checks the dataset before it is archived. Otherwise the CLI prints "no validator registered for this datatype. skipping validation".
+5. The dataset is archived and appears on the project's **2. Data** tab.
 
 ---
 
-## Method 2: Uploading Complete BIDS Datasets (`bl bids upload`)
+## Upload a BIDS folder (`bl bids upload`)
 
-If your data is already organized following the [BIDS (Brain Imaging Data Structure)](https://bids.neuroimaging.io/){target=_blank} standard (containing `dataset_description.json`, `sub-<id>/` folders, etc.), you can upload your entire dataset with a single command:
+If your data is organized as [BIDS](https://bids.neuroimaging.io/){target=_blank} (with `dataset_description.json`, `sub-<id>/` folders and so on), upload it with one command:
 
 ```bash
 bl bids upload -d /path/to/bids_dataset -p <project_id>
 ```
 
-### What `bl bids upload` does:
-1. **Validates BIDS**: Runs the BIDS validator to ensure folder and filename specifications are compliant.
-2. **Parses Metadata**: Automatically ingests `dataset_description.json`, `participants.tsv`, and `participants.json`, updating participant demographics in your project.
-3. **Automatic Datatype Mapping**: Detects `anat`, `dwi`, `func`, `fmap`, and other modalities, mapping them to the proper Brainlife datatypes and sidecar metadata.
-4. **Batch Staging**: Iterates over all subjects, sessions, and runs, uploading and registering each data object automatically.
-5. **Auto-Project Creation**: If you omit `--project`, the CLI will automatically create a new project using the name and description from `dataset_description.json`.
+### What `bl bids upload` does
+1. **Reads the metadata**: reads `dataset_description.json`, and loads `participants.tsv` and `participants.json` into the project's participants info.
+2. **Maps files to datatypes**: finds anatomical (T1w, T2w, FLAIR, MP2RAGE), diffusion, functional (task), field map, MEG (CTF, FIF) and EEG files and maps each, with its sidecar metadata, to a brainlife.io datatype.
+3. **Uploads each dataset**: goes through all subjects, sessions and runs and uploads each dataset.
+4. **Creates a project if needed**: if you leave out `--project`, the CLI creates a new project named after `Name` in `dataset_description.json`.
 
-### Adding Tags to BIDS Uploads
+It does not run the BIDS validator. Check your folder with the [BIDS validator](https://bids-standard.github.io/bids-validator/){target=_blank} first.
 
-You can attach tags to all data objects uploaded from the BIDS folder:
+### Add annotations to a BIDS upload
+
+To add a tag (annotation) to every uploaded dataset:
 
 ```bash
 bl bids upload -d ./BIDS_DATASET -p 5afc2c8de68fc50028e90820 --tag "cohort-1"
@@ -151,9 +153,9 @@ bl bids upload -d ./BIDS_DATASET -p 5afc2c8de68fc50028e90820 --tag "cohort-1"
 
 ---
 
-## Verifying Uploaded Data
+## Check what you uploaded
 
-After uploading, you can verify your data objects using `bl data query`:
+List the datasets with `bl data query`:
 
 ```bash
 $ bl data query --project 5afc2c8de68fc50028e90820 --subject "001"
@@ -173,9 +175,9 @@ Create Date: 10/29/2026, 3:10:08 PM
 
 ---
 
-## Scripting Bulk Uploads
+## Upload many files with a script
 
-If you have raw data files organized in custom directories (not in BIDS format), you can automate uploads with a bash loop:
+If your files are not organized as BIDS, upload them with a bash loop:
 
 ```bash
 #!/usr/bin/env bash

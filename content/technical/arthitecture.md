@@ -1,65 +1,63 @@
-#Brainlife Architecture
+# brainlife.io architecture
 
 ## Overview
 
-brainlife.io is composed of a collection of [microservices](https://microservices.io/){target=_blank}; Two major groups of microservices exist; the Warehouse, and Amaretti. 
+brainlife.io is built from a set of [microservices](https://microservices.io/){target=_blank}. The two main ones are the Warehouse, which manages projects, data, Apps and publications, and Amaretti, brainlife.io's workflow service, which runs jobs on compute resources.
 
 ![diagram](https://github.com/brainlife/docs/assets/2119795/52d2df4e-500d-401c-81ae-098fe3aab796)
 
-These services are distributed across multiple docker hosts and various VMs on [Jetstream-Cloud](https://jetstream-cloud.org/){target=_blank}. They mainly communicate through REST APIs and/or AMQP message bus. All external web traffic is proxied through our API proxy (nginx). Our infrastructure also includes monitoring and operational services (not included in the diagram).
+The services talk to each other through REST APIs and an AMQP message bus. All web traffic reaches them through an nginx proxy. Monitoring and operations services are not shown in the diagram. Jobs run on shared compute resources (TACC, Jetstream2 and ACCESS) and on resources that users register themselves.
 
-### Amaretti Task Engine
+### Amaretti (jobs)
 
-[Amaretti](/docs/technical/amaretti) is the primary task orchestration service that handles the execution of jobs and workflow DAGs across distributed computing resources. Amaretti is a "meta" orchestration engine, meaning it sits directly on top of local batch scheduling systems (such as SLURM, PBS, and HTCondor) to manage containerized execution, direct inter-cluster data synchronization via `rsync`, and scratch space lifecycles. For deep technical details, see the [Amaretti Task Orchestration Guide](/docs/technical/amaretti) and the [Amaretti REST API Reference](/docs/technical/api).
+[Amaretti](/docs/technical/amaretti) orchestrates the jobs (tasks) that run Apps across compute resources. It works on top of each resource's own batch scheduler (such as Slurm or PBS): it picks a resource for each job, stages the inputs, starts and monitors the job, copies working directories between resources with `rsync`, and cleans up scratch space. See [Amaretti](/docs/technical/amaretti) and the [Amaretti REST API](/docs/technical/api).
 
 ### Authentication
 
-We have developed a simple authentication service that maintains user information and allows them to signup / signin and issue JWT token that can be [statelessly authenticated](https://www.jbspeakr.cc/purpose-jwt-stateless-authentication/){target=_blank} by other services.
+The [authentication service](https://github.com/brainlife/auth){target=_blank} stores user accounts, handles sign-up and sign-in, and issues JWT tokens that the other services check without a session ([stateless authentication](https://www.jbspeakr.cc/purpose-jwt-stateless-authentication/){target=_blank}).
 
-### AMQP / Event
+### AMQP and events
 
-[The event service](https://github.com/soichih/event){target=_blank} allows web UI and CLI to subscribe to an event stream via websocket. Various services publish events such as task/instance status or dataset detail updates. Other services can then subscribe to these events with an appropriate access token to receive in real time, or queue these events to be handled by various event handlers.
+The [event service](https://github.com/brainlife/event){target=_blank} lets the web app and the CLI subscribe to an event stream over a WebSocket. Services publish events such as job (task) status changes and dataset updates. Other services subscribe to these events with a valid token to receive them in real time, or queue them for event handlers.
 
-### Warehouse 
+### Warehouse
 
-[Warehouse](https://github.com/brainlife/warehouse){target=_blank} provides a bulk of Brainlife-specific functionalities. Brainlife web UI and CLI (command-line interface) primarily interface with warehouse APIs to fulfill most user requests. Warehouse provides functionalities such as organizing datasets under projects, orchestrating pipeline rules, and requesting Amaretti to submit jobs or move datasets between various computing resources and staging and archiving datasets to and from the Warehouse archive. All new datasets are currently, archived on XSEDE Wrangler and optionally copied to IU SDA tape archive system as a backup for published datasets.
+The [Warehouse](https://github.com/brainlife/warehouse){target=_blank} provides most of brainlife.io's features. The web app and the CLI call the Warehouse API for most requests. The Warehouse organizes datasets in projects, runs pipeline automations, asks Amaretti to run jobs and to move data between compute resources, and stages and archives datasets.
 
-Brainlife's web UI is written using [VueJS](https://vuejs.org/){target=_blank}; a popular Javascript frontend framework. Standard post-processing tools such as Webpack and Babel compile our UI code before being delivered to the user's browser. A small amount of server-side rendering is performed periodically to provide scheme.org descriptors for our public assets; such as Apps, Publications, and Projects. This also promotes the discoverability of those assets by various search engines.
+The web app is written in [React](https://react.dev/){target=_blank}.
 
-#### Modular Processing
+#### Modular processing
 
-Brainlife platform allows App developers to register [datatypes](/docs/user/datatypes/). Each App exchanges data through registered datatypes and this allows App to be written in a modular fashion; each App is only responsible for specific data processing (alignment, tracking, statistical analysis, etc..) which increases the amount of code reuse, and App developer can focus on a truly unique aspect of their App. For example, a statistician writing a statistical method does not have to be concerned with how the input data is preprocessed, or a developer writing a fiber tracking App does not have to write code that analyzes generated fibers which is commonly handled by tract profile analysis Apps. From a user's point of view, module design allows them to more easily compose their workflow using interchangeable Apps that fit their needs. User can also more easily experiment with newer versions or different algorithms only on a part of their workflow.
+App developers can register [datatypes](/docs/user/datatypes/). Apps exchange data through datatypes, which keeps them modular: each App does one kind of processing (alignment, tracking, statistics, and so on), more code is reused, and developers can focus on what is new in their App. For example, a statistician writing a statistical method does not need to handle preprocessing, and a developer writing a tractography App does not need to write the analysis of the streamlines, which tract profile Apps already do. For users, modular Apps make it easier to build a workflow from interchangeable parts and to try a newer version or a different algorithm for one step.
 
-Allowing users to compose different App increases the chance of incompatibility between Apps. For example, although an App might take anat/t1w input, it might only work properly with *acpc aligned* anat/t1 input. To reduce the risk of incompatibility between the Apps, Brainlife allows each dataset to be tagged by ["datatype tags"](/docs/user/datatypes/#datatype-tags). App developers can then specify certain datatype tags required by the App input. This prevents users from submitting Apps with incompatible input datasets.
+Combining Apps freely also makes incompatibilities more likely. For example, an App may take `anat/t1w` input but only work well on ACPC-aligned images. To reduce this risk, datasets carry [datatype tags](/docs/user/datatypes/). An App can require certain datatype tags on its inputs, so users cannot run it on incompatible datasets.
 
-Brainlife Apps are designed to process one subject at a time. If a user wants to run an App across multiple subjects, the same App must be submitted as many times as there are subjects. This allows Amaretti to submit Apps as individual jobs on HPC / high-throughput-computing systems, and even across multiple resources if necessary and/or when those resources are available. Eventually, this approach would enable us to submit jobs on truly D-HTC systems for a large "big data" processing. Submitting individual jobs for each subject also allows us to better handle error that occurs on certain subjects without impacting the overall workflows. As the number of processed subjects increases, it is more likely that some subjects will never complete successfully (such as due to data issues).
+Apps process one subject at a time. To run an App on many subjects, brainlife.io submits one job per subject. Amaretti can then send each job to an HPC or high-throughput system, and to several resources at once when they are available. One job per subject also isolates errors: a problem with one subject does not stop the others. The more subjects you process, the more likely it is that a few never complete (for example because of data problems).
 
-#### Bulk Processing
+#### Processing many subjects: pipelines
 
-As we modularized our data processing, it created issues for managing our data processing. For example, if a user wants to submit a workflow consisting of 10 individual Apps across 200 subjects, it will require 2000(10x200) individual jobs to be submitted and monitored. 
+Modular processing creates many jobs. For example, a workflow of 10 Apps across 200 subjects means 2000 (10 x 200) jobs to submit and monitor.
 
-To manage this, we have developed a mechanism, the [pipeline](/docs/user/pipeline/). The pipeline allows ["stream processing"](https://medium.com/@gowthamy/big-data-battle-batch-processing-vs-stream-processing-5d94600d8103){target=_blank} of Brainlife archived datasets and it can be configured by creating a series of "rules" through a simple user interface. Each pipeline rule is responsible for submitting a specific App whenever it detects a new input dataset and corresponding (yet to be generated) output datasets. Brainlife's pipeline rules are evaluated continuously (until deactivated) and can be set up one rule at a time while executing earlier rules. We believe that our method of handling large workflows through stream processing method has several advantages over more conventional workflow management systems such as PegasusWMS, Nipype, and condor DAGMan, where users would imperatively define the entire workflow on various programming languages or in a proprietary syntax and execute (submit) the entire workflow.
+The [pipeline](/docs/user/pipeline/) handles this. A pipeline is the set of *automations* in a project (**3. Processing** → **Pipeline**). Each automation runs one App for every subject (and session) that has the inputs and does not yet have the output. Automations keep running until you turn them off, and you can add them one at a time while earlier ones are running. This works like [stream processing](https://medium.com/@gowthamy/big-data-battle-batch-processing-vs-stream-processing-5d94600d8103){target=_blank} of the project's datasets. Compared with workflow systems such as Pegasus WMS, Nipype or HTCondor DAGMan, where you define the whole workflow in a programming language or special syntax and submit it at once, this approach has some advantages:
 
-The advantages are ...
+* It recovers from problems more easily, including ones you did not foresee. A failed job can be handled on its own, or you can add an automation for a subset of subjects to work around a problem while the other automations keep running.
+* When new datasets appear (uploaded, made by a process or by another automation), the automations find them and submit jobs as needed. You set up an automation once; nothing needs to be resubmitted for new data.
+* You set it up in the web app, with no programming or special syntax. You can add complexity step by step instead of planning the whole workflow before you start.
 
-* More error-resilient and, allows users to handle/recover from issues not anticipated when the workflow is initially conceived. When a job fails, the failed job can be handled individually, or set up another set of rules to process a subset of subjects to work around the problem while other rules are still active.
-* Whenever new datasets become available (either uploaded by users, generated by another process, or by other rules), existing rules will automatically detect those new datasets and submit new jobs if necessary. Pipeline rules can be configured once, and left alone for as long as necessary (nothing needs to be "resubmitted" to handle new datasets.)
-* Can be configured through GUI (no programming / special syntax is needed). It is easier for novice users as complexity can be *added* rather than having to think through everything before submitting the full workflow.
+And some disadvantages:
 
-The disadvantages are ...
-
-* When there are many rules involved it is difficult to understand the entire workflow (a better visualization might help)
-* Each rule is applied to all *subjects*. It is difficult/impossible to define rules that operate on multiple subjects simultaneously; like to aggregate outputs from all subjects (we have a different mechanism to accomplish this)
-* Could lead to an infinite loop as our system is not *DAG* (hasn't happened yet)
+* With many automations, the whole workflow is hard to see at once. (Automation groups, **+ Automation Group**, help organize them.)
+* Each automation applies to each subject separately. It cannot combine data across subjects, for example to aggregate outputs. Use [Analysis](/docs/user/groupanalysis/) notebooks for that.
+* Because automations do not form a declared graph (DAG), a set of automations could in principle loop.
 
 ### CLI
 
-[Brainlife CLI](https://github.com/brainlife/cli){target=_blank} is primarily used to upload/download datasets to/from user's computers. CLI also provides some capabilities available through the Web UI such as submitting/monitoring a task and querying various assets available to the user. Brainlife CLI is currently written in node js and distributed through npm; a popular cross-platform software packaging library. Unlike the Web UI, users must manually install npm and the brainlife CLI tool, and keep it up-to-date.
+The [brainlife.io CLI](https://github.com/brainlife/cli){target=_blank} is mostly used to upload and download data between brainlife.io and your computer. It can also run Apps, wait for jobs and query projects, datatypes, resources, publications and Apps. It is written in Node.js and distributed through npm. Unlike the web app, you install it yourself and keep it up to date. See [Installing the CLI](/docs/cli/install/).
 
 ### Visualization
 
-Brainlife provides several ways to visualize stored data objects. The first way is through web-based UI tools such as [BrainBrowsers](https://brainbrowser.cbrain.mcgill.ca/){target=_blank} and [TractView](https://github.com/brainlife/ui-tractview){target=_blank}. These UIs will run on user's web browser and download necessary data-objects via Brainlife's web API. Some of these App requires GPUs on user's machines.
+You can look at datasets in your browser: every output opens in NiiVue or Neuroglancer. [NiiVue](https://niivue.com){target=_blank} shows volumes, surfaces and streamlines, and [Neuroglancer](https://github.com/google/neuroglancer){target=_blank} shows large electron and light microscopy volumes. These viewers run in your browser and load the data through the brainlife.io API.
 
-Another way is to launch native UIs such as Freeview, fsleyes, and fibernavigator on Brainlife's GPU-enabled visualization VMs and stream to user's browser using a web-based VNC client.  This approach allows our users to entertain familiar UIs and visualize their data objects without installing these UIs and downloading data objects to be visualized. The only component required by the user is a web browser. 
+Some datatypes can also open in familiar desktop tools, such as FSLeyes or mrview, run in a container on a brainlife.io server and streamed to your browser ([abcd-novnc](https://github.com/brainlife/abcd-novnc){target=_blank}). You only need a web browser; you do not install the tools or download the data. See [Visualizing datatypes and datasets](/docs/user/datatypes/).
 
 ![viewers](../img/viewers.png)

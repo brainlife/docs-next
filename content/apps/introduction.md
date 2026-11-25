@@ -1,111 +1,116 @@
 # Introduction
 
-## What is an *App*?
+## What is an App?
 
-Brainlife Apps are snippets of code comprising a (short) series of processing steps within a larger data analysis workflow. Apps are meant to be reusable by other users and not just by the App developer. 
+An App is a containerized program from a GitHub repository that takes datatypes in and produces datatypes out. On brainlife.io, any GitHub repository can become an App. The App catalog describes it this way: "Apps process data, taking in specific datatypes as input and producing resulting datatypes."
 
-The App should not only be able to reproduce the results of the data processing done by the developer, but it should also work on new data provided by other users. The code in each App should use general tools and clarity in code writing so to make the App understandable by other users.
+An App usually does one short series of processing steps within a larger analysis. Write it so that other people can run it on their own data, not only to reproduce your results. Use well-known tools, keep the code readable and document what the App does.
 
-All Apps should:
+Every App:
 
-1. Be hosted on github.com as public repositories. Apps can comprise any combination of MatLab, Python, or other types of code.
-2. Have a single executable file named `main` in the root directory of the git repository. It will be executed on selected compute resources, or submitted via sbatch/qsub and other batch scheduling programs.
-3. Read all input parameters from a `config.json` file. `config.json` is created by brainlife.io at runtime on the current working directory. 
-3. Read all input data from paths specified in `config.json` (config.json contains both the input parameters; such as command line arguments as well as paths to data files; like t1.nii.gz)
-4. Write all output files in the current directory (`./`), in a structure defined as a Brainlife [`datatype`](https://brainlife.io/datatypes){target=_blank}. More information about [Brainlife datatypes](/docs/user/datatypes/).
+1. Lives in a public repository on github.com. The code can be in MATLAB, Python, shell or any other language.
+2. Has one executable file named `main` at the root of the repository. brainlife.io runs `main` on a compute resource, directly or through a batch scheduler such as Slurm (`sbatch`) or PBS (`qsub`).
+3. Reads all its parameters from a `config.json` file. brainlife.io writes `config.json` into the working directory when a job starts.
+4. Reads its input data from the paths listed in `config.json`. The file holds both the parameters (for example command-line options) and the paths to input files (for example `t1.nii.gz`).
+5. Writes its output files into the working directory (`./`), in the structure defined by a [datatype](https://connects.brainlife.io/datatypes?scope=public){target=_blank}. See [Datatypes](/docs/user/datatypes/).
+
+New Apps should also:
+
+6. Describe themselves in a `brainlife.app.json` manifest at the root of the repository (see [Describe your App](/docs/apps/register/#describe-your-app-with-a-manifest)). The manifest only describes the App; it does not change how the App runs.
+7. Start their README from the [brainlife App README template](https://github.com/brainlife/abcd-spec/blob/master/templates/README.md){target=_blank}.
 
 !!! note
-    Brainlife Apps follow a technical specification called Application for Big Computational Data analysis or [ABCD](https://github.com/brainlife/abcd-spec){target=_blank}
+    brainlife.io Apps follow a technical specification called Application for Big Computational Data, or [ABCD](https://github.com/brainlife/abcd-spec){target=_blank}. The specification defines how an App starts and is monitored, and, in its draft version 2, the `brainlife.app.json` manifest.
 
-App can run on many different environment / clusters. To normalize the execution environment, many Apps execute program using singularity on a specific container that comes with all dependencies and libraries. 
+Apps run on many different clusters and clouds. To keep the software environment the same everywhere, most Apps run their programs inside a container with Singularity (Apptainer). See [Containerizing an App](/docs/apps/container/).
 
-## Prerequisite
+## Prerequisites
 
-Before you start making an App for brainlife, you should be familiar with the following general concepts:
+Before you write an App for brainlife.io, you should be comfortable with:
 
-1. You should be familiar with at least 1 programming language (Matlad, Python, R, etc..)
+1. At least one programming language (MATLAB, Python, R, and so on).
 
-2. You should be comfortable with bash terminal and some basic bash scripting. Please see [https://docs.microsoft.com/en-us/learn/modules/bash-introduction/](https://docs.microsoft.com/en-us/learn/modules/bash-introduction/){target=_blank}
+2. The bash terminal and basic shell scripting. See [Introduction to Bash](https://docs.microsoft.com/en-us/learn/modules/bash-introduction/){target=_blank}.
 
-3. You should know how to use [git](https://git-scm.com/docs/gittutorial){target=_blank} and [github](https://guides.github.com/){target=_blank} to publish your git repo.
+3. [git](https://git-scm.com/docs/gittutorial){target=_blank} and [GitHub](https://guides.github.com/){target=_blank}, to publish your repository.
 
-4. Although you can develop and test your App on your local computer, brainlife.io will run your App mostly on various HPC resources. Therefore, you should be familiar with basic concetps on HPC systems. Please see 
+4. Basic concepts of high-performance computing (HPC). You can develop and test an App on your own computer, but brainlife.io runs most Apps on shared clusters. See:
 
-    - [https://researchcomputing.princeton.edu/support/knowledge-base/slurm](https://researchcomputing.princeton.edu/support/knowledge-base/slurm){target=_blank}
-    - [Intro to HPC at IU (YouTube)](https://www.youtube.com/watch?v=atHXod7ZsfY){target=_blank} 
+    - [Slurm on HPC clusters (Princeton Research Computing)](https://researchcomputing.princeton.edu/support/knowledge-base/slurm){target=_blank}
+    - [Intro to HPC at IU (YouTube)](https://www.youtube.com/watch?v=atHXod7ZsfY){target=_blank}
 
-5. We run our App through a docker container on singularity. You don't have to know how to create containers yourself (as we can help you with that) but it would be helpful for you know what container is and what singularity does. Please see [singularity introductuion](https://singularity-tutorial.github.io/00-introduction/){target=_blank}
-
-## App Development Timeline
-
-You would normally follow these steps to develop and register your App on Brainlife.
-
-1. Develop an algorithm that runs on your laptop or local cluster with your test datasets.
-2. Create a sample `config.json` file. 
-5. Create `main` that parses `config.json` and passes it to your algorithm.
-6. Publish it as public github repo.
-7. Register your App on Brainlife. During this step, you can define what parameters and input file(s) should be made available to your App via `config.json`.
-8. Contact resource administrators and ask them to enable your App (more below). 
+5. Containers. Apps run their software from a Docker container through Singularity. You do not need to build containers yourself (the brainlife.io team can help), but you should know what a container is and what Singularity does. See the [Singularity introduction](https://singularity-tutorial.github.io/00-introduction/){target=_blank}.
 
 !!! hint
-    Creating an App for brainlife.io requires you to be familiar with wide range of technical knowledge in areas including programming, unix/shell, git, HPC. 
-    Please refer to [learn-neuroimaging.github.io](https://learn-neuroimaging.github.io/tutorials-and-resources/11-programming/){target=_blank} for a community curated list of online tutorials.
+    Writing an App draws on programming, the Unix shell, git and HPC. The community list [learn-neuroimaging/tutorials-and-resources](https://github.com/learn-neuroimaging/tutorials-and-resources){target=_blank} collects online tutorials on these topics.
 
-# Enabling an App on a compute resource
+## How to develop an App
 
-An App needs to be enabled on each compute resource to run. Each user will have a different set of resources that they have access to, but Brainlife provides default **shared** resources for all users. If you want any Brainlife user to be able to run your App, you can [contact the resource administrators](mailto:brlife@iu.edu) to enable your App.
+You normally follow these steps.
 
-You will need to discuss how to handle any dependencies/libraries that your App might require with resource administrators. To make things easier and reproducible, you should consider Dockerizing your App's **dependencies** (but not the App itself) so that you can run your App through your container using [singularity](https://singularity.lbl.gov/){target=_blank} from your `main`. 
+1. Make your algorithm run on your computer or local cluster with your test data.
+2. Write a sample `config.json`.
+3. Write `main`, which reads `config.json` and passes the values to your algorithm. See [HelloWorld](/docs/apps/helloworld/).
+4. Publish the code as a public GitHub repository.
+5. Add a `brainlife.app.json` manifest and a README based on the template, and check the manifest with `python tools/blapp.py validate` from the [abcd-spec](https://github.com/brainlife/abcd-spec){target=_blank} repository.
+6. Register the App on brainlife.io (**My Apps** → **App**). This is where you define the parameters and input files that reach your App through `config.json`. See [Registering an App](/docs/apps/register/).
+7. Ask resource administrators to enable your App on their compute resources (below).
+
+## Enable an App on a compute resource
+
+An App runs only on compute resources where it is enabled. Each user has access to a different set of resources, and brainlife.io provides shared public resources for everyone. If you want every brainlife.io user to be able to run your App, [contact the brainlife.io team](/docs/contact/) and ask for it to be enabled on the public resources.
+
+Discuss with the resource administrators how your App gets its dependencies and libraries. To keep this simple and reproducible, put your App's **dependencies** (not the App itself) in a Docker container and run your code inside that container with [Singularity](https://sylabs.io/singularity/){target=_blank} from your `main`.
 
 !!! hint
-    Most compute resources now provide singularity, which increases the number of resources where you might be able to run your Apps.
+    Most compute resources now provide Singularity (Apptainer), so containerized Apps can run on more resources.
 
-## App Launch Sequence
+## What happens when someone runs your App
 
-Brainlife executes an App following these steps.
+brainlife.io runs an App in these steps.
 
-1. A user requests to run your App through Brainlife.
-2. Brainlife queries a list of compute resources that user has access to and currently available to run your App. Brainlife then determines the best compute resource to run your App.
-3. Brainlife stages input datasets out of Brainlife's datasets archive, or transfer any dependent task's work directory that are required to run your App.
-4. Brainlife creates a new working directory by git cloning your App on (normally) a resource's scratch disk space, and place `config.json` containing user-specified configuration parameters and various paths the input files.
-5. Brainlife then runs `start` hook installed on each compute resources as part of `abcd specification` (App developer should have to worry about this under the most circumstances).
-6. On a PBS cluster, `start` hook then **qsub**s your `main` script and place it on the local batch scheduler queue.
-7. Local job scheduler runs your `main` on a compute node and your App will execute your algorithm, and generate output on the working directory.
-8. Brainlife periodically monitors your job and relay information back to the user.
-9. Once the job is completed, the user archives an output dataset if the result is valid.
+1. A user runs your App in a project, in a process or through a pipeline automation.
+2. brainlife.io lists the compute resources that the user can use and that have your App enabled, and picks the best one (see [Amaretti](/docs/technical/amaretti/)).
+3. brainlife.io stages the input datasets from the project, or copies the working directory of an earlier job that produced them.
+4. brainlife.io creates a working directory by cloning your repository (at the registered branch or tag), usually on the resource's scratch disk, and writes `config.json` with the user's parameters and the paths to the input files.
+5. brainlife.io runs the `start` hook installed on the resource, as defined by the ABCD specification. In most cases you do not need to think about hooks.
+6. On a batch cluster, the `start` hook submits your `main` to the local scheduler queue.
+7. The scheduler runs `main` on a compute node. Your App runs your algorithm and writes its outputs into the working directory.
+8. brainlife.io monitors the job and shows its status and logs to the user.
+9. When the job finishes, the outputs are archived as datasets in the project (if the user chose to archive them).
 
-## Datatype
+## Datatypes
 
-Different Brainlife Apps can exchange input/output datasets through Brainlife *datatypes* which are developer-defined file/directory structure that holds a specific set of data.
+Apps exchange data through *datatypes*. A datatype is a file and directory structure, defined by developers, that holds a specific kind of data. Datatypes keep Apps interoperable.
 
-Here are some examples of currently registered datatypes.
+Some examples of registered datatypes:
 
-* neuro/anat/t1w (t1.nii.gz)
-* neuro/anat/t2w (t2.nii.gz) 
-* neuro/dwi (diffusion data and bvecs/bvals)
-* neuro/freesurfer (entire freesurfer output)
-* neuro/tract (tract.tck containing fiber track data)
-* neuro/dtiinit (dtiinit output - dti output directory)
-* generic/images (a list of images)
-* raw (unstructured data often used during development)
+* `neuro/anat/t1w` (`t1.nii.gz`)
+* `neuro/anat/t2w` (`t2.nii.gz`)
+* `neuro/dwi` (diffusion data with `bvecs` and `bvals`)
+* `neuro/freesurfer` (the whole FreeSurfer output)
+* `neuro/track/tck` (`track.tck` with streamlines)
+* `neuro/dtiinit` (dtiInit output directory)
+* `generic/images` (a list of images)
+* `raw` (unstructured data, often used during development)
 
-Your App should read from one or more of these datatypes and write output data in a format specified by another datatype. By identifying existing datatypes that you can interoperate you can interface with datasets generated by other Apps and your output can be used by other Apps as their input.
+Your App should read one or more of these datatypes and write its output in the format of another datatype. When you use existing datatypes, your App can read data produced by other Apps, and other Apps can use your outputs as their inputs.
 
-To create a new datatype, please visit [#datatype](https://brainlife.slack.com/archives/C946FA6PK){target=_blank} channel on brainlife.io slack.
+To propose a new datatype, ask in the [#datatype](https://brainlife.slack.com/archives/C946FA6PK){target=_blank} channel on the brainlife.io Slack.
 
-_Please see [datatype](/docs/user/datatypes/) page for more detail.
+See [Datatypes](/docs/user/datatypes/) for more detail.
 
 !!! quote
     "Write programs that do one thing and do it well. Write programs to work together." - A Quarter Century of Unix by Doug McIlroy
 
-Brainlife app should follow the [Do One Thing and Do It Well](https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well){target=_blank} principle where a complex workflow should be split into several smaller Apps (but no more than necessary nor practical) to promote code-reuse and help parallelize your workflow and run each App on the most appropriate compute resource available.
+Follow the [Do One Thing and Do It Well](https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well){target=_blank} principle: split a complex workflow into several smaller Apps (but no more than is practical). Smaller Apps are easier to reuse, run in parallel and can each run on the most suitable compute resource.
 
 !!! hint
-    Before writing your apps, please browse [currently registered Brainlife Apps](https://brainlife.io/warehouse/#/apps){target=_blank} and datatypes under Brainlife.io to make sure you are not reinventing Apps. If you find an App that is similar to what you need, please contact the developer of the App and discuss if the feature you need can be added to the App.
+    Before you write an App, browse the [Apps](https://connects.brainlife.io/apps?scope=public){target=_blank} and [Datatypes](https://connects.brainlife.io/datatypes?scope=public){target=_blank} catalogs to check that the App you need does not already exist. If a similar App exists, contact its developer and discuss whether the feature you need can be added.
 
-## Job Complexiy / Resource Requirement
+## Job size and resource requirements
 
-All App should have clearly defined upper bound (aka "Big-O") in terms of resource and computing time requirement. Most `main` script starts with batchscheduler resource directives that looks like this.
+Every App should have a clear upper bound on the compute resources and time it needs. Most `main` scripts start with batch scheduler directives like these:
 
 ```
 #!/bin/bash
@@ -116,22 +121,20 @@ All App should have clearly defined upper bound (aka "Big-O") in terms of resour
 #SBATCH --time=00:01:00          # total run time limit (HH:MM:SS)
 ```
 
-This informs the batch scheduler how long / how much of its computing capability is needed to run your App. Your job will be killed if you exceed what you specify in these directives.
+These lines tell the batch scheduler how much time and how many resources your App needs. If your job exceeds them, the scheduler stops it.
 
-When the job is executed on HPC system, the batch scheduler will allocate requested amount of time / resources for the job and it will consume SUs on those resources based on these parameters. It is important to keep the resource requirement as low as possible so that your job will not consume more SUs than necessary. You should measure the amount of CPU / memory resource typically consumed and set these parameter accordingly. If your job takea a long time to run, you will need to set the walltime requirement high enough to accommodate it. Not only the cost of running jobs increases as you increase the resource requirement, it will also increase the queue time of the job waiting for the block of requested resource to become available for your job.
+On an HPC system, the scheduler reserves the requested time and resources and charges service units (SUs) for them. Keep the request as low as you can: measure how much CPU and memory your App usually uses and set the directives to match. If your App runs for a long time, set the walltime high enough. Larger requests cost more and also wait longer in the queue for the resources to become free.
 
 !!! warning
-    Please be conservative with amount of cpus-per-task (or ppn). Most batchscheduler will consume SUs based on number of CPU counts you request times the amount of time. For example, if you request a job to run for 2 hours with 16 cores, it will consume 2x16=32 units. If you only use 4 cores for your job, please set it to 4 so that it will only consume 2x4=8 units instead.
+    Be conservative with `cpus-per-task` (or `ppn`). Most schedulers charge the number of CPUs you request times the run time. For example, a 2-hour job with 16 cores costs 2 x 16 = 32 units. If your job only uses 4 cores, request 4, and it costs 2 x 4 = 8 units.
 
-brainlife.io is used to not just reproduce the original results published by app developer, but to process user's own data. Your App should be able to handle variety of input data - not just the data that you have used to develop the App. This is a very difficult challenge and it usually takes time for an App to become robust. Often, user could submit your App with data that is much larger or more complex than they have intended. Sometimes, it is even impossible to finish the computation within specified amount of time. To handle such case, you could implement your App so that you can restart your App and resume processing from where it was terminated previously.
+People use brainlife.io to process their own data, not only to reproduce the developer's results. Your App should handle a wide range of input data, not just the data you used to develop it. This is hard, and Apps usually take time to become robust. Users may submit data that is much larger or more complex than you expected, and sometimes the job cannot finish within the time limit. To handle this, make your App able to restart and resume from where it stopped.
 
-For example, if your App consists of running 3 separate steps, each taking an hour, then you can make each steps to first check to see if each step is already completed. If your job dies due to timeout, then user can simply rerun the same job and only run the remaining steps if your App is designed to handle rerunning. We recommend doing the following.
-
-For example, you can first check to see if the output from each step exists, and if it does, skip it.
+For example, if your App runs 3 steps that each take an hour, make each step check whether it has already finished. If the job stops at the time limit, the user can run it again and only the remaining steps run. Check whether the output of each step exists, and skip the step if it does:
 
 ``` bash
 echo "running process1"
-if [ ! -f output1.data ];
+if [ ! -f output1.data ]; then
     ./process1 -in <someinput> -out tmp.data
     mv tmp.data output1.data
 else
@@ -139,7 +142,7 @@ else
 fi
 
 echo "running process2"
-if [ ! -f output2.data ];
+if [ ! -f output2.data ]; then
     ./process2 -in <someinput> -out tmp.data
     mv tmp.data output2.data
 else
@@ -150,6 +153,4 @@ fi
 
 ```
 
-If the job completes step1 but not step2, user can simply rerun the job to see if it can complete the 2nd process.
-
-
+If the job completes step 1 but not step 2, the user can run the job again to complete step 2.

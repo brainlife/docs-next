@@ -1,25 +1,25 @@
-# CLI Installation
+# Installing the CLI
 
 !!! note "bl aimport"
-    To import data from your computer with [aimport](../using_aimport.md), use the Python CLI instead: `pip install "git+https://github.com/brainlife/pybrainlife@enh/cli"`. It is the supported CLI for `bl aimport`; the npm package on this page does not include it.
+    [aimport](/docs/using_aimport/) is not released yet, and the npm package on this page (version 1.8.2) does not include `bl aimport`. To try it, install the Python CLI from its development branch: `pip install "git+https://github.com/brainlife/pybrainlife@enh/cli"`.
 
-With the Brainlife CLI (`bl`), you can:
+The brainlife.io command-line interface (CLI), `bl`, lets you work with brainlife.io from a terminal. With it you can:
 
-* Upload and download data objects directly to and from your computer or HPC storage.
-* Upload and download complete datasets formatted according to the **BIDS standard** (`bl bids`).
-* Query projects, datatypes, resources, and publications.
-* Submit and monitor Brainlife Apps to fully script and automate processing pipelines.
-* Access and download raw project files stored in Brainlife's S3 storage.
+* Upload and download datasets between brainlife.io and your computer or HPC storage.
+* Upload and download whole datasets organized as **BIDS** (`bl bids`).
+* Query projects, datatypes, resources, publications and Apps.
+* Run Apps and wait for them to finish, so you can script your processing.
+* List and download the files of projects stored on S3.
 
 ---
 
-## Prerequisites: Node.js & npm
+## Prerequisites: Node.js and npm
 
-Brainlife CLI is distributed as an npm package via [npmjs.com/package/brainlife](https://www.npmjs.com/package/brainlife){target=_blank}. You must have Node.js and npm installed on your machine.
+The CLI is distributed as the npm package [brainlife](https://www.npmjs.com/package/brainlife){target=_blank}. You need Node.js and npm on your computer.
 
 ### Ubuntu / Debian (Node.js LTS)
 
-Run the following commands to install Node.js (Node 20 LTS):
+Install Node.js 20 LTS:
 
 ```bash
 sudo apt update
@@ -33,21 +33,21 @@ sudo apt update
 sudo apt-get install -y nodejs
 ```
 
-!!! info "macOS Users"
+!!! info "macOS users"
     If you have [Homebrew](https://brew.sh/){target=_blank} installed, run:
     ```bash
     brew install node
     ```
 
-!!! info "Windows Users"
-    To use the Brainlife CLI on Windows, install [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install){target=_blank} and run the installation inside the Ubuntu terminal.
+!!! info "Windows users"
+    On Windows, install [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install){target=_blank} and run the installation inside the Ubuntu terminal.
 
-    Useful companion tools on Windows:
+    Useful tools on Windows:
     * [7-Zip](https://www.7-zip.org/){target=_blank} for uncompressing `.tar.gz` downloads.
     * [MRIcron](https://www.nitrc.org/projects/mricron){target=_blank} or [Freeview](https://surfer.nmr.mgh.harvard.edu/fswiki/FreeviewGuide){target=_blank} for local neuroimaging visualization.
 
-!!! note "HPC & Cluster Environments"
-    On shared academic computing clusters (e.g. IU Karst, Carbonate, Big Red, or TACC Stampede), Node.js is often available as a module:
+!!! note "HPC clusters"
+    On shared clusters, Node.js is often available as a module:
     ```bash
     module load nodejs
     ```
@@ -56,17 +56,15 @@ sudo apt-get install -y nodejs
 
 ## Installing the CLI
 
-Once Node.js and npm are installed, install the Brainlife CLI globally:
+Install the CLI globally:
 
 ```bash
 sudo npm install -g brainlife
 ```
 
-*(If you have configured npm to install packages in your user home directory without root, you can omit `sudo`.)*
+*(If npm installs global packages in your home directory, leave out `sudo`.)*
 
-### Verifying Installation
-
-Verify that the CLI is installed correctly:
+### Check the installation
 
 ```bash
 $ bl --version
@@ -94,12 +92,12 @@ Commands:
   help [cmd]     display help for [cmd]
 ```
 
-!!! tip "Command Aliases"
-    `bl dataset` is a recognized alias for `bl data`. You can use either command interchangeably.
+!!! tip "Alias"
+    `bl dataset` is an alias for `bl data`.
 
-### Updating the CLI
+### Update the CLI
 
-To ensure you have the latest bug fixes, features, and API compatibility, update regularly:
+Update regularly to get the latest fixes:
 
 ```bash
 sudo npm update -g brainlife
@@ -107,9 +105,9 @@ sudo npm update -g brainlife
 
 ---
 
-## Authentication & Login
+## Log in
 
-Before running CLI commands that interact with your private data or projects, log in to Brainlife to issue an access token:
+Before you use commands that touch your projects or private data, log in. `bl login` asks for your brainlife.io username and password and saves an access token:
 
 ```bash
 $ bl login --ttl 30
@@ -118,50 +116,49 @@ password:
 Successfully logged in for 29 days, 23 hours, 59 minutes, 59 seconds
 ```
 
-### Options:
-* `--ttl <days>`: Set how many days your access token remains valid (default is `7`).
-* `--username <user>`: Pass your username directly.
-* `--password <password>`: Pass your password directly (e.g. for non-interactive scripts).
-* `--ldap`: Log in using university LDAP credentials if your institution is configured.
+### Options
+* `--ttl <days>`: how many days the token stays valid (default `7`).
+* `--username <user>`: give your username on the command line.
+* `--password <password>`: give your password on the command line (for example in scripts).
 
-### Token Storage & Signout
+### Where the token is stored
 
-`bl login` securely stores your JWT access token on your machine at:
+`bl login` saves your access token (a JWT) at:
 
 ```bash
 ~/.config/brainlife.io/.jwt
 ```
 
-File permissions are automatically set to `600` (readable only by your user account). To sign out, simply remove this file:
+The file is readable only by your user account (permissions `600`). To sign out, delete it:
 
 ```bash
 rm ~/.config/brainlife.io/.jwt
 ```
 
-### Refreshing Tokens
+### Refresh the token
 
-You can refresh an existing, unexpired token without re-entering your credentials:
+To extend a token that has not expired yet, without typing your password again (`--ttl` defaults to `1` day here):
 
 ```bash
 bl refresh --ttl 30
 ```
 
-!!! note "Accounts using Third-Party OAuth (Google, GitHub, ORCID)"
-    If you created your Brainlife account via Google, GitHub, or ORCID and do not have a local password, you can set a password in your Brainlife Account Settings on [brainlife.io](https://brainlife.io), or issue a long-lived CLI token via the Brainlife profile settings.
+!!! note "Accounts that sign in with Google, GitHub or ORCID"
+    `bl login` needs a username and password. If you sign in to brainlife.io with Google, GitHub or ORCID and have no password, set one on your account page in the brainlife.io sign-in service ([brainlife.io/auth](https://brainlife.io/auth/#!/settings/account){target=_blank}, **Change Password**).
 
 ---
 
-## Alternative Environments
+## Other environments
 
-### Singularity / Docker Container
+### Singularity or Docker container
 
-You can run the Brainlife CLI hosted inside a Singularity/Docker container on HPC clusters without installing local npm packages:
+On HPC clusters you can run the CLI from a container, without installing npm packages. The `brainlife/cli` image on Docker Hub may be older than the npm package (its latest tag is 1.7.0).
 
 ```bash
 singularity run docker://brainlife/cli login
 ```
 
-To make `bl` available as a shortcut command in your shell, add an alias or function to your `~/.bashrc`:
+To use it as `bl`, add a function to your `~/.bashrc`:
 
 ```bash
 function bl {
@@ -171,14 +168,14 @@ function bl {
 
 ### Google Colab
 
-To use the Brainlife CLI inside Google Colab:
+To use the CLI in Google Colab:
 
 1. Install the CLI in a notebook cell:
    ```bash
    !npm install -g brainlife
    ```
 
-2. Because Google Colab does not support an interactive TTY password prompt for `bl login`, authenticate by generating your token with this Python snippet:
+2. Colab cannot show the interactive password prompt of `bl login`. Get a token with this Python snippet instead:
 
 ```python
 import getpass
@@ -188,7 +185,7 @@ import os
 username = input("Enter brainlife username: ")
 password = getpass.getpass("Enter brainlife password: ")
 
-# Authenticate against Brainlife auth service
+# Authenticate against the brainlife.io auth service
 res = requests.post(
     'https://brainlife.io/api/auth/local/auth', 
     json={'username': username, 'password': password, 'ttl': 1000 * 60 * 60 * 24 * 30}
