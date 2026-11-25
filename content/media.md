@@ -96,38 +96,45 @@ The brainlife.io mark and wordmark used in the brainlife.io app (brainlife-lite)
 
 ### 2022
 
-#### [logo1/brainlife.io.svg](img/media/logo1/brainlife.io.svg)
+#### logo1/brainlife.io.svg
 
+[Download](img/media/logo1/brainlife.io.svg)
 ![logo1(svg)/brainlife.io](img/media/logo1/brainlife.io.svg)
 
-#### [logo1/brainlife.io.png](img/media/logo1/brainlife.io.png)
+#### logo1/brainlife.io.png
 
+[Download](img/media/logo1/brainlife.io.png)
 ![logo1(png)/brainlife.io](img/media/logo1/brainlife.io.png)
 
 ### 2019
 
 #### SVG
 
-##### [brainlife.io.svg](img/media/brainlife.io.svg)
+##### brainlife.io.svg
 
+[Download](img/media/brainlife.io.svg)
 ![svg](img/media/brainlife.io.svg)
 
-##### [logo.svg](img/media/logo.svg)
+##### logo.svg
 
+[Download](img/media/logo.svg)
 ![svg](img/media/logo.svg)
 
 #### PNG
 
 The following are bitmap versions of the above logos. Please use the SVG versions if possible.
 
-##### [logo.png](img/media/logo.png)
+##### logo.png
 
+[Download](img/media/logo.png)
 ![png_brainlife](img/media/logo.png)
 
-##### [logo_grayback.png](img/media/logo_grayback.png)
+##### logo_grayback.png
 
+[Download](img/media/logo_grayback.png)
 ![png_grayback](img/media/logo_grayback.png)
 
-##### [brainlife.io.png](img/media/brainlife.io.png)
+##### brainlife.io.png
 
+[Download](img/media/brainlife.io.png)
 ![brainlife.io](img/media/brainlife.io.png)
