@@ -1,105 +1,81 @@
-# Datatypes & Visualizations
+# Datatypes and visualization
 
-In Brainlife, Apps do not exchange arbitrary files; they communicate through strictly structured **Datatypes**. A datatype defines a standardized contract specifying exactly which files, directories, extensions, and metadata structures an App produces or accepts as input.
-
-By decoupling data formats from individual software tools, datatypes allow neuroimaging Apps from different software packages (such as FSL, FreeSurfer, AFNI, MRtrix, and ANTs) to be composed together seamlessly into automated pipelines.
+Apps on brainlife.io do not exchange arbitrary files. They exchange **datatypes**. A datatype specifies which files and folders a dataset contains, so that "Apps process data, taking in specific datatypes as input and producing resulting datatypes." Because Apps agree on datatypes, the output of one App can be the input of another, even when the two Apps wrap different software (for example FSL, FreeSurfer, MRtrix3 or ANTs).
 
 ---
 
-## Anatomy of a Datatype
+## What a datatype defines
 
-Every datatype on Brainlife consists of a unique name, a description, and an explicit file definition. For example, the `neuro/life` datatype specifies:
+A datatype has a name (for example `neuro/anat/t1w` or `neuro/dwi`), a description, and a list of the files and folders a dataset of that type contains. For example, a `neuro/dwi` dataset contains `dwi.nii.gz`, `dwi.bvecs` and `dwi.bvals`.
+
+The definition is stored as JSON. This example, for the `neuro/life` datatype, lists two files and one folder:
 
 ```json
 {
     "name": "neuro/life",
     "desc": "Linear Fascicle Evaluation (LiFE) output structure",
     "files": [
-        {
-            "id": "fe",
-            "filename": "output_fe.mat",
-            "desc": "FE structure matrix",
-            "ext": ".mat",
-            "required": true
-        },
-        {
-            "id": "life_results",
-            "filename": "life_results.json",
-            "desc": "Summary statistical metrics",
-            "required": true
-        },
-        {
-            "id": "tracts",
-            "dirname": "tracts",
-            "desc": "Evaluated tractography fiber streamlines",
-            "required": true
-        }
+        { "id": "fe", "filename": "output_fe.mat", "required": true },
+        { "id": "life_results", "filename": "life_results.json", "required": true },
+        { "id": "tracts", "dirname": "tracts", "required": true }
     ]
 }
 ```
 
-### Datatypes vs. BIDS
-While Datatypes and the [Brain Imaging Data Structure (BIDS)](https://bids-specification.readthedocs.io/en/stable/){target=_blank} both standardize neuroimaging data:
-- **BIDS** focuses on organizing raw dataset directories, subject hierarchies, and clinical metadata on disk.
-- **Brainlife Datatypes** focus on data interchange for both raw inputs and specific derivatives produced by processing Apps. They guarantee that an App receiving a datatype receives the exact filenames and structures it expects, regardless of who ran the upstream App.
+### Datatypes and BIDS
+
+Datatypes and [BIDS](https://bids-specification.readthedocs.io/en/stable/){target=_blank} both standardize data, for different purposes:
+
+- **BIDS** organizes a whole dataset on disk: folders, subjects, sessions and metadata.
+- **Datatypes** describe one item of data, raw or derived, so that an App receives exactly the files it expects, whoever produced them.
 
 ---
 
-## The Datatypes Catalog
+## Browse datatypes
 
-You can explore all registered datatypes on Brainlife by navigating to the **Datatypes** page (`/datatypes`):
+- **Datatypes** (sidebar, under **Explore**): the catalog of all datatypes.
+- **My Datatypes**: datatypes you administer.
 
-### 1. Scopes: Public vs. My Datatypes
-- **Public**: Browse all standardized, platform-supported datatypes available for analysis and App development.
-- **My Datatypes**: View and manage custom datatypes that you have created or maintain.
+Search by name or description, and filter by **Supports validation** (the datatype has a validator that checks new datasets) or **Supports Jupyter notebooks**.
 
-### 2. Search & Filtering
-- **Keyword Search**: Filter datatypes in real time by name, modality, or description.
-- **Supports Validation**: Filter for datatypes that have integrated automated validator scripts. When datasets of these types are uploaded or staged, Brainlife automatically checks their internal format and integrity before running jobs.
-- **Supports Jupyter Notebooks**: Filter for datatypes equipped with group analysis templates. Datasets with this capability can be loaded directly into interactive Jupyter notebooks for cross-subject statistical analysis.
+A datatype's page shows:
 
-### 3. Visual Identity & Color Hashing
-Brainlife assigns consistent, color-coded badge chips to datatypes across the platform. Short names (such as `anat/t1w` for `neuro/anat/t1w` or `dwi` for `neuro/dwi`) make it easy to identify data types at a glance in dataset tables, process cards, and pipeline diagrams.
+- **About**: what the datatype is.
+- **Files & directories**: the files and folders a dataset of this type contains.
+- **Official tags**: the datatype tags officially supported for this datatype.
+- **Apps**: Apps that take this datatype as input or produce it as output.
+- **Maintainers**, **Sample Data** and **Visualizers**: who maintains the datatype, example datasets, and the viewers that can open it.
+- **Upload Instructions**: how to upload data of this type with the command-line tool.
+
+To create a datatype, open **My Datatypes**, select **Datatype** (the button with a plus sign), enter a **Name** and **Description**, and select **Create datatype**. You can add files, tags and a validator after it is created.
 
 ---
 
-## Datatype Tags vs. Annotations (Object Tags)
+## Datatype tags
 
-Brainlife provides two distinct tagging mechanisms to manage and disambiguate data:
+brainlife.io has two kinds of labels on datasets.
 
-| Feature | Datatype Tags | Annotations (Data Object Tags) |
+| | Datatype tags | Annotations |
 | :--- | :--- | :--- |
-| **Purpose** | Describe **intrinsic physical or algorithmic properties** of the data that determine compatibility with Apps. | User-defined labels for **cohort organization, searching, and project management**. |
-| **Examples** | `acpc_aligned`, `single-shell`, `multi-shell`, `defaced`, `freesurfer7`. | `control`, `patient`, `baseline`, `followup`, `motion_outlier`. |
-| **Mutability** | **Immutable**: Set by the App that generated the derivative or specified during data staging. | **Flexible**: Can be added, modified, or removed at any time by project members. |
-| **Impact on Apps** | **Direct**: Apps can require specific datatype tags on their inputs (e.g., an App may require `neuro/dwi` with the `single-shell` tag). | **Selective**: Used in pipeline rules to target specific subject subsets or resolve ambiguous datasets. |
+| **Purpose** | Narrow a datatype, so Apps get compatible input. | Organize and filter datasets in a project. |
+| **Examples** | `acpc_aligned`, `preprocessed`, `single-shell`, `defaced` | `control`, `patient`, `baseline` |
+| **Who sets them** | The App that produced the dataset, or the uploader. | You and your project members, at any time. |
+| **Effect on Apps** | An App can require an input datatype tag (for example `neuro/dwi` with `single-shell`). | Automations can use them to choose between several matching datasets. |
 
-!!! tip "Datatype Tag Inheritance"
-    When an App processes an input and generates derivatives, it can pass along input datatype tags (e.g., `+input datatype tags`). This preserves critical metadata provenance—such as knowing that an anatomical parcellation came from a scan that was ACPC-aligned.
+Older pages call annotations "tags". In the app, filters are labeled **Datatype** and **Annotations**, and a pipeline uses "Filter by Datatype Tag" and "Filter by Annotation" to resolve ambiguous inputs.
 
 ---
 
-## Visualizing Datatypes & Datasets
+## Look at a dataset
 
-Brainlife features an integrated, multi-modal visualization system. Clicking the **Visualize** button on any dataset opens the visualizer menu:
+Datasets open in your browser; you do not need to download them.
 
-### 1. Native WebGL Viewer (NiiVue)
-For NIfTI anatomical scans (`neuro/anat/t1w`, `neuro/anat/t2w`), functional volumes, and 3D surface meshes, Brainlife embeds the high-performance **NiiVue WebGL viewer**:
-- Render orthogonal cross-sectional slices (axial, sagittal, coronal) with real-time zooming and panning.
-- Adjust intensity windows, contrast, and color colormaps directly in the browser.
-- Overlay 3D surface meshes on volumetric scans with zero installation required.
+1. On a project's **2. Data** tab, select **Visualize** (the eye icon) in the dataset's row, or open the dataset and select **Visualize**.
+2. Choose a viewer. The list shows the viewers registered for that datatype (see **Visualizers** on the datatype's page). Examples:
+    - **NiiVue**: volumes, surfaces and streamlines (for example NIfTI images, tractography, OME-Zarr).
+    - **Neuroglancer**: large volumes such as microscopy and electron microscopy.
+    - **Neurosift**: NWB files.
+    - Some datatypes also offer desktop programs, such as MrView or ITK-SNAP, that run on a server and stream to your browser.
+3. To overlay compatible datasets, for example a T1w image with a mask or parcellation, select them in the table and choose **Visualize together**, then **MrView** or **ITK-SNAP**.
 
-### 2. In-Browser Web Visualizers (:fa-desktop: Monitor Icon)
-Lightweight web applications that launch instantly in your browser:
-- **Tractography Visualizers**: Inspect fiber streamlines, bundles, and tract volumes in 3D.
-- **Connectome & Matrix Viewers**: Explore structural and functional connectivity matrices with interactive parcellation chord diagrams.
-- **Population Receptive Field (pRF) Viewers**: Inspect visual field mapping and cortical polar angle overlays.
-
-### 3. Containerized Desktop Tools (:fa-server: Server Icon)
-For advanced analysis, Brainlife can launch full desktop neuroimaging suites (such as **FSLeyes**, **Freeview**, or **MRView**) running inside secure Docker/Singularity containers on cloud or HPC compute resources:
-- Streams the interactive desktop interface directly to your browser window.
-- Provides access to native desktop tools without requiring local installation or multi-gigabyte data downloads.
-
-### 4. Side-by-Side Multi-Dataset Comparison
-When evaluating preprocessing results (such as before-and-after skull stripping or cross-modal coregistration), Brainlife allows you to select multiple datasets and launch them into synchronized, side-by-side comparison frames.
-
+![Viewing datasets](../img/connect_datasets/visualization.png)

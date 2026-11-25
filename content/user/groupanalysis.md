@@ -1,26 +1,39 @@
-# Group Analysis
-Brainlife.io's "Group Analysis" functionality allows for seamless project-level analysis directly on brainlife. You'll no longer have to download data to your local machine to perform your statistical analyses!
+# Analysis with notebooks
 
-This tutorial will walk you through a short example of generating group-average tract profiles from the neuro/tractmeasures datatype. This is a simple walk-through, designed to be used in conjunction with this tutorial: . 
+The **4. Analysis** tab of a project launches Jupyter notebooks against the project's data, so you can run statistics and make figures without downloading the data. Each notebook is an **analysis**. (Older pages call this "Group Analysis"; that name now survives only inside publication groups and releases.)
 
-Specifically, four topics will be covered:
+## Start an analysis
 
-1. Installing modules and classes, and defining useful functions
-2. Collecting subjects-information and tractmeasures data from the secondary warehouse
-3. Printing and visualizing variables
-4. Generating and saving figures
-    
-For this, we will use data from "Collegiate athlete brain data for white matter mapping and network neuroscience" (Caron et al, 2021, Nature Scientific Data).
+1. Open your project and select **4. Analysis**.
+2. Select **New analysis**.
+3. Choose a computational environment from **Blank Template Notebooks**, or reuse a notebook from **Notebooks from Publications**. Select **Create**.
+4. In the **Analyses** list, select **Open** when the notebook is running. A stopped notebook shows **Start**, and a failed one **Retry**.
+5. When you are done, select **Close and deactivate notebook**, or **Stop** in the list.
 
-# Installing modules and classes
-As with any statistical software, it's important to load and install useful functions and software packages for managing and manipulating data. For this project, we will need to use a few commonly used software packages, including matplotlib, numpy, pandas, and seaborn. Most importantly, we will need to load the "requests" class, as this will be used to grab a data list from the secondary warehouse.
+Use the pencil icon (**Edit**) to rename an analysis or change its description, and the trash icon (**Delete**) to delete it.
 
-Like with any other notebook, installing modules is as simple as hitting 'Shift'+'Enter' in the cell containing the desired code.
+To share a notebook with your results, attach it to a publication release under **Group analyses**. See [Publications](/docs/user/publication/).
+
+## Example: group-average tract profiles
+
+This example computes group-average tract profiles from the `neuro/tractmeasures` datatype. It covers four steps:
+
+1. Importing modules and defining useful functions
+2. Collecting participant information and tract measures for the project's subjects
+3. Printing and looking at variables
+4. Making and saving figures
+
+It uses data from "Collegiate athlete brain data for white matter mapping and network neuroscience" (Caron et al., 2021, *Scientific Data*).
+
+## Import modules
+The example uses matplotlib, numpy, pandas and seaborn, and `requests` to get the list of the project's datasets.
+
+To run a cell, select it and press Shift+Enter.
 
 
 ```python
 # Install modules and classes that will be useful for our profile analysis.
-# To load, hit 'Ctrl'+'Shift' in this cell
+# To run this cell, press Shift+Enter
 import gc
 import os,sys,glob
 from matplotlib import colors as mcolors
@@ -33,12 +46,10 @@ import seaborn as sns
 from scipy import stats
 ```
 
-# Defining useful functions
-Like with any other Jupyter notebook, defining functions on brainlife is the exact same process. Explaining the process of defining a script is beyond the scope of this tutorial, however if you'd like more information on functions in python, here's a useful tutorial:
+## Define functions
+The next cell defines functions for collecting the data, trimming the profiles and plotting them. A comment above each function says what it does and what its inputs are. Run the cell with Shift+Enter.
 
-In the following cells, we've defined some useful functions that will be used later for figure generation and data manipulation. There's small documentation on each function describing what the function does and the inputs. Like with installing modules, to define these functions in the kernel, hit 'Shift'+'Enter' in the following cells.
-
-# Sample Group Analysis Code
+### Example code
 ```python
 ## Here we can define useful functions, just like in any python script or Juypter notebook. These functions in particular will be
 ## useful for generating tract profiles and group averages
@@ -233,10 +244,10 @@ def computeMeanData(data,outPath):
     return data_mean
 ```
 
-# Setting up top-level variables
-Like with any other project, it is important to define some top-level variables including the current working directory and directories for saving data and figures. On brainlife.io, this is done in the same way it's done in any python script or notebook. Here, we define the current working directory as "topPath", and define our data output and image output directories as "data_dir" and "img_dir". If these directories are not already created, it will make these directories inside the current working directory. These directories and their contents can then be downloaded to be used for figure generation!
+## Set up variables
+Define the working directory and the folders for data and figures. Here we define the current working directory as "topPath", and define our data output and image output directories as "data_dir" and "img_dir". If these directories are not already created, it will make these directories inside the current working directory. You can download these folders afterwards.
 
-Some other useful variables are defined here as well. Specficially, we define the group names as "groups", and set up a colors dictionary for each group. Specifically, in this study, there were three groups: football players (FB), cross-country runners (CC), and non-athletes (NonAth). We also set up the number of nodes we want to use in our profiles as "num_nodes".
+We also define the group names as "groups", and set up a colors dictionary for each group. Specifically, in this study, there were three groups: football players (FB), cross-country runners (CC), and non-athletes (NonAth). We also set up the number of nodes we want to use in our profiles as "num_nodes".
 
 ```python
 # To define these within the kernel, hit 'Shift'+'Enter' in this cell
@@ -272,8 +283,8 @@ for g in range(len(groups)):
 print("setting up variables complete")
 ```
 
-# Collecting data
-Once our top-level variables are defined, we can start collecting our subject-information from our participants.json file and their tract profile data. The subject-information data is defined in the 'Detail' tab of each project, and can be accessed directly inside our kernel.
+## Collect the data
+Next, load the participant information and the tract profiles. Participant information comes from the project's **Participants Info** (project **Edit** → **Participants Info**) and is available to the notebook.
 
 ```python
 # To load the data within this kernel, hit 'Shift'+'Enter' in this cell
@@ -312,18 +323,16 @@ else:
 print("loading data complete")
 ```
 
-# Printing and visualizing variables
-You can easily look at the collected data by defining a new cell (the '+' button at the top of the notebook) and entering the variable name of interest.
+## Look at the variables
+To look at the collected data, add a cell (the **+** button at the top of the notebook) and enter the variable name.
 
 ```python
 # To see the tract_data dataframe, hit 'Shift'+'Enter' in this cell
 track_data
 ```
 
-# Data manipulation and figure generation
-Now that the subjects data and track_data are loaded, we can start manipulating the data and generating some figures! Specifically, we want to generate profiles with only a certain number of nodes ('num_nodes'). Once the profiles are cut, we can generate group-average profile!
-
-For this tutorial, we will generate group-average tract profile data for measures FA and ODI within the forceps major tract.
+## Make figures
+With the data loaded, trim each profile to `num_nodes` nodes and plot the group averages. Here we plot group-average tract profile data for measures FA and ODI within the forceps major tract.
 
 ```python
 # To cut data and generate profiles, hit 'Shift'+'Enter' in this cell
@@ -342,4 +351,4 @@ plotProfiles(['forcepsMajor'],track_data_cut,diff_measures,'mean','sem',"","")
 # plotProfiles(['forcepsMajor'],track_data_cut,diff_measures,'mean','sem',img_dir,"profiles")
 ```
 
-Tutorial complete! You've now performed group analysis directly on brainlife.io!
+You have now computed group-average tract profiles on brainlife.io.

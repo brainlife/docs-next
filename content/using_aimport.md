@@ -1,7 +1,9 @@
-
 # **aimport User Documentation**
 
-**brainlife.io/aimport** brings neuroscience data (neurophysiology, neuroimaging and microscopy) into brainlife.io from your own computer. It works out what each series, image or recording is, converts it to [BIDS](https://bids-specification.readthedocs.io/en/v1.11.2/), removes identifying information, validates the result and lets you look at it. Only then is anything uploaded.
+**aimport** is a new command-line tool (`bl aimport`) that imports neuroscience data (neurophysiology, neuroimaging and microscopy) from your own computer into a brainlife.io project. It works out what each series, image or recording is, converts it to [BIDS](https://bids-specification.readthedocs.io/en/v1.11.2/), removes identifying information, validates the result and lets you look at it. Only then is anything uploaded.
+
+!!! warning "New and not yet released"
+    aimport is new. It is not in a published release yet, and it does not appear in the brainlife.io app. The steps below run it from development branches. See **Status** below.
 
 aimport is part of [ezBIDS](using_ezBIDS.md) and reuses its mapping, conversion and defacing tools. ezBIDS on the web runs on a server; aimport runs on your computer, so raw data never leaves it.
 
@@ -12,7 +14,7 @@ aimport is part of [ezBIDS](using_ezBIDS.md) and reuses its mapping, conversion 
 | Microscopy | | OME-TIFF, CZI, ND2, LIF, SVS, PS-OCT, light-sheet (VISoR), OME-Zarr |
 
 !!! note "Status"
-    `bl aimport` is in the brainlife Python command-line tool, [pybrainlife](https://github.com/brainlife/pybrainlife/tree/enh/cli#bl-aimport) (branch `enh/cli`); it is not in a published release yet. It runs the aimport engine, a Docker image (`brainlife/aimport:dev`) that is not published yet: build it from the [ezBIDS repository](https://github.com/brainlife/ezbids/tree/master/aimport#build-the-image). **ezBIDS desktop** with AI import (beta) is coming, Mac first.
+    `bl aimport` is in the brainlife.io Python command-line tool, [pybrainlife](https://github.com/brainlife/pybrainlife/tree/enh/cli#bl-aimport) (branch `enh/cli`); it is not in a published release yet. It runs the aimport engine, a Docker image (`brainlife/aimport:dev`) that is not published yet: build it from the [ezBIDS repository](https://github.com/brainlife/ezbids/tree/master/aimport#build-the-image). **ezBIDS desktop** with AI import (beta) is coming, Mac first.
 
 ## Running it
 
@@ -126,7 +128,7 @@ Everything is served from your own computer (`127.0.0.1`), from the output only.
 | MRI, PET | `neuro/anat/t1w`, `neuro/dwi`, `neuro/func/task`, `neuro/fmap`, ... |
 | microscopy | `neuro/ome-zarr`, one object per image, tagged with the technique (for example `OCT`) |
 | EEG, MEG | `neuro/eeg/*`, `neuro/meg/*`; `channels.tsv` (with bad channels) kept as the `channels` file |
-| iEEG, NIRS, EMG | project files with the BIDS tree (brainlife datatypes are drafts for now) |
+| iEEG, NIRS, EMG | project files with the BIDS tree (brainlife.io datatypes are drafts for now) |
 
 The mapping is one file, [`bids_brainlife_map.yaml`](https://github.com/brainlife/ezbids/blob/master/aimport/src/aimport/data/bids_brainlife_map.yaml).
 

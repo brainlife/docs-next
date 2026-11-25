@@ -1,13 +1,13 @@
 
 # **ezBIDS User Documentation**
 
-[ezBIDS](https://brainlife.io/ezbids) is a web-based BIDS conversion tool that requires neither installation, programming proficiency, nor knowledge of the Unix terminal and BIDS specification. The term BIDS is an acronym that stands for the [Brain Imaging Data Structure](https://bids-specification.readthedocs.io/en/stable/). More specifically, BIDS is a format for describing and organizing (primarily neuroimaging) data, greatly enhancing data sharing within the scientific community, as well as enabling access to a suite of processing and analysis tools that can be automatically executed on BIDS data, known as [BIDS apps](https://bids-apps.neuroimaging.io/). This documentation provides an in-depth description of ezBIDS's functionality for converting data to BIDS.
+[ezBIDS](https://brainlife.io/ezbids) converts DICOM to BIDS in your web browser, with NiiVue built in. You do not need to install anything, program, use a terminal, or know the BIDS specification. [BIDS](https://bids-specification.readthedocs.io/en/stable/) (the Brain Imaging Data Structure) is a standard way to organize and describe neuroscience data. Data in BIDS is easier to share and can be processed by tools that read BIDS directly, such as [BIDS apps](https://bids-apps.neuroimaging.io/). This page describes each step of converting data with ezBIDS.
 
-If you are new to ezBIDS and would like to see a simple use case of ezBIDS, please refer to the [ezBIDS tutorial](https://brainlife.io/docs/tutorial/ezBIDS).
+If you are new to ezBIDS, start with the [ezBIDS tutorial](/docs/tutorial/ezBIDS/).
 
 ## A Primer to ezBIDS
 
-The process of converting raw imaging data to BIDS is often time-consuming and can require substantial technical expertise. Furthermore, the BIDS specification, the rules governing how data must be described and organized, are complex and can be daunting for researchers relatively unfamiliar with BIDS. While there exist numerous tools for assisting users convert their data to BIDS (for complete lists, see [here](https://github.com/rordenlab/dcm2niix#links) and [here](https://bids.neuroimaging.io/benefits.html#mri-and-pet-converters)), these tools largely require a level of techninal experise and knowledge of BIDS. ezBIDS was designed to alleviate these requirements. 
+The process of converting raw imaging data to BIDS is often time-consuming and can require substantial technical expertise. Furthermore, the BIDS specification, the rules governing how data must be described and organized, are complex and can be daunting for researchers relatively unfamiliar with BIDS. While there exist numerous tools for assisting users convert their data to BIDS (for complete lists, see [here](https://github.com/rordenlab/dcm2niix#links) and [here](https://bids.neuroimaging.io/benefits.html#mri-and-pet-converters)), these tools largely require technical expertise and knowledge of BIDS. ezBIDS was designed to alleviate these requirements. 
 
 Specifically, ezBIDS provides unique features that differentiate it from other BIDS conversion tools:
 
@@ -16,9 +16,9 @@ Specifically, ezBIDS provides unique features that differentiate it from other B
 3. Conversion of task event/timing files associated with functional BOLD (`func/bold`) sequences. If you have collected data using a task ezBIDS will help you map your tasks events into BIDS.
 4. Multiple data management options:
     * Download BIDS-converted data to a local computer or server.
-    * Push BIDS-converted data to open-science archives and platforms, such as [OpenNeuro.org](https://openneuro.org/) and [brainlife.io](https://brainlife.io/about/).
+    * Send BIDS-converted data to open-science archives and platforms, such as [OpenNeuro.org](https://openneuro.org/) and [brainlife.io](https://brainlife.io/).
 
-Think about ezBIDS as a small, smart, decision support system. ezBIDS attempts to do the heavy lifting for users, interpreting the necessary descriptions of the data uploaded and mapping these descriptions to the corresponding BIDS descriptions. Critically, however, users have the ability to edit (or modify) the BIDS dataset created by ezBIDS. Using the ezBIDS web interface, users can ensure that the BIDS dataset created is appropriate and looks how they wants it.
+Think about ezBIDS as a small, smart, decision support system. ezBIDS attempts to do the heavy lifting for users, interpreting the necessary descriptions of the data uploaded and mapping these descriptions to the corresponding BIDS descriptions. Critically, however, users have the ability to edit (or modify) the BIDS dataset created by ezBIDS. Using the ezBIDS web interface, users can make sure the BIDS dataset looks the way they want.
 
 ---
 ## ezBIDS Walkthrough
@@ -84,7 +84,7 @@ ezBIDS organizes all uploaded data into specific series and group IDs (grouping 
     ezBIDS makes educated guesses about your data using information saved in the DICOM files.
     ezBIDS uses the DICOM fields *Series Description*, *Image Type*, *Echo Time*, and *Repetition Time* to group data together. This means that ezBIDS assumes that data with the matching values in these fields are part of the same series of data. ezBIDS then matches the Series to the corresponding [BIDS entities](https://bids-specification.readthedocs.io/en/stable/appendices/entities.html).
     
-This grouping procedure saves users' time by serving files that might need to undergo similar changes in groups. ezBIDS provides warning messages (yellow circle and asterisk) to explain how the data were grouped. If this is incorrect and needs fixing, users can modify the groups using the graphical interface. If ezBIDS fails to group some of the data files, it will default to exclude the files, indicating that the files will not be converted to BIDS. Users may adjust this if necessary (or even mark data files not excluded by exBIDS as 'to be excluded', e.g., localizer sequences). 
+This grouping procedure saves users' time by serving files that might need to undergo similar changes in groups. ezBIDS provides warning messages (yellow circle and asterisk) to explain how the data were grouped. If this is incorrect and needs fixing, users can modify the groups using the graphical interface. If ezBIDS fails to group some of the data files, it will default to exclude the files, indicating that the files will not be converted to BIDS. Users may adjust this if necessary (or even mark data files not excluded by ezBIDS as 'to be excluded', e.g., localizer sequences). 
     
 If a BIDS entity label is required but ezBIDS is not able to guess it for the user, the tool alerts the users with an error (red circle and asterisk). Whereas warnings do not need to be addressed errors must be addressed before being able to move to the next page. 
 
@@ -136,7 +136,10 @@ At this stage, users can click on the green "Finalize" button for ezBIDS to appl
 
 Once complete, two screens are presented. On the left is a Linux tree structure showing the BIDS dataset organization and file names. On the right is a screen output of the [bids-validator](https://bids-standard.github.io/bids-validator/), which provides a final check to ensure that the data are BIDS compliant. Any validator warnings appear in yellow and can be ignored (but it's good practice to resolve these at some point), and errors appear in red, indicating that the dataset is not BIDS-compliant for some specified reason and requires correction. If users need or wish to return to previous pages for additional edits/modifications they may do so. Then, upon returning to this page, users must click the green "Rerun Finalize Step" to apply all new changes. 
 
-Once a BIDS-compliant dataset is generated, users can click on the blue "Download BIDS" button to download their zipped data to their local computer/server, and/or send their BIDS data to [OpenNeuro.org](https://openneuro.org/) or [brainlife.io](https://brainlife.io/about/). 
+Once a BIDS-compliant dataset is generated, users can click on the blue "Download BIDS" button to download their zipped data to their local computer/server, and/or send their BIDS data to [OpenNeuro.org](https://openneuro.org/) or [brainlife.io](https://brainlife.io/).
+
+!!! note "ezBIDS and brainlife.io projects"
+    In the brainlife.io app, the **Project Data** menu on a project's **2. Data** tab lists "Upload Data from ezBIDS", but it currently shows "Currently unavailable". Start ezBIDS from [brainlife.io/ezbids](https://brainlife.io/ezbids) instead. 
 
 !!! info Downloading non-BIDS compliant data
     Users may still download their BIDS dataset (or upload it elsewhere) even if the bids-validator returns error(s); however, users should know that their dataset is not fully BIDS-compliant and will need to be corrected at some point. 
@@ -189,7 +192,7 @@ ezBIDS converts **neuroscience data (neurophysiology, neuroimaging and microscop
 | Neurophysiology | MEG | EEG, MEG, iEEG, NIRS, EMG |
 | Microscopy | | OME-TIFF, CZI, ND2, LIF, SVS, PS-OCT, light-sheet (VISoR); OME-Zarr read in place |
 
-aimport is ezBIDS's local importer: an AI agent proposes the BIDS mapping, you review it, and identifying information is removed on your own computer before anything is uploaded. See [aimport](using_aimport.md).
+aimport is ezBIDS's local importer, and it is new: it is not in a published release yet. An AI agent proposes the BIDS mapping, you review it, and identifying information is removed on your own computer before anything is uploaded. See [aimport](using_aimport.md).
 
 !!! warning "PET and MEG"
     Support for these modalities on the web is relatively new. Please report issues on [GitHub](https://github.com/brainlife/ezbids/issues).
@@ -222,7 +225,7 @@ cd ezbids && ./dev.sh -d
 !!! note ezBIDS on HPCs
     Users wishing to install ezBIDS on their institution's HPC will not have access to Docker or Docker Compose. ezBIDS is currently unsupported by Singularity, and thus users should reach out to system administrators to see if installation of ezBIDS can be supported.
 
-The second command runs *docker-compose up*, which builds and starts the 4 contains that make up ezBIDS. This will take several minutes to complete, at which point logging information will appear in the terminal. To ensure that the containers are up and running, open a new terminal and type *docker ps*, which should output something like:
+The second command runs *docker-compose up*, which builds and starts the 4 containers that make up ezBIDS. This will take several minutes to complete, at which point logging information will appear in the terminal. To ensure that the containers are up and running, open a new terminal and type *docker ps*, which should output something like:
 ```
 CONTAINER ID   IMAGE            COMMAND                  CREATED        STATUS                  PORTS                                           NAMES
 f5ecdfa84704   ezbids_handler   "pm2 start handler.j…"   18 hours ago   Up 18 hours                                                             brainlife_ezbids-handler
@@ -309,4 +312,4 @@ The full list of tools, with what each one does, its licence and its citation, i
 ---
 ## Contributing to ezBIDS
 
-ezBIDS is a community-drive project, and as such, contributions are both welcome and encouraged. For technical contributions, it is highly recommended that users locally install ezBIDS on their machine (see **Installing ezBIDS locally** section for details) and submit a PR for bug fixes and feature enhancements. For additional modality support requests (e.g., NIRS), users should reach out to the developers. A meeting and/or access to test data may be requested, as the developers are less familiar with imaging modalities outside of MRI and DWI. 
+ezBIDS is a community-driven project, and as such, contributions are both welcome and encouraged. For technical contributions, it is highly recommended that users locally install ezBIDS on their machine (see **Installing ezBIDS locally** section for details) and submit a PR for bug fixes and feature enhancements. For additional modality support requests (e.g., NIRS), users should reach out to the developers. A meeting and/or access to test data may be requested, as the developers are less familiar with imaging modalities outside of MRI and DWI. 

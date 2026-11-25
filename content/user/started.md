@@ -1,213 +1,207 @@
-# Getting Started with Brainlife Connects
+# Getting started
 
-Welcome to **Brainlife Connects** ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank})! Brainlife is an open, cloud-based platform for reproducible neuroimaging data analysis, processing pipelines, and scientific publication.
+This guide takes you through the core workflow on brainlife.io ([connects.brainlife.io](https://connects.brainlife.io/){target=_blank}):
 
-This "Getting Started" guide will walk you through the core workflow on Brainlife Connects:
-
-1. [Signing up and logging in](#sign-up)
-2. [Key terms to know](#brainlifeio-terms-to-know)
-3. [Navigating the platform](#navigating-brainlife-connects)
-4. [Creating a new project](#create-project)
-5. [Adding data to your project](#upload-data)
-6. [Visualizing data-objects](#visualize-data-objects)
-7. [Running processing apps and pipelines](#data-processing)
-8. [Interactive group analysis with notebooks](#interactive-analysis)
+1. [Sign in](#sign-up)
+2. [Learn the key terms](#brainlifeio-terms-to-know)
+3. [Find your way around](#navigating-brainlifeio)
+4. [Create a project](#create-project)
+5. [Add data to your project](#upload-data)
+6. [Look at your data](#visualize-data-objects)
+7. [Run Apps on your data](#data-processing)
+8. [Analyze with notebooks](#interactive-analysis)
 
 ---
 
-## Sign Up
+<a id="sign-up"></a>
 
-To begin using Brainlife, you need a registered account:
+## Sign in
 
-1. Go to the [Brainlife authentication page](https://brainlife.io/auth/){target=_blank}.
-2. Choose your preferred login method:
-    * **Third-Party Providers**: Google, GitHub, ORCID, Apple, or your academic institution.
-    * **Email & Password**: [Sign up directly](https://brainlife.io/auth/#!/signup){target=_blank} with your email address.
-3. You can connect multiple login providers to your profile in **Settings > Account > Account Settings > Connected Accounts**.
+1. On [brainlife.io](https://brainlife.io/){target=_blank}, select **Sign in** (or **Start a project**).
+2. Choose a login method. If you do not have an account yet, you can create one on the same page.
+3. You land on your **Dashboard**.
 
 !!! warning
-    If you register using a third-party authenticator (such as Google or GitHub), make sure to sign in with that same account every time so you don't inadvertently create multiple profiles.
+    If you sign in with a third-party account (for example Google or GitHub), use the same account every time. Signing in with a different account creates a second profile.
 
 ---
 
 ## brainlife.io terms to know
 
-Before diving into project workflows, let's review two fundamental concepts:
+### Dataset
 
-### Data-Object
-A **data-object** is a specific set of files representing one subject, session, and neuroimaging modality. It is the core unit of data on Brainlife:
+A **dataset** is one item of project data: the files of one datatype for one subject (and session). For example:
 
-* For example, a `neuro/dwi` data-object consists of `dwi.nii.gz` (the 4D diffusion image), `dwi.bvecs`, and `dwi.bvals`.
-* A FreeSurfer parcellation output for a subject is a single data-object containing all generated surface and segmentation directories.
-* Data-objects have **immutable data** (the underlying raw image files cannot be modified) and **mutable metadata** (tags, subject IDs, and descriptions can be updated).
+* A `neuro/dwi` dataset holds `dwi.nii.gz` (the 4D diffusion image), `dwi.bvecs` and `dwi.bvals`.
+* The FreeSurfer output for one subject is one dataset that holds all its surface and segmentation folders.
+
+The files of a dataset do not change after it is created. Its metadata (subject, session, description and annotations) can be edited. Older pages call a dataset a "data object"; that term is still used inside publication releases.
 
 ### Datatypes
-Brainlife Apps exchange information through standardized **datatypes**. 
+
+Apps exchange data through **datatypes**.
 
 ![datatype](../img/datatype.png)
 
-* Each datatype defines the expected files, directory structure, and metadata for a modality.
-* Colored badges on an App card indicate which datatype an App requires as input and which datatype it generates as output.
-* **Datatype tags** (such as `acpc_aligned`, `masked`, or `preprocessed`) provide extra specificity so downstream Apps receive the exact input format they need.
-* Browse registered specifications anytime on the [Datatypes page](https://connects.brainlife.io/datatypes){target=_blank}.
+* A datatype defines the files and folders a dataset of that type contains.
+* The colored chips on an App show which datatypes it takes as input and which it produces as output.
+* **Datatype tags** (for example `acpc_aligned` or `preprocessed`) narrow a datatype, so an App receives exactly the input it needs.
+* Browse all datatypes under **Datatypes** in the sidebar.
+
+### Annotations
+
+**Annotations** are free-text labels you add to datasets (for example `control` or `patient`) so you can filter them.
 
 ---
 
-## Navigating Brainlife Connects
+## Navigating brainlife.io
 
-Brainlife Connects provides a streamlined sidebar navigation divided into two primary zones:
+The sidebar has two parts.
 
-* **Me (Personal Workspace):**
-  * **Dashboard**: Your unified hub displaying recent task activity, project shortcuts, and processing notifications.
-  * **My Projects**: Projects you administer, contribute to, or follow.
-  * **My Resources**: Compute clusters, HPC resources, or cloud nodes registered for your use.
-  * **My Datatypes**: Custom datatypes you maintain or develop.
+The top part (no heading) holds your own work:
 
-* **Explore (Community & Open Science):**
-  * **SKAI**: Brainlife's AI-powered neuroimaging assistant to help design workflows, query analyses, and troubleshoot tasks.
-  * **Public Datasets**: Centralized explorer for open neuroscience data, including the **Dataset Library**, **DANDI**, **EMBER**, and **BossDB** (with direct S3 browsing).
-  * **Apps**: The catalog of public neuroimaging analysis tools, containerized and ready to run.
-  * **Datatypes**: Community-registered datatype standards.
-  * **Public Projects**: Shared open research projects from labs worldwide.
-  * **Research**: Published datasets and reproducibility packages with DOIs.
+* **Dashboard**: what needs your attention, your recent projects, your runs, and the compute you have used.
+* **My Projects**: projects you administer, contribute to, or follow as a guest.
+* **My Publications**: publications you authored, contributed to, or created.
+* **My Resources**: compute resources you administer.
+* **My Apps**: Apps you maintain.
+* **My Datatypes**: datatypes you maintain.
+
+The **Explore** part holds what the community shares:
+
+* **SKAI**: the AI assistant that answers questions about your projects, data and runs.
+* **Public Publications**: all publications.
+* **Public Datasets**: open data from DANDI, EMBER, BossDB, OpenNeuro and the brainlife.io **Dataset Library**.
+* **Apps**: the App catalog.
+* **Datatypes**: the datatype catalog.
+* **Public Projects**: projects shared with the brainlife.io community.
+* **Public Resources**: shared compute resources.
+
+At the bottom of the sidebar are **Login** / **Logout** and the light and dark mode switch.
 
 ---
 
-## Create Project
+<a id="create-project"></a>
 
-Projects are workspaces where you organize datasets, run compute workflows, launch interactive analyses, and collaborate with your team.
+## Create a project
 
-1. In the sidebar menu, click **My Projects** (`/projects?scope=mine`).
-2. Click the **New Project** button in the upper right.
-3. Fill in the project creation modal:
-    * **Title**: A concise, descriptive name (e.g. *Longitudinal Tractography Study*).
-    * **Description**: A summary of research questions, cohorts, or methods.
-4. Click **Create project**.
+A project is your workspace: data, processing, notebooks and publications, shared with your team.
 
-Congratulations! Brainlife will create your project and navigate directly to its workspace.
+1. In the sidebar, select **My Projects**.
+2. Select **Project** (the button with a plus sign).
+3. In **Create project**, enter a **Title** and a **Description**.
+4. Select **Create project**.
 
-### Project Structure
+brainlife.io creates the project and opens it.
 
-Inside your project, you will find five dedicated tabs:
+### Project tabs
 
-1. **1. Overview**: ReadMe documentation, access control (Admins, Members, Guests), related journal articles, and automatic citations for the Apps used.
-2. **2. Data**: Interactive table of all project data-objects, metadata filtering, dataset visualizers, and staging actions.
-3. **3. Processing**: Execution center with three views: **Summary** (job health and execution stats), **Pipeline** (automation rules), and **Processes** (running and completed compute jobs).
-4. **4. Analysis**: Built-in Jupyter Notebook instances running in the cloud directly against your project data.
-5. **5. Publications**: Tools to snapshot and permanently publish datasets and pipelines with citable DOIs.
+Every project has five numbered tabs:
+
+1. **1. Overview**: the project's **About** text, **Citations** for the Apps and resources used, **Related Articles**, the people (Admins, Members, Guests), data agreements and resources.
+2. **2. Data**: the **Project Data** table of all datasets, with filters and actions.
+3. **3. Processing**: three views, **Summary**, **Processes** and **Pipeline**.
+4. **4. Analysis**: Jupyter notebooks that run against your project data.
+5. **5. Publications**: the publications made from this project.
 
 ---
 
 <a id="upload-data"></a>
-## Adding Data to Your Project
 
-Once your project is created, navigate to the **2. Data** tab.
+## Add data to your project
 
-To add data, click the **Add Project Data** button at the top right of the data table. You can choose from multiple sources:
+Open the **2. Data** tab and open the **Project Data** menu. It offers:
 
-* **Copy Data from Public Datasets**:
-  Browse thousands of open-access subjects from **BossDB**, **DANDI**, **OpenNeuro**, and the **Brainlife Dataset Library**, and import them directly into your project with a single click—no local downloading required.
-* **Copy Data From another Project**:
-  Select any public project or another project you belong to and copy datasets directly into your current workspace.
-* **Upload Data from ezBIDS / Local Files**:
-  If you have raw DICOM or NIfTI data on your local machine, convert and organize it using [ezBIDS](/docs/using_ezBIDS/) or upload it through the web uploader or [Brainlife CLI](/docs/cli/upload/).
+* "Copy Data from Public Datasets" (BossDB, DANDI, and OpenNeuro).
+* "Copy Data From another Project": search for a project and copy its data over.
+* "Upload Data From local Files": shown as "Currently unavailable".
+* "Upload Data from ezBIDS": shown as "Currently unavailable".
 
-### Browsing and Copying Public Datasets
+To bring in your own data today, convert it with [ezBIDS](/docs/using_ezBIDS/) on the web, or upload it with the [brainlife.io CLI](/docs/cli/upload/). [aimport](/docs/using_aimport/), a local importer, is new and not yet released.
 
-Brainlife Connects makes open neuroscience datasets immediately available without requiring local downloads or manual staging:
+### Copy a public dataset
 
-1. **Explore the Public Datasets Catalog**: Navigate to **Explore > Public Datasets** (`/public-datasets`). Use the source pills to filter collections by repository (**Dataset Library**, **DANDI**, **EMBER**, **BossDB**, or **OpenNeuro**), or search by title and modality.
+1. In the sidebar, select **Public Datasets**. Search, or filter by source (**Dataset Library**, **DANDI**, **EMBER**, **BossDB**, **OpenNeuro**).
 
     ![Public Datasets Explorer](../img/connect_datasets/public_dataset.png)
 
-2. **Inspect Collection Data**: Click on any collection (such as *ADHD200 - KKI*) and switch to its **2. DATA** tab to inspect all subjects, sessions, and available modalities.
+2. Select a dataset to open it. For a Dataset Library dataset, open its **2. Data** tab to see its subjects, sessions and datatypes.
 
     ![Collection Data View](../img/connect_datasets/project_dataset.png)
 
-3. **Filter Datatypes**: Use the **Datatype** dropdown in the top-right toolbar to isolate specific modalities (such as `anat/t1w` or `func/task`).
+3. Use the **Datatype** filter to show only the datatypes you want (for example `anat/t1w`).
 
     ![Filter Datatypes](../img/connect_datasets/select_dataset_datatype.png)
 
-4. **Copy to Project**: Click the **COPY TO PROJECT** button in the upper-right corner. In the dialog:
-    * Select which datatypes you need to import.
-    * Choose either an **Existing** project or create a **New project**.
-    * Click **SUBMIT**. Brainlife creates virtual DataLad links in your project instantly.
+4. Select **Copy to project**. In **Copy data to project**:
+    * Under "1. Select the datatypes to copy over", tick the datatypes you need.
+    * Choose **Existing** and pick a project, or **New project** and enter **Title (required)** and **Description (required)**.
+    * Select **Submit**.
 
     ![Copy Data to Project](../img/connect_datasets/copy_dataset.png)
 
+The datasets appear on the project's **2. Data** tab.
+
 ---
 
-## Visualize Data-Objects
+<a id="visualize-data-objects"></a>
 
-You can inspect brain images, segmentations, and tractography results directly in your web browser without downloading multi-gigabyte files to your computer:
+## Look at your data
 
-1. On the **2. Data** tab, your staged data-objects are organized by subject and session, displaying their datatypes, tags, file sizes, and creation dates.
+You can look at images, segmentations and tractography in your browser without downloading them.
+
+1. On **2. Data**, the table lists your datasets by subject and session, with their datatype, tags and annotations.
 
     ![Project Data Tab](../img/connect_datasets/select_image_to_visualize.png)
 
-2. Click the **Visualize** icon (:fa-eye: eyeball) on the right side of any dataset row, or select multiple rows to compare them.
-3. Select an available viewer suited for that datatype:
-    * **Volume Viewer**: Slices through 3D/4D anatomical and functional volumes, with support for side-by-side multi-dataset comparison, voxel/world coordinate inspection, and color map thresholds.
-    * **Freeview / FSLeyes**: GPU-accelerated cloud viewers streamed directly to your browser via WebRTC/VNC.
-    * **TractView**: Interactive 3D white matter tractography and streamline visualizer.
+2. In a dataset's row, select **Visualize** (the eye icon) and choose one of the viewers registered for its datatype, for example NiiVue or Neuroglancer.
+3. To overlay compatible datasets (for example a T1w image and a mask), select them and choose **Visualize together**.
+4. Select a dataset to open it. Its **Provenance (history)** tab shows which App, configuration and inputs produced it.
 
     ![Volume Viewer Multi-Dataset Comparison](../img/connect_datasets/visualization.png)
 
-4. The viewer launches in a clean modal overlay, letting you adjust contrasts, toggle overlays, and perform quick visual quality control before launching compute pipelines.
+---
+
+<a id="data-processing"></a>
+
+## Run Apps on your data
+
+You run Apps in two ways: a **process**, where you choose the data and Apps by hand, and a **pipeline**, where automations run an App for every subject and session.
+
+### Run an App in a process
+
+1. On **2. Data**, select the datasets you want to process and select **Stage to process**.
+2. In **Add to process**, choose "Create a new process" and give it a name, or "Add to an existing process". Select **Add and open editor**.
+3. In the process editor, select **Add App**. Follow the steps **Select App**, **Configure App Settings**, **Select Inputs** and **Configure Outputs**. Choose whether to **Archive Output** (save the result as a dataset in the project), then select **Add App**.
+4. Follow progress on **3. Processing** → **Processes**. Select a process to open its side panel with **Setup**, **Run & logs** and **Results**.
+
+A job's status is shown as REQUESTED, RUNNING, FINISHED, FAILED, STOPPED or REMOVED. If a job fails, open its logs; see [Troubleshooting](/docs/user/failure/).
+
+### Automate with a pipeline
+
+1. Go to **3. Processing** → **Pipeline**.
+2. Select **Automation** (the button with a plus sign). Follow **Select App**, **Configure App Settings**, **Configure Inputs** and **Configure Outputs** (tick "Archive this output"), then select **Complete**.
+3. Optional: select **Automation Group** to organize automations, and use **Global Subject & session filters** to limit which subjects and sessions run.
+
+The automation runs its App for every subject and session that has the inputs and does not yet have the output. Watch **Summary** for items under **Needs Action**. See [Pipelines](/docs/user/pipeline/).
 
 ---
 
-## Data Processing
+<a id="interactive-analysis"></a>
 
-To run computational analysis on your data, Brainlife Connects offers two integrated methods: **Processes** for on-demand task runs and **Pipelines** for automated batch execution.
+## Analyze with notebooks
 
-### Running a Process (On-Demand Execution)
+1. Open the **4. Analysis** tab and select **New analysis**.
+2. Choose a notebook from **Blank Template Notebooks** or **Notebooks from Publications**, then select **Create**.
+3. Open the notebook from the **Analyses** list. When you are done, select **Close and deactivate notebook**, or **Stop** in the list.
 
-1. Go to the **2. Data** tab and select the dataset(s) you wish to process using the checkboxes on the left.
-2. In the action bar that appears above the table, click **Stage to process** (or click the List icon on an individual row).
-3. Select an existing process or choose to create a new process instance.
-4. Open the **3. Processing** tab and switch to the **Processes** sub-view.
-5. Click **Submit App** to search the App catalog for an appropriate analysis tool (for example, *FSL Anat (T1)* or *FreeSurfer* for anatomical processing).
-6. Configure the App parameters and click **Submit**.
-
-Brainlife's orchestrator ([Amaretti](https://github.com/brainlife/amaretti){target=_blank}) automatically transfers your data to an optimal computing resource, submits the batch job, and monitors its execution:
-
-* **Requested**: The job is queued and waiting for compute resources.
-* **Running**: The job is actively executing on the designated HPC/cloud cluster.
-* **Finished**: Execution succeeded! Derivative datasets are automatically added to your project's data catalog.
-* **Failed**: If an error occurred, expand the task's **Raw Output** to inspect `stdout`, `stderr`, and log files.
-
-### Automating with Pipeline Automations
-
-If you need to analyze dozens or hundreds of subjects across your project:
-
-1. In the **3. Processing** tab, select the **Pipeline** sub-view.
-2. Click the **`+ Automation`** button to launch the 4-step wizard:
-   - **Select App**: Choose an App from the catalog.
-   - **Configure App Settings**: Set fixed runtime flags and arguments.
-   - **Configure Inputs**: Set datatype tag filters, project overrides, and regex **Subject/Session Filters**.
-   - **Configure Outputs**: Add output tags to identify derivatives cleanly.
-3. Organize related rules into collapsible groups with **`+ Automation Group`**.
-4. Once active, the automation continuously evaluates your project: whenever subjects matching your criteria are added or upstream derivatives are produced, Brainlife automatically launches the App and archives the outputs.
+See [Analysis with notebooks](/docs/user/groupanalysis/).
 
 ---
 
-## Interactive Analysis
+## Next steps
 
-Brainlife Connects integrates statistical analysis directly into your project via the **4. Analysis** tab:
-
-1. Click the **4. Analysis** tab.
-2. Click **New analysis** to launch an interactive cloud **Jupyter Notebook**.
-3. Choose to start from a blank template or import a published analysis notebook.
-4. The notebook runs directly inside your project environment, allowing you to load dataset derivatives, compute group averages, plot tract profiles, and generate figures without downloading datasets to your local workstation.
-
----
-
-## Next Steps
-
-Now that you understand the core flow of Brainlife Connects:
-
-* Explore [ezBIDS](/docs/using_ezBIDS/) to standardize raw scanner data into BIDS.
-* Read the [Pipeline Guide](/docs/user/pipeline/) to automate large cohort workflows.
-* Learn how to wrap your own analysis scripts in the [App Developer Guide](/docs/apps/introduction/).
-* Have questions or need assistance? Join the [Brainlife Slack Community](https://brainlife.slack.com){target=_blank} or ask **SKAI** directly in Brainlife Connects!
+* Convert raw scanner data to BIDS with [ezBIDS](/docs/using_ezBIDS/).
+* Automate processing across subjects with [Pipelines](/docs/user/pipeline/).
+* Turn your own code into an App with the [App developer guide](/docs/apps/introduction/).
+* Questions? Ask **SKAI** in the app, or see [Contact](/docs/contact/) for email and Slack.
