@@ -50,6 +50,11 @@ A Dataset Library dataset has two tabs: **1. Overview** (description, authors, l
 
 The datasets appear on the project's **2. Data** tab, ready for processing.
 
+An OpenNeuro dataset also brings its tables into the project, read through the [OpenNeuro API](https://openneuro.org/crn/graphql) for the version you copy:
+
+- **`participants.tsv`** is merged into the project's participants table. New subjects and columns are added; values already in the project are kept.
+- **Other BIDS tables** (`phenotype/*.tsv`, `samples.tsv`, sessions and scans tables) are copied as [project tables](/docs/user/tables/), each row linked to its subject and session. Copying the same dataset again replaces the tables that came from it; tables you uploaded are kept.
+
 You can also start from a project: on **2. Data**, open the **Project Data** menu and choose "Copy Data from Public Datasets".
 
 ---

@@ -53,6 +53,7 @@ export const DOCS_SECTIONS: NavSection[] = [
                     { title: 'Pipelines', href: '/docs/user/pipeline', path: 'user/pipeline.md' },
                     { title: 'Publications', href: '/docs/user/publication', path: 'user/publication.md' },
                     { title: 'Public Datasets', href: '/docs/user/datasets', path: 'user/datasets.md' },
+                    { title: 'Tables', href: '/docs/user/tables', path: 'user/tables.md' },
                     { title: 'Group Analysis', href: '/docs/user/groupanalysis', path: 'user/groupanalysis.md' },
                     { title: 'Troubleshooting & Failure', href: '/docs/user/failure', path: 'user/failure.md' },
                 ],
